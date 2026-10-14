@@ -1,0 +1,6 @@
+KERN 0x06025a58 obj_ReturnToFreeList RENAME obj_LinkIntoActiveList pushes object onto DAT_06066024 which is the active list head, not a free list
+KERN 0x06025a70 obj_CallWithDefaultArgs RENAME obj_RemoveFromActiveList calls list_MoveToFreeList with the active list head
+KERN 0x06025b10 obj_TurnYawToward_2 RENAME obj_TurnSecondAngleToward same steering on another angle field, suffix not allowed
+KERN 0x060261c4 obj_CanHitTarget RENAME obj_CollisionAllowsHit installed in per-kind collision handler table DAT_06066010, tests rule flags vs target kind
+KERN 0x06026628 obj_UpdateHitReaction_2 RENAME obj_UpdateHitReactionAlt suffix not allowed, installed as alternate update handler
+KERN 0x06026f5c obj_ReleaseAnimHandle RENAME obj_ReleaseSoundChannel checks sfx_IsChannelOwner, stops channel, clears owner and index to -1

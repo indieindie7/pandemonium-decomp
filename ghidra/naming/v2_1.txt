@@ -1,0 +1,36 @@
+KERN 0x06037498 vdp2_WaitFrameSync CONFIRM vdp2_WaitFrameSync sets a request flag then spins until the vblank handler clears it and a second busy flag clears; no callers seen
+KERN 0x06039b1c GFS_IsEof CONFIRM GFS_IsEof returns tell position >= file size; used by cd_ReadBuffered after short reads
+KERN 0x06039bcc GFS_GetFileSizeInfo CONFIRM GFS_GetFileSizeInfo copies file info for the handle, zeroes size for directories; callers Seek/IsEof use the size
+KERN 0x0603a04c GFS_NwIsComplete CONFIRM GFS_NwIsComplete true when handle's pending-transfer field is 0; callers spin on it after NwStop
+KERN 0x0603a16c gfs_PollTransferDone CONFIRM gfs_PollTransferDone checks CD play mode state, marks transfer done at state 2, returns the done flag
+KERN 0x0603a480 gfs_SetupCustomCopyTransfer CONFIRM gfs_SetupCustomCopyTransfer sets seek params, read mode 4, and transfer target on a handle; no callers
+KERN 0x0603a5c8 GFS_GetErrStat CONFIRM GFS_GetErrStat copies the 3-word global error status to caller buffer
+KERN 0x0603a9c4 gfs_AddOpenFileEntry CONFIRM gfs_AddOpenFileEntry appends handle to open-file table if not already present
+KERN 0x0603aa5c gfs_InitHandleOpen CONFIRM gfs_InitHandleOpen inits read state and stream entry on a handle, zeros state fields, returns handle or 0; used by GFS_Open and volume reads
+KERN 0x0603aea0 gfs_SetReadTotal CONFIRM gfs_SetReadTotal sets total sectors to read (via sector limit or direct) and clears progress; called by NwFread/NwCdReadSimple
+KERN 0x0603aee0 gfs_CopyFileInfo CONFIRM gfs_CopyFileInfo copies optional file-info fields to out pointers; callers GetFileSize and GetFileSizeInfo
+KERN 0x0603b23c gfs_SetSectorLimit CONFIRM gfs_SetSectorLimit stores sector total and clamps available transfer size; called from gfs_SetReadTotal
+KERN 0x0603b4e8 gfs_CdPlayMode3Locked CONFIRM gfs_CdPlayMode3Locked if lock held issues a CD play command with mode 3, returns 2 on success else 8; used by PollTransferDone
+KERN 0x0603b5fc gfs_AddSectorGapOffset CONFIRM gfs_AddSectorGapOffset converts a sector index adding per-group gap sectors; used by seek-read and chunk planning
+KERN 0x0603b6e8 gfs_SectorSizeFromFlags CONFIRM gfs_SectorSizeFromFlags maps file attribute flag bits to a per-sector data size (0 for a flag combo); used by gfs_InitStreamEntry
+KERN 0x0603bc10 gfs_InitRecordReader CONFIRM gfs_InitRecordReader initializes reader struct with handle, buffer, position -1 and size; used before reading dir records
+KERN 0x0603bd50 gfs_ReaderReadBothEndianU16 CONFIRM gfs_ReaderReadBothEndianU16 reads 2 bytes then 2 more and returns the second (ISO9660 both-endian field); used by dir record parse
+KERN 0x0603bda4 gfs_ReaderReadBothEndianU32 CONFIRM gfs_ReaderReadBothEndianU32 reads 4+4 bytes both-endian, returns second; used for extent and size in dir record
+KERN 0x0603c8cc scu_DmaPollAndFinish UNSURE scu_DmaPollAndFinish polls sh2_DmacIsTransferEnd (SH-2 DMAC, not SCU) then copies leftover tail bytes; prefix may be wrong but evidence not firm
+KERN 0x0603cbc0 mem_CopyTailBytes CONFIRM mem_CopyTailBytes copies first n bytes of a word to dest bytewise; used to finish DMA remainders and strided copy
+KERN 0x0603d26c gfs_CdSetupFilter UNSURE gfs_CdSetupFilter sets a CD request from stream fields then waits queues idle, returns 1 on success; callers shown do not obviously call it so role unclear
+KERN 0x0603d2b0 gfs_CdSeekDefaultLength UNSURE gfs_CdSeekDefaultLength clears request, defaults length from struct when -1, seeks and zeroes a field; shown caller does not call it
+KERN 0x0603d314 gfs_CdSetLockOwner CONFIRM gfs_CdSetLockOwner sets CD command owner from handle fields then waits idle; step-read calls it after acquiring the lock
+KERN 0x0603d348 gfs_CdAcquireLock CONFIRM gfs_CdAcquireLock takes the CDC lock and stores the id in handle; used before play/seek commands
+KERN 0x0603d3a0 cdc_SetModeFlags CONFIRM cdc_SetModeFlags sets two work-area flag bytes to the boolean arg; called from init paths
+KERN 0x0603d60c cdc_FreeFilterSlot CONFIRM cdc_FreeFilterSlot releases an allocated filter slot (index below 0x18) by clearing its flag; called by free-partition-and-filter
+KERN 0x0603d748 cdc_LockAcquire CONFIRM cdc_LockAcquire sets the lock flag, bumps and returns an owner token, fails if already held; wrapped by gfs_CdAcquireLock
+KERN 0x0603d77c cdc_LockRelease CONFIRM cdc_LockRelease clears the lock flag only if the token matches the owner; wrapped by gfs_CdLockRelease
+KERN 0x0603d7a8 cdc_IsLockHeldBy CONFIRM cdc_IsLockHeldBy true when lock is set and owner token equals arg; wrapped by gfs_CdIsLockHeld
+KERN 0x0603d890 cdc_QueryFilterSubheader CONFIRM cdc_QueryFilterSubheader checks filter mode then reads subheader condition and stores status; no callers
+KERN 0x0603d930 cdc_PlayWithLock CONFIRM cdc_PlayWithLock if token owns lock and no error, clears HIRQ bits and issues play command; used by step-read and mode3 play
+KERN 0x0603da54 cdc_ClearRequestB CONFIRM cdc_ClearRequestB ends the data transfer and resets request slot to -1, pair of SetRequestB; caller is seek-default-length
+KERN 0x0603daf4 cdc_IsOwnerMismatch CONFIRM cdc_IsOwnerMismatch returns 0 only when slot busy flag set and owner equals arg else 1; FreePartitionWait loops until it returns 1
+KERN 0x0603dbd8 cdc_FinishIfOwner RENAME cdc_SeekWithLock body checks lock token then issues cdc_SeekDisc with the position; mirrors cdc_PlayWithLock and gfs_StartSeekRead passes sector position
+KERN 0x0603e0d0 cdc_StepSlotCommand CONFIRM cdc_StepSlotCommand switch on slot command type 0-7 calling per-command step handlers; called per slot from cdc_PollQueues
+KERN 0x0603ed10 cdc_WaitNotBusy UNSURE cdc_WaitNotBusy polls an HIRQ test up to a limit, calls a clear fn and returns false when set else true; exact meaning of result unclear

@@ -1,0 +1,356 @@
+0x06038bcc func scl_ResetShadowRegsAll hand provisional: clears many VDP2 shadow register bits in sequence, sets dirty flag 0x80 after each write
+0x06038e08 func scl_ResetShadowRegsGroup40 hand provisional: masks eight shadow register halfwords with dirty flag 0x40
+0x06038e74 func scl_ResetShadowRegsGroup20 hand provisional: sets low bits in three shadow registers with dirty flag 0x20
+0x06038ed0 func scl_ResetShadowRegsGroup10 hand provisional: masks and zeroes four shadow registers with dirty flag 0x10
+0x06038f30 func scl_ResetShadowRegsGroup08 hand provisional: masks and zeroes four shadow registers with dirty flag 0x08
+0x06038f88 func scl_ResetShadowRegsGroup04 hand provisional: clears bit fields in two shadow registers, zeroes six more, dirty flag 0x04
+0x060391d0 func scl_SetColorRamEntries hand provisional: masks address, calls copy callback with count*2 bytes, updates cached offset and sets update flag
+0x06039254 func scl_WriteColorRam hand writes colors into color RAM bank; 0x400 stride in 32-bit mode else 0x200 stride, single entry or block copy
+0x060392f0 func scl_SetScreenPriority hand provisional: per screen flag bits updates priority and enable shadow registers with dirty flag 0x80
+0x060394a4 func scl_GetScreenPriority hand provisional: returns 3-bit priority field from shadow register selected by screen flag
+0x060399e0 func gfs_ReleaseHandleClearError hand if handle nonzero calls gfs_ReleaseTransferOwner then cleanup, then gfs_SetError 0
+0x06039c98 func gfs_CallOrSetBadHandle hand if param zero sets error -0xb via gfs_SetError, else calls function with param
+0x0603a3b0 func gfs_ExchangeHandleField68 hand provisional: GFS_GetFileSize flag check, swaps handle field 0x68 returning old value, error -0x11 if busy
+0x0603a414 func gfs_CallHandleOp6c hand provisional: GFS_GetFileSize flag check, calls helper on handle+0x6c with param, error -0x11 if busy
+0x0603a59c func gfs_StoreErrorPair hand stores two words into the gfs global structure then calls gfs_SetError 0
+0x0603a5ec func gfs_AddSectorOffset hand adds global offset byte to param when mode byte equals one
+0x0603a6e0 func stub_0603a6e0 hand stub that only returns zero
+0x0603a6ec func gfs_InstallStreamCallbacks hand stores gfs_StepReadTransfer, gfs_FlushStream and two other callbacks into global table at offsets 4 to 0x10
+0x0603a874 func gfs_ClearWord hand writes zero to the pointed word
+0x0603af44 func gfs_CloseOpenFileEntry hand if handle nonzero calls gfs_RemoveOpenFileEntry then two cleanup helpers on handle and handle+0x28
+0x0603af80 func gfs_GetHandleField58 hand returns word at handle offset 0x58
+0x0603b530 func gfs_CallHelperAtOffset1c hand calls helper on handle+0x1c
+0x0603b548 func gfs_SeekWrapper hand calls gfs_CdSeek with the two arguments and zero
+0x0603b9fc func gfs_DirEntryAddr12 hand returns base plus index times 12 (directory record address)
+0x0603ba10 func gfs_DirEntryAddr24 hand returns base plus index times 24 (directory record address)
+0x0603ba24 func gfs_DirEntryAttr12 hand returns byte at offset 0xb of 12-byte directory record index
+0x0603ba3c func gfs_DirEntryAttr24 hand returns byte at offset 0xb of 24-byte directory record index
+0x0603ba54 func gfs_GetDirCountWaitAll hand calls gfs_GetDirCountWait with -1
+0x0603bcf8 func gfs_ReadByte hand calls gfs_ReaderRead for one byte, stores count, returns the byte
+0x0603bd24 func gfs_ReadWord16 hand calls gfs_ReaderRead for two bytes, stores count, returns the halfword
+0x0603bdf0 func gfs_ReadWord32 hand calls gfs_ReaderRead for four bytes, stores count, returns the word
+0x0603c214 func gfs_CopyFileInfo hand copies directory info record (two words plus four bytes with reordered offsets) from one struct to another
+0x0603c280 func gfs_InitReadState hand zeroes nine fields, sets field5 to 1, calls two init helpers, sets mode 3
+0x0603c2c4 func gfs_SetReadMode hand clears fields 0x24 and 0x28, swaps field 0x38 with new mode, returns old
+0x0603c2d8 func gfs_SetSectorSize hand stores param into field 0x2c
+0x0603c330 func gfs_SwapField14 hand swaps field 0x14 with param returning old value
+0x0603c33c func gfs_SetFlag30 hand sets field 0x30 to one
+0x0603c348 func gfs_ClearFlag30 hand clears field 0x30 to zero
+0x0603c6f4 func stub_0603c6f4 hand stub that only returns one
+0x0603c79c func cd_CheckStatusIsOne hand calls status helper, clears global when result not one, returns whether it equals one
+0x0603c7d0 func stub_0603c7d0 hand stub that only returns one
+0x0603c904 func scu_DmaChannel0Wait hand calls helper with zero (DMA level 0)
+0x0603c91c func scu_DmaChannel0Start hand calls scu_DmaStartIndirect with channel 0 and five arguments
+0x0603c940 func scu_DmaChannel0Finish hand calls scu_DmaPollAndFinish with channel 0
+0x0603c958 func scu_DmaChannel1Wait hand calls helper with one (DMA level 1)
+0x0603c970 func scu_DmaChannel1Start hand calls scu_DmaStartIndirect with channel 1 and five arguments
+0x0603c994 func scu_DmaChannel1Finish hand calls scu_DmaPollAndFinish with channel 1
+0x0603c9ac func stub_0603c9ac hand stub that only returns one
+0x0603c9f8 func stub_0603c9f8 hand stub that only returns zero
+0x0603cbe8 func gfs_GetField8 hand returns word at offset 8 of struct
+0x0603cbf4 func gfs_GetRemainingBytes hand returns field4 times field 0x2c minus field 8
+0x0603cc40 func gfs_AdvanceReadPosition hand adds transferred count to field 8 unless mode is 4, clears request field 0x10
+0x0603cc5c func gfs_GetSeekParams hand outputs fields 0, 1 and 0xb of struct
+0x0603cc70 func gfs_SetSeekParams hand sets fields 0, 1 and 0xb of struct, clears field 2
+0x0603cc84 func gfs_SetTransferTarget hand stores two params at offsets 0x90 and 0x94 and sets mode field 0xa4 to 4
+0x0603ccf0 func gfs_DispatchOp0 hand calls slot 0 of a 16-byte-per-mode function table by field 0x28
+0x0603cd20 func gfs_DispatchOp1 hand calls slot 1 of function table indexed by mode field 0x28
+0x0603cd48 func gfs_DispatchOp2 hand calls slot 2 of function table indexed by mode field 0x1c
+0x0603cd6c func gfs_DispatchOp3 hand calls slot 3 of function table indexed by mode field 0x28
+0x0603cd94 func stub_0603cd94 hand stub that only returns one
+0x0603cec0 func gfs_FreeCdPartitionAndFilter hand calls cdc_FreePartitionWait and cdc_FreeFilterSlot on struct fields
+0x0603cf94 func stub_0603cf94 hand stub that only returns zero
+0x0603d008 func gfs_CdSetRequestAll hand calls cdc_SetRequestC with partition, zero, -1 then follow-up helper
+0x0603d030 func gfs_GetCurrentSector hand returns field 0x20 plus field 0x24
+0x0603d2a4 func stub_0603d2a4 hand stub that only returns zero
+0x0603d2f8 func gfs_CdFinishIfOwner hand calls cdc_FinishIfOwner with param and field 0x1c
+0x0603d370 func gfs_CdIsLockHeld hand calls cdc_IsLockHeldBy with field 0x1c
+0x0603d388 func gfs_CdLockRelease hand calls cdc_LockRelease with field 0x1c
+0x0603d714 func cd_GetStatusMasked hand calls CD helper twice, returns result masked with constant
+0x0603dc98 func cd_IsTableEmpty hand returns whether a global table word at offset is zero
+0x0603df3c func cd_GetLastStatus hand calls helper filling three outputs, on success calls follow-up and returns third output else -10
+0x0603e174 func cd_SetField3c hand stores param into global struct field 0x3c
+0x0603e188 func cd_WaitQueuesIdle hand sets a flag, loops cdc_PollQueues while result is one, clears flag, returns result
+0x0603ebe4 func cd_TestHirqBits hand calls helper (HIRQ read) and returns whether any masked bits set
+0x0603ec88 func cd_StoreStatusByte hand calls helper into 16-byte buffer and stores first byte at global field 0x40
+0x0603ecb4 func cd_SetField4c50 hand stores two params at global struct fields 0x4c and 0x50
+0x0603ecd0 func cd_TestHirqConst hand calls helper (HIRQ read) and returns whether constant mask bit set
+0x0603ecf4 func cd_CallWithConst hand calls helper with a constant halfword argument
+0x0603eda4 func cdc_GetStatus hand CD block command 0x00 get status, stores response then copies 12 bytes to dest
+0x0603edf4 func cdc_CopyStatus12_Wrapper hand calls cdc_CopyStatus12 with no extra work
+0x0603eee0 func cdc_GetHardwareInfo hand CD block command 0x01, copies five response bytes to dest
+0x0603ef98 func cdc_GetSessionInfo hand CD block command 0x03 with session number, returns last response word
+0x0603f058 func cdc_OpenTray hand CD block command 0x05 open tray
+0x0603f0ec func cdc_EndDataTransfer hand CD block command 0x06, returns masked transferred word count, then waits with -3
+0x0603f144 func cd_GetConstant hand returns a constant halfword literal
+0x0603f154 func cd_ReadHirqRegister hand provisional: returns halfword read from CD block register pointer
+0x0603f168 func cd_SetHirqBits hand provisional: ors register with value, calls helper with param or 1
+0x0603f198 func cd_WriteHirqMaskRegister hand provisional: writes halfword param to CD block register
+0x0603f1a8 func cd_ResetHirqMask hand provisional: calls helper with constant and stores same constant to register
+0x0603f1d0 func cd_OrRegister hand provisional: ors param into CD block halfword register
+0x0603f1e4 func cd_ReadResponseRegister hand provisional: returns halfword read from CD block register pointer
+0x0603f274 func cdc_ExecCommandWaitStub hand calls cdc_ExecCommandWait
+0x0603f3a8 func cd_WriteCommandRegs hand writes four halfwords to CD block CR1-CR4 registers
+0x0603f3e4 func cd_ReadResponseRegs hand reads four halfwords from CD block CR1-CR4 into buffer
+0x0603f420 func cdc_ChangeDir hand CD block command 0x70 change directory with filter/fid args
+0x0603f454 func cdc_ReadDir hand CD block command 0x71 read directory
+0x0603f488 func cdc_GetFileSystemScope hand CD block command 0x72, returns file count, directory end flag and first fid
+0x0603f544 func cdc_ReadFile hand CD block command 0x74 read file with offset and count
+0x0603f578 func cdc_AbortFile hand CD block command 0x75 abort file
+0x0603f5e8 func cdc_GetSectorData hand CD block command 0x61 get sector data (buffer, sector, count)
+0x0603f624 func cdc_DeleteSectorData hand CD block command 0x62 delete sector data
+0x0603f660 func cdc_GetAndDeleteSectorData hand CD block command 0x63 get then delete sector data
+0x0603f69c func cdc_PutSectorData hand CD block command 0x64 put sector data
+0x0603f6d4 func cdc_CopySectorData hand CD block command 0x65 copy sector data between partitions
+0x0603f718 func cdc_MoveSectorData hand CD block command 0x66 move sector data between partitions
+0x0603f75c func cdc_GetCopyError hand CD block command 0x67, returns error byte
+0x0603f798 func cdc_SetFilterRange hand CD block command 0x40 set filter range (start FAD, count)
+0x0603f7cc func cdc_GetFilterRange hand CD block command 0x41 get filter range for a filter number
+0x0603f894 func cdc_GetFilterSubheader hand CD block command 0x43 get subheader conditions, copies six bytes
+0x0603f910 func cdc_SetFilterMode hand CD block command 0x44 set filter mode
+0x0603f944 func cdc_GetFilterMode hand CD block command 0x45, returns mode byte
+0x0603f988 func cdc_SetFilterConnection hand CD block command 0x46 set filter connection (true/false output)
+0x0603f9c8 func cdc_GetFilterConnection hand CD block command 0x47, returns two connection bytes
+0x0603fa1c func cdc_ResetSelector hand CD block command 0x48 reset selector
+0x0603fa50 func cdc_PlayDisc hand CD block command 0x10 play disc, formats start and end positions
+0x0603fb1c func cdc_SeekDisc hand CD block command 0x11 seek disc, formats position
+0x0603fb50 func cdc_ScanDisc hand CD block command 0x12 scan disc direction
+0x0603fb80 func cdc_GetBufferSize hand CD block command 0x50, returns total, free blocks and partition count
+0x0603fbdc func cdc_GetSectorNumber hand CD block command 0x51 for a buffer partition, returns sector count
+0x0603fc20 func cdc_CalcActualSize hand CD block command 0x52 calculate actual size
+0x0603fc5c func cdc_GetActualSize hand CD block command 0x53, returns masked size
+0x0603fcdc func cdc_GetSectorInfo hand CD block command 0x54, returns FAD plus four subheader bytes
+0x0603fd94 func cdc_GetFadSearchResult hand CD block command 0x56, returns partition, sector and FAD
+0x0603fdf0 func cdc_SetDeviceConnection hand CD block command 0x30 set CD device connection
+0x0603fe20 func cdc_GetDeviceConnection hand CD block command 0x31, returns connection byte
+0x0603fe5c func cdc_GetLastBufferDest hand CD block command 0x32, returns last buffer destination byte
+0x0603fe98 func cdc_StoreResponseWrapper hand tail calls cdc_StoreResponse
+0x0603feb0 func cdc_StoreResponseDiscard hand calls cdc_StoreResponse with 12-byte scratch buffer, discarding response data
+0x0603ff80 func cdc_UnpackStatus hand repacks five status bytes into output struct and masks 24-bit FAD word
+0x0603ffc8 func sys_DelayLoop hand busy loop counting param down to zero
+0x0603ffec func snd_LoadDriverAndBank hand provisional: waits on bit 1, writes command 7 and 6 around copies of driver and table data into sound RAM, sets table pointers
+0x06040164 func snd_WriteDataBlock hand provisional: looks up destination with helper then copies param block and ors flag into returned word
+0x06040288 func smpc_SendCmd1Arg_06040288 hand provisional: if lock free and SMPC ready stores one arg and command, returns 0 else 1
+0x060402e8 func smpc_SendCmd1Arg_060402e8 hand provisional: if lock free and SMPC ready stores one arg and command, returns 0 else 1
+0x06040348 func smpc_SendCmd2Arg_06040348 hand provisional: lock, SMPC ready check, stores two args and command, returns 0 on success
+0x0604052c func smpc_SendCmd0Arg_0604052c hand provisional: lock, SMPC ready check, writes command word with no args, returns 0 on success
+0x06040604 func smpc_SendCmd1Arg_06040604 hand provisional: lock, SMPC ready check, stores one arg and command, returns 0 on success
+0x06040664 func smpc_SendCmd1Arg_06040664 hand provisional: lock, SMPC ready check, stores one arg and command, returns 0 on success
+0x060406c4 func smpc_SendCmd1Arg_060406c4 hand provisional: lock, SMPC ready check, stores one arg and command, returns 0 on success
+0x06040724 func smpc_SendCmd3Arg_06040724 hand provisional: lock, SMPC ready check, stores three args and command, returns 0 on success
+0x0604079c func smpc_SendCmd2Arg_0604079c hand provisional: lock, SMPC ready check, stores two args (one also at offset 5) and command
+0x06040a54 func smpc_SendCmd1Arg_06040a54 hand provisional: lock, SMPC ready check, stores one arg and command, returns 0 on success
+0x06040b84 func smpc_SendCmd0Arg_06040b84 hand provisional: lock, SMPC ready check, writes command word with no args, returns 0 on success
+0x06040bd8 func smpc_SendCmd0Arg_06040bd8 hand provisional: lock, SMPC ready check, writes command word with no args, returns 0 on success
+0x06040d24 func snd_ReadTableEntry hand provisional: reads halfword from table by byte index, outputs masked value and low byte
+0x06040d68 func snd_ReadTableEntryBytes hand provisional: reads halfword from table by byte index, outputs high byte and low byte
+0x06040d90 func snd_ReadTwoHalfwords hand provisional: outputs first two halfwords of a global block
+0x06040dac func snd_ReadSixHalfwords hand provisional: copies six halfwords from a global block to buffer
+0x06040df8 func mem_ClearBlock hand calls memset with zero on param block and size
+0x06040e14 func snd_FindTableEntry hand provisional: walks 8-byte table entries until fields match two params, outputs address and data pointer
+0x06040e9c func snd_ConvertSignedLevel hand provisional: maps negative signed byte to ~x plus 0x11, else unchanged
+0x06040eb8 func mem_CopyWrapper hand tail calls memcpy
+0x06040ed0 func snd_FindFreeSlot hand provisional: scans 16-byte slots (7 total) for one with zero first byte, returns 1 if found
+0x06040f68 func smpc_SendCmd2Arg_06040f68 hand provisional: lock, SMPC ready check, stores two args and command, returns 0 on success
+0x06040fd4 func smpc_SendCmd3Arg_06040fd4 hand provisional: lock, SMPC ready check, stores three args at offsets 3 to 5 and command
+0x0604104c func smpc_SendCmd0Arg_0604104c hand provisional: lock, SMPC ready check, writes command word with no args, returns 0 on success
+0x06041af0 func snd_SetFlagIfLimitReached hand provisional: sets global flag byte when halfword counter is at most a global int
+0x06041d6c func snd_StoreByteInRow hand provisional: stores byte at base plus (index+2) times stride
+0x06041d98 func snd_StoreByteInRow1 hand provisional: stores byte at second offset of row (index+2) times stride
+0x06041dc8 func smpc_CopyDataRowsRetry hand loads six words then calls smpc_CopyDataRows, repeats once if it reports nonzero
+0x06041ff0 func snd_CallCallbackAndClear hand calls function pointer with halfword and zero, then clears global flag
+0x06042040 func scu_DmaCopyChecked hand range-checks addresses, sets up SCU DMA level 0 via scu_DmaSetupChannel and scu_DmaInstallIrq, falls back to memcpy
+0x0604214c func scu_DmaPollOrPurge hand provisional: if DMA flag set checks status, returns 2 when busy else purges cache range, returns 0
+0x0604235c func table_ReadByte hand provisional: stores byte from global table indexed by param into output word
+0x0604239c func scu_SetDmaEndVectorLevel0 hand clears flag and registers handler for interrupt vector 0x4b (SCU DMA level 0 end) twice
+0x0604240c func scu_SetDmaEndVectorLevel1 hand clears flag and registers handler for interrupt vector 0x4a (SCU DMA level 1 end) twice
+0x0604247c func scu_SetDmaEndVectorLevel2 hand clears flag and registers handler for interrupt vector 0x49 (SCU DMA level 2 end) twice
+0x06042638 func sh2_DmacEnableChannel hand sets bit 0 of DMAC CHCR for channel param (0xffffff8c plus 16 per channel)
+0x0604264c func sh2_DmacDisableChannel hand clears bit 0 of DMAC CHCR for channel param
+0x06042690 func sh2_DmacIsTransferEnd hand returns TE bit (0x2) of DMAC CHCR for channel param
+0x060426a4 func sh2_DmacSetChannelHandler hand provisional: stores param in per-channel table and calls registration fn with table pointer
+0x060426d0 func sh2_DmacGetChannelHandler hand provisional: returns per-channel table entry for channel param
+0x06042f70 func sprintf hand builds string FILE structure, calls vfprintf, terminates output with zero
+0x06042fcc func strlen hand returns length of zero-terminated string
+0x06042fec func memmove hand overlap-safe byte copy, forward or backward
+0x06043038 func strcspn hand returns length of initial segment containing no characters from reject set
+0x060430e0 func strstr hand finds first occurrence of substring, returns pointer or null
+0x0604324c func stdio_FreeBuffer hand provisional: if buffer pointer set calls free helper, clears buffer fields
+0x06043280 func stdio_UnbufferedWrite hand provisional: builds temporary FILE on stack from original, calls write helpers, propagates error flag 0x40
+0x06043320 func stdio_CallWithReent hand calls helper with FILE reent pointer at offset 0x54 and the arguments
+0x060433ac func vfprintf hand printf formatter main (flags # + - 0 width precision, d i D e f g conversions), contains bad base message
+0x06043502 func vfprintf_FormatLoop hand provisional: body of vfprintf format-spec switch, number conversion and output flush
+0x060453d6 func vfprintf_ReturnTail hand provisional: advances saved pointer by 0xc, returns -1 if FILE error flag 0x40 set else count
+0x060453fa func stub_060453fa hand empty function that only returns
+0x06045430 func cvt hand newlib printf float conversion: handles f/e/E/g modes, sign byte, compares with zero using softfp, pads zeros
+0x06045550 func exponent hand newlib printf: writes e or E, sign and at least two exponent digits using signed divide by 10
+0x060455ec func stdio_FreeNode hand provisional: calls helper if first field set then mem_FreeToBucket on the node
+0x06045624 func reent_FreeAll hand frees reent-owned bucket lists (15 entries), saved block and extra buffers via mem_FreeToBucket
+0x060456f0 func sfvwrite hand newlib: writes iovec array to FILE, handling unbuffered, line-buffered and fully buffered modes via write callback
+0x06045960 func fflush hand flushes FILE write buffer via write callback, sets error flag 0x40 on failure
+0x06045a50 func stdio_SetLocaleName hand provisional: accepts only two valid locale name strings via strcmp, stores values in struct
+0x06045aac func reent_GetImpurePtr hand returns pointer to global reent structure
+0x06045abc func reent_Call2 hand calls function pointer with global reent plus two args
+0x06045ae0 func reent_Call1 hand calls helper with global reent pointer
+0x06045b00 func stdio_InitFile hand zeroes FILE fields, sets flags and fileno halfwords, installs read/write/seek/close callbacks and reent pointer
+0x06045b48 func stdio_AllocFileGroup hand allocates group header plus n FILE structs (0x58 bytes each) from bucket allocator and clears them
+0x06045ba4 func stdio_FindFreeFile hand scans FILE groups for entry with zero flags, initialises and returns it
+0x06045c50 func stdio_WalkFilesWithCb hand calls fwalk-style helper with argument and fixed callback pointer
+0x06045c6c func reent_CallHelperGlobal hand calls helper with the global reent pointer value
+0x06045c8c func stdio_InitStdStreams hand initialises three standard FILE structs (fileno 0,1,2) in reent block, sets cleanup pointer
+0x06045d08 func stdio_SetupWrite hand newlib swsetup: prepares FILE for writing, allocates buffer if none, resets counts
+0x06045ddc func mbtowc hand stores first byte as wide char, returns 0 for null string or terminator else 1
+0x06045e08 func softfp_IsEqual hand provisional: double compare, returns true when masked high word and low word match
+0x06045e3c func softfp_IsLess hand provisional: double compare using masked high word and low word, returns sign test
+0x06045e68 func memchr hand scans n bytes for given byte, returns pointer or null
+0x06045e90 func reent_Call7 hand forwards seven arguments to helper after prepending global reent pointer
+0x060460d0 func stdio_ForEachFile hand newlib fwalk: calls callback for each open FILE in all groups, ORs results
+0x06046134 func stdio_ReadCb hand newlib sread: calls read primitive, updates offset or clears flag bits on error
+0x06046180 func stdio_WriteCb hand newlib swrite: seeks to end if append flag, clears flag, calls write primitive
+0x060461ec func stdio_SeekCb hand newlib sseek: calls lseek primitive, updates flags and offset, error on minus one
+0x06046240 func stdio_CloseCb hand newlib sclose: calls close primitive with fileno
+0x06046260 func stdio_MakeBuffer hand newlib smakebuf: fstat file, picks buffer size, allocates, sets line-buffer flag for terminals
+0x0604637c func bigint_QuoRem hand newlib dtoa quorem: estimates quotient digit, multiplies and subtracts divisor from big integer
+0x06046584 func dtoa hand newlib dtoa: converts double to digit string using bigint quorem, handles special values and rounding modes
+0x06047946 func stub_06047946 hand empty function that only returns
+0x06047978 func close_r hand provisional: clears errno global, calls close syscall with one arg, stores errno into reent
+0x060479ac func lseek_r hand provisional: errno-wrapped three-argument syscall, copies global errno into reent on failure
+0x060479e4 func isatty_r hand provisional: errno-wrapped one-argument syscall, copies global errno into reent
+0x06047a18 func read_r hand provisional: errno-wrapped three-argument syscall, copies global errno into reent
+0x06047a50 func write_r hand provisional: errno-wrapped three-argument syscall, copies global errno into reent
+0x06047a88 func open_r hand provisional: errno-wrapped three-argument syscall, copies global errno into reent
+0x06047ac0 func fstat_r hand provisional: errno-wrapped two-argument syscall, copies global errno into reent
+0x06047af8 func sys_Read hand provisional: trap call number 3 with three args via sys_CallVbrVector88
+0x06047b18 func sys_Lseek hand provisional: trap call number 0x13 with three args via sys_CallVbrVector88
+0x06047b38 func sys_Write hand provisional: trap call number 4 with three args via sys_CallVbrVector88
+0x06047b58 func sys_Close hand provisional: trap call number 6 with one arg via sys_CallVbrVector88
+0x06047b94 func sbrk hand grows heap by size, reports heap and stack collision message and aborts if overlap
+0x06047bf0 func fstat_Stub hand provisional: writes constant into mode field of stat struct, returns 0
+0x06047c00 func sys_Open hand provisional: trap call number 5 with two args via sys_CallVbrVector88
+0x06047c20 func sys_Creat hand provisional: trap call number 8 with two args via sys_CallVbrVector88
+0x06047c40 func stub_06047c40 hand stub that only returns minus one
+0x06047c4c func isatty hand stub that only returns one, treats every descriptor as terminal
+0x06047c58 func sys_Exit hand provisional: trap call number 1 with one arg via sys_CallVbrVector88
+0x06047c78 func sys_ExitConst hand provisional: trap call number 1 with constant argument via sys_CallVbrVector88
+0x06047c9c func stub_06047c9c hand stub that only returns one
+0x06047cd4 func sys_Call0F hand provisional: trap call number 0xf with halfword arg via sys_CallVbrVector88
+0x06047cf4 func sys_Call10 hand provisional: trap call number 0x10 with two halfword args via sys_CallVbrVector88
+0x06047d18 func sys_CallDat_06047d18 hand provisional: trap call with constant number and two args via sys_CallVbrVector88
+0x06047d38 func sys_Call02 hand provisional: trap call number 2 with no args via sys_CallVbrVector88
+0x06047d50 func sys_CallDat_06047d50 hand provisional: trap call with constant number and no args via sys_CallVbrVector88
+0x06047d6c func sys_Call3B hand provisional: trap call number 0x3b with three args via sys_CallVbrVector88
+0x06047d8c func sys_Call0B hand provisional: trap call number 0xb with two args via sys_CallVbrVector88
+0x06047da8 func sys_Call2A hand provisional: trap call number 0x2a with one arg via sys_CallVbrVector88
+0x06047dc4 func Balloc hand newlib bigint: takes block of 2^k words from reent freelist or allocates new one
+0x06047e44 func Bfree hand newlib bigint: pushes block back onto reent freelist by its k value
+0x06047e6c func multadd hand newlib bigint: multiplies big integer by small value and adds carry, may grow
+0x06047f40 func s2b hand newlib bigint: converts decimal digit string to big integer using multadd
+0x06047fdc func hi0bits hand counts leading zero bits of 32-bit word, returns 32 for zero
+0x06048048 func lo0bits hand counts trailing zero bits, shifts value right, returns 32 for zero
+0x060480c8 func i2b hand newlib bigint: allocates one-word big integer holding given value
+0x060480ec func mult hand newlib bigint: schoolbook multiplication of two big integers using 16-bit halves
+0x060482ac func pow5mult hand newlib bigint: multiplies by 5^k using cached power table in reent and mult
+0x06048368 func lshift hand newlib bigint: shifts big integer left by n bits, allocating larger block, frees original
+0x0604844c func cmp hand newlib bigint: compares two big integers by length then words from top, returns -1, 0, 1
+0x06048488 func diff hand newlib bigint: subtracts smaller from larger magnitude, sets sign word, trims zero top words
+0x06048618 func b2d hand newlib bigint: converts top bits of big integer to 64-bit double bits plus exponent
+0x06048708 func d2b hand newlib bigint: splits double into big integer mantissa, returns exponent and bit count
+0x0604881c func ratio hand newlib bigint: computes double ratio of two big integers via b2d and exponent adjustment
+0x06048a3c func abort_Loop hand endless loop calling two helpers with constants 6 and 1, never returns
+0x06048a60 func calloc_r hand multiplies count and size, allocates from bucket allocator, zeroes memory with memset
+0x06048aac func calloc_Global hand forwards size argument to allocator helper with global reent pointer
+0x06048acc func mem_AllocWrapper hand provisional: calls helper for pointer then passes it with arguments to second helper
+0x06048b00 func errnoCall2_06048b00 hand provisional: errno-wrapped two-argument syscall, copies global errno into reent
+0x06048b38 func reent_CallNoArg hand provisional: tail wrapper calling a single helper with no arguments
+0x06048b6c func stub_06048b6c hand empty function that only returns
+0x06048b80 func stub_06048b80 hand empty function that only returns
+0x06048b82 func stub_06048b82 hand empty function that only returns
+0x06048b84 func stub_06048b84 hand empty function that only returns
+0x06048b86 func stub_06048b86 hand empty function that only returns
+0x06048b88 func stub_06048b88 hand empty function that only returns
+0x06048b8c func stub_06048b8c hand empty function that only returns
+0x06048b8e func stub_06048b8e hand empty function that only returns
+0x06048b90 func stub_06048b90 hand empty function that only returns
+0x06048f30 func softfp_PackDouble hand packs unpacked float struct into IEEE double, rounds to 53 bits, handles inf, nan, zero, denormals
+0x060490a8 func softfp_UnpackDouble hand splits IEEE double into class, sign, exponent and mantissa words of unpacked struct
+0x06049194 func softfp_AddUnpacked hand adds two unpacked floats, aligns exponents, handles inf, nan, zero, sign differences
+0x060493ac func __adddf3 hand unpacks two doubles, adds via softfp_AddUnpacked, packs result
+0x0604940c func __subdf3 hand unpacks two doubles, flips sign of second, adds, packs result
+0x06049490 func softfp_MulUnpacked hand multiplies two unpacked floats using 64-bit partial products, normalises and rounds, handles inf, nan, zero
+0x060497e4 func __muldf3 hand unpacks two doubles, multiplies via softfp_MulUnpacked, packs result
+0x06049994 func __divdf3 hand unpacks two doubles, divides via softfp_DivParts, packs result
+0x060499f4 func softfp_CompareUnpacked hand compares two unpacked floats by class, sign, exponent, mantissa, returns -1, 0, 1
+0x06049b8c func __eqdf2 hand provisional: unpacks two doubles, compares when neither is nan, equality-style result
+0x06049bec func __gtdf2 hand provisional: unpacks two doubles, returns -1 for nan else compare result
+0x06049c50 func __gedf2 hand provisional: unpacks two doubles, returns -1 for nan else compare result
+0x06049cb4 func __ltdf2 hand provisional: unpacks two doubles, compares when neither is nan
+0x06049d14 func __ledf2 hand provisional: unpacks two doubles, compares when neither is nan
+0x06049e98 func __negdf2 hand unpacks double, toggles sign flag, packs result
+0x06049ed0 func softfp_PackDoubleByValue hand copies five unpacked struct words to stack and calls pack routine on them
+0x06049f00 func __truncdfsf2 hand provisional: unpacks double, shifts mantissa words by two bits, packs into single float
+0x06049f50 func __mulsi3 hand 32-bit integer multiply using 16-bit halves, short path when both fit in 16 bits
+0x0604a0b4 func softfp_PackFloat hand packs unpacked struct into IEEE single, rounds to 24 bits, handles inf, nan, zero, denormals
+0x0604a184 func softfp_UnpackFloat hand splits IEEE single into class, sign, exponent and mantissa of unpacked struct
+0x0604a21c func softfp_AddUnpackedFloat hand adds two unpacked single floats, aligns exponents, handles inf, nan, zero, sign differences
+0x0604a3b0 func __subsf3 hand unpacks two floats, flips sign of second, adds via softfp_AddUnpackedFloat, packs result
+0x0604a408 func softfp_MulUnpackedFloat hand multiplies two unpacked single floats using 64-bit product, normalises, rounds, handles inf, nan, zero
+0x0604a6b8 func softfp_CompareUnpackedFloat hand compares two unpacked single floats by class, sign, exponent, mantissa, returns -1, 0, 1
+0x0604a78c func softfp_CompareFloats hand provisional: unpacks two floats and calls compare routine unconditionally
+0x0604a82c func __eqsf2 hand provisional: unpacks two floats, compares when neither is nan
+0x0604a888 func __gtsf2 hand provisional: unpacks two floats, returns -1 for nan else compare result
+0x0604a8e8 func __gesf2 hand provisional: unpacks two floats, returns -1 for nan else compare result
+0x0604a948 func __ltsf2 hand provisional: unpacks two floats, compares when neither is nan
+0x0604a9a4 func __lesf2 hand provisional: unpacks two floats, compares when neither is nan
+0x0604aafc func __negsf2 hand unpacks float, toggles sign flag, packs result
+0x0604ab30 func softfp_PackFloatByValue hand copies four unpacked struct words to stack and calls float pack routine
+0x0604ab54 func __extendsfdf2 hand unpacks single float and packs as double with mantissa shifted by two bits
+0x060f307c func duck_ReleaseSlot hand clears in-use bit 7 of flag byte at +0x2a and zeroes first field of 0x30-byte slot
+0x060f3092 func duck_FreeStream hand if in-use flag set, frees buffer pointers via callback, clears flag and fields
+0x060f30e0 func duck_FreeAllPools hand releases every slot in first pool and frees each stream in second pool, frees both arrays
+0x060f334c func duck_OpenStream hand finds free stream slot, parses header of given source, allocates frame and lookup buffers, returns stream
+0x060f361a func duck_SetStreamSource hand rebinds existing stream to new source and re-parses header, returns status codes minus one, two, three
+0x060f3680 func duck_GetStreamInfo hand returns width, height and two further halfword fields from stream, adjusted when flag set
+0x060f375c func duck_DecodeFrame hand provisional: picks one of many decoder routines by stream flags, dispatches to decode frame into destination buffer
+0x060f3c60 func duck_DecodeFrameChecked hand provisional: runs helper, and when it returns zero and mode is three calls second helper
+0x060f3e9c func duck_ClearState18 hand zeroes field at +0x18 if pointer non-null
+0x060f3f8c func duck_ClearState18_2 hand zeroes field at +0x18 if pointer non-null, duplicate of sibling helper
+0x060f4194 func duck_FeedAudio hand provisional: copies decoded samples into pcm ring buffer via pcm_CopyToRingBuffer, or loops through chunk helpers
+0x060f42bc func duck_DecodeStrips hand provisional: loops over 8-line strips calling row decoder, advancing source and destination, one of two modes
+0x060f43d0 func duck_StartDecodeJob hand provisional: waits for busy flag, builds offset table, launches decoder with stream pointers, sets busy flag
+0x060f448c func duck_ParseHeader hand parses frame header bytes, xors consecutive bytes into stream fields, reads version and flag bits
+0x060f53e8 func duck_SetDecodeParam hand provisional: stores one argument in module global, returns pointer to that global
+0x060f53f0 func duck_SetRowParams hand provisional: stores five arguments in module globals for row decoder, returns pointer to last one
+0x060f5418 func duck_RunRowLoop hand provisional: stores geometry globals, then per row calls one of two row callbacks depending on bit mask
+0x060f56e4 func duck_SetBlitParams hand provisional: stores buffer pointers and callbacks, selects variant by bit one of mode
+0x060f5720 func duck_RunBlitLoop hand provisional: stores geometry, fills row buffer with constant, then calls one of two callbacks per row
+0x060f58d4 func duck_JumpTableDispatch hand provisional: indirect jump through table indexed by register r12, decompiler lost arguments
+0x060f6088 func duck_JumpTableDispatchMasked hand provisional: indirect jump through table indexed by r12 with third argument masked
+0x060f6ba8 func duck_AdpcmFeedStereo hand provisional: refills block headers then calls adpcm_DecodeStereoSplit for left and right outputs
+0x060f6ce4 func duck_AdpcmFeedMono hand provisional: refills block header then calls adpcm_DecodeMono, toggles nibble phase flag
+0x060f6e08 func duck_AdpcmFeedInterleaved hand provisional: reads 16-byte block header, calls adpcm_DecodeInterleaved for stereo samples
+0x060f6fd4 func duck_ExpandBlocks8x8 hand provisional: translates 8x8 block of bytes through 256-entry word lookup table adding per-row bias, writes 64 words
+0x060f7334 func duck_ExpandBlocks8x8Alt hand provisional: variant of 8x8 table-lookup block expander using two-pass inner loop
+0x060f7608 func duck_SwapRowGroups hand provisional: loops swapping words between six offset rows in the module buffer at 0x060f0000, in-place transpose
+0x060f7670 func duck_BuildDeltaTables8 hand provisional: copies two 8-byte tables, expands 16-byte-stride entries into three lookup word tables, then calls follow-up
+0x060f7850 func duck_BuildDeltaTables8Alt hand provisional: variant building two lookup word tables from 8-byte inputs and entry list, calls setup first
+0x060f7994 func duck_SplitTableBits hand provisional: loops eight halfwords clearing low bit, stores shifted high bytes and odd bytes into two tables
+0x060f9ec0 func movie_InitPools hand provisional: stores three pool counts, allocates three arrays (0x5c-byte entries), clears per-entry in-use word for second pool
+0x060f9f54 func movie_FreePools hand provisional: calls one free routine on each of three pool base pointers
+0x060fa030 func movie_OpenStream hand provisional: finds free 0x6c-byte handle slot, opens file, sets type 1 or 2 by comparing two probe values, initializes
+0x060fa10c func movie_CloseStream hand provisional: if handle type is 2 calls movie_CloseFileHandles, then clears the handle structure
+0x060fa140 func movie_OpenTrack hand provisional: finds free 0x5c-byte track slot, locates entry by name, index or type match, initializes fields
+0x060fa280 func movie_ClearTrack hand provisional: zeroes a 0x5c-byte track structure and clears its first word
+0x060fa2a0 func movie_AllocReader hand provisional: finds free reader slot, stores size and parameter after calling a helper with mode 2
+0x060fa304 func movie_FreeReader hand provisional: calls helper on reader buffer field then zeroes the whole reader structure
+0x060fa350 func movie_NextSampleEntry hand provisional: scans sample table forward or backward for next entry of this track, returns offset and size
+0x060fa518 func movie_CalcFrameTicks hand provisional: divides rate field via two helper calls using reciprocal multiply, returns ticks per frame
+0x060fa580 func movie_CalcSampleSize hand provisional: computes per-track byte count from rate and chunk size, output scaled by three quarters if unset
+0x060fa664 func movie_ParseChunk hand provisional: big-endian chunk parser handling header, track table, sample table, and cvid/audio info; byte swaps fields
+0x060fab68 func movie_ReadChunkHeader hand provisional: reads 8-byte big-endian chunk header, handles container tags, skips or reads payload, recurses into list parser
+0x060facb4 func movie_ParseChunkList hand provisional: loops reading chunk headers and dispatching each to chunk handler until end or error
+0x060fad30 func movie_ReadFileHeader hand provisional: reads 12-byte header, checks two magic words, resets track indices, parses chunk list, returns negative error codes
+0x060fae6c func movie_CountTrackBytes hand provisional: sums sample sizes for this track over entries, scales by channel count when not mono
+0x060fafe4 func movie_SeekSampleBuffer hand provisional: clears per-track buffer state and flags, aligns file position to 2048 sectors, sets buffer remainders
+0x060fb110 func movie_StartPlayback hand provisional: sets up ring buffer bounds, marks sample entries consumed by seek target, issues first reads
+0x060fb814 func movie_ReadAhead hand provisional: reads next sector block, updates rolling average of read sizes, tops up buffer when below threshold
+0x060fb980 func movie_LoadSampleTable hand provisional: reads 16-byte table entries in chunks, byte swaps offset and size, tracks maximum size, allocates temp buffer

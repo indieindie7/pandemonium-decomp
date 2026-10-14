@@ -1,0 +1,36 @@
+KERN 0x06047d18 sys_CallDat_06047d18 UNSURE sys_CallDat_06047d18 trap wrapper with constant number from literal and two args; no callers, number meaning unknown
+KERN 0x06047d38 sys_Call02 CONFIRM sys_Call02 trap call number 2 no args, no callers
+KERN 0x06047d50 sys_CallDat_06047d50 UNSURE sys_CallDat_06047d50 trap wrapper with constant from literal, no args; no callers, meaning unknown
+KERN 0x06047d6c sys_Call3B CONFIRM sys_Call3B trap call 0x3b with three args, body matches
+KERN 0x06047d8c sys_Call0B CONFIRM sys_Call0B trap call 0xb with two args, body matches
+KERN 0x06047da8 sys_Call2A CONFIRM sys_Call2A trap call 0x2a with one arg, body matches
+KERN 0x06048acc mem_AllocWrapper RENAME signal_RaiseR gets a pid-like value via helper then does errno-wrapped two-arg call (pid,signal): reentrant raise; caller is a global-reent wrapper, no allocation involved
+KERN 0x06048b00 errnoCall2_06048b00 RENAME signal_KillR zeroes errno, makes two-arg syscall, copies errno into reent struct; used with (pid,sig) by raise
+KERN 0x06048b38 reent_CallNoArg RENAME sys_GetPid no-arg stub whose result is passed as first syscall arg by the raise wrapper (process id)
+KERN 0x06049b8c __eqdf2 CONFIRM __eqdf2 unpacks two doubles and compares when neither is nan; used by float printing
+KERN 0x06049bec __gtdf2 CONFIRM __gtdf2 unpacks two doubles, returns -1 on nan else compare result
+KERN 0x06049c50 __gedf2 CONFIRM __gedf2 same pattern, nan returns -1 else compare result
+KERN 0x06049cb4 __ltdf2 CONFIRM __ltdf2 unpacks, compares when not nan; cvt uses it for negative test
+KERN 0x06049d14 __ledf2 CONFIRM __ledf2 unpacks, compares when not nan
+KERN 0x06049f00 __truncdfsf2 CONFIRM __truncdfsf2 unpacks double and packs single float
+KERN 0x0604a78c softfp_CompareFloats CONFIRM softfp_CompareFloats unpacks two floats and compares with no nan special case
+KERN 0x0604a82c __eqsf2 CONFIRM __eqsf2 float version of eq compare
+KERN 0x0604a888 __gtsf2 CONFIRM __gtsf2 float version, nan returns -1
+KERN 0x0604a8e8 __gesf2 CONFIRM __gesf2 float version, nan returns -1
+KERN 0x0604a948 __ltsf2 CONFIRM __ltsf2 float version of lt compare
+KERN 0x0604a9a4 __lesf2 CONFIRM __lesf2 float version of le compare
+DUCK 0x060f325e movie_OpenHandle RENAME movie_AllocFrameDesc finds a free 0x30-byte slot in a table, marks it used, fills buffer pointer, mode and width/height fields; fields match the frame buffer descriptor read by duck_DecodeFrame
+DUCK 0x060f3ca8 pcm_AllocPools CONFIRM pcm_AllocPools allocates two pools (count*0x54 and count*0x20), frees first on failure
+DUCK 0x060f3d0c pcm_FreePools CONFIRM pcm_FreePools frees both pool pointers and clears them
+DUCK 0x060fa4a0 movie_MarkSampleDone CONFIRM movie_MarkSampleDone sets bit 2 in a 12-byte table entry flags by index
+DUCK 0x060faab4 movie_ParseChunkList CONFIRM movie_ParseChunkList walks byte-swapped id/size chunk headers calling movie_ParseChunk per chunk
+DUCK 0x060f375c duck_DecodeFrame CONFIRM duck_DecodeFrame validates stream and buffer, computes destination offset, picks blit/row routines and runs the loop
+DUCK 0x060f3c60 duck_DecodeFrameChecked CONFIRM duck_DecodeFrameChecked calls duck_DecodeFrame then starts strip decode job when mode is 3 and result is 0
+DUCK 0x060f4194 duck_FeedAudio CONFIRM duck_FeedAudio copies to pcm ring buffer or loops ADPCM feed variants by channel layout
+DUCK 0x060f42bc duck_DecodeStrips CONFIRM duck_DecodeStrips loops 8-line strips calling block expand routine in one of two modes
+DUCK 0x060f43d0 duck_StartDecodeJob CONFIRM duck_StartDecodeJob waits on busy flag, builds offset table, runs strip decode, sets flag
+DUCK 0x060f53e8 duck_SetDecodeParam CONFIRM duck_SetDecodeParam stores one value in a global; used by delta table builder
+DUCK 0x060f53f0 duck_SetRowParams CONFIRM duck_SetRowParams stores callback and param globals for the row loop, called by duck_DecodeFrame
+DUCK 0x060f5418 duck_RunRowLoop CONFIRM duck_RunRowLoop stores geometry globals then per row calls one of two callbacks by mask
+DUCK 0x060f56e4 duck_SetBlitParams CONFIRM duck_SetBlitParams stores buffer and callbacks, selects variant from mode bit 1
+DUCK 0x060f5720 duck_RunBlitLoop CONFIRM duck_RunBlitLoop stores geometry, fills row buffer with constant, per row calls one of two callbacks

@@ -1,0 +1,36 @@
+KERN 0x060305b0 player_ResetActiveObject CONFIRM player_ResetActiveObject resets flags/anim fields of active slot object, returns it; callers use it as dialog object
+KERN 0x06030648 player_ResetObjectForSlot CONFIRM player_ResetObjectForSlot same reset as above by slot index; menu loop calls with 0 and 1
+KERN 0x060306b4 obj_FindNearestAttachPoint RENAME anim_FindNearestFrameToPoint samples each frame position of an anim/path object via path_SampleFramePosition, returns index of closest frame to a point within a radius
+KERN 0x06030770 obj_MoveAlongPathWithCollision UNSURE obj_MoveAlongPathWithCollision visible part is slot setup, child lookup, anim change, facing, spline position; called from anim channel switch; collision part not visible
+KERN 0x06031764 obj_CallHelperOnSlot RENAME coll_ClearSlotTileFlag only wraps coll_ClearTileFlag on a slot struct at fixed stride; caller level_UpdateActorsAndFreeNodes passes 0
+KERN 0x06031788 player_SpawnCharacterObject CONFIRM sets slot pointer from package entries, relocates anim track, appends records, 5 entries per slot
+KERN 0x060318cc player_SpawnAllCharacters CONFIRM loops six slots; slots 0-1 initialised, others spawned per bitmask
+KERN 0x06031990 player_UpdateCharacterSlots RENAME player_ResetCharacterSlots clears hit state and slot pointers for slots 2-5, reapplies anim; sole caller is game_ResetSubsystems
+KERN 0x06031a88 player_InitSlotDefaults CONFIRM sets per-player hearts/counters and clears slot table; called at level and menu start
+KERN 0x06031b7c level_InitObjects CONFIRM installs update callbacks, spawns two player slots, loads 8 object entries, copies camera block; called from level setup
+KERN 0x06031d28 level_ClearObjectSlots CONFIRM clears slot pointers for two slots and the object pointer table; called from teardown stub
+KERN 0x06031d64 player_ChangeCharacterAnim RENAME player_SwitchActiveCharacter installs another character object into the slot (finds matching anim index, copies state block); callers are lead-character swap and slot reset
+KERN 0x06031f58 code_PushEntry RENAME trigger_PushEvent appends id|type<<16 to bounded 40-entry event table; fed from depth-sort/collision/anim code, not password code
+KERN 0x06031f88 pw_CharPairToIndex CONFIRM maps two chars (digit, lower, upper) to base-62 pair index, 0 for underscore, -1 if invalid
+KERN 0x0603200c code_MatchEntries RENAME trigger_MatchEvents masks input ids and replaces with matching stored event entry; callers are actor script/counter/trigger handlers
+KERN 0x06032078 obj_ProcessTriggerFlags CONFIRM reads trigger record switch, matches id via event table, links/unlinks attached child and sets flags
+KERN 0x06032194 render_SortObjectsByDepth RENAME level_UpdateTriggerObjects flushes pending event queue, ticks respawn timers, sorts object list by key with budget of 8, calls obj_ProcessTriggerFlags; no rendering
+KERN 0x06032318 obj_UpdateAnimCounter RENAME obj_UpdateEmitterSound calls sound helper with id and handle from field +0x4c, stores returned handle byte; used for sound-emitter objects in the timer loop
+KERN 0x060323a8 obj_FinishAnimCounter RENAME obj_StopSoundChannel calls snd_StopAndClearChannel on low byte of field +0x4c then sets it to 0xff; callers run it over object list at teardown
+KERN 0x060323c8 obj_CollideListWithList RENAME level_UpdateTriggerZones first loop resolves movement vs solid objects, second loop ticks timers of trigger and sound emitter objects, plays sfx or pushes events
+KERN 0x06032894 level_RunCollisionPass CONFIRM per-frame pass: collide lists, per-object collision update, trigger sort, world frame update; also called from fade loop
+KERN 0x06032994 obj_UpdateHitReaction_3 RENAME obj_UpdateHitReaction drop numeric suffix; large per-object update using attached ground object transform; body mostly unseen, called from obj_UpdateActiveList
+KERN 0x06033198 math_SinTableLookup CONFIRM masks angle, indexes 16-bit table, negates for second half; callers build rotation matrices from it
+KERN 0x060331c4 math_Atan2 CONFIRM abs of both args, divides smaller by larger via table, folds into quadrant by signs; callers use it for yaw
+KERN 0x06033254 math_AtanRatio CONFIRM returns table angle of |a|/|b| with sign fixup; zero divisor returns constant; callers use it for pitch/steering
+KERN 0x060332a8 math_AngleComplement CONFIRM atan of ratio then constant minus result wrapped into angle range; used by slerp and polygon tests
+KERN 0x060332d0 enemy_UpdateStateA RENAME enemy_UpdateShooterAI faces target, counts down timer, then spawns child projectile via table function and resets timer; no direct callers (table dispatch)
+KERN 0x0603342c enemy_UpdateStateB RENAME enemy_UpdateChaseAI picks walk/run/attack anim entries from distance and facing, flips direction; no direct callers (table dispatch)
+KERN 0x060336f8 stub_060336f8 RENAME snd_StartCurrentMusic passes current music handle and 1 to music helper; called right after sound bank entries load
+KERN 0x06033714 stub_06033714 RENAME snd_StopCurrentMusic polls command on current music handle; always followed by release of the handle and zeroing it (reset, buffer swap, title exit)
+KERN 0x06033730 sfx_RegisterChannelEntry RENAME sfx_QueueSoundRequest appends or replaces one of eight 0x14-byte request records (id, key, volume, priority) with a counter; callers pass id, volume, priority 3; not a channel table
+KERN 0x060337b8 sfx_FindFreeChannel CONFIRM scans eight channels for idle one or steals lowest-priority via LRU order list, stores id/time/priority, returns index or -1
+KERN 0x060338a0 sfx_IsChannelOwner CONFIRM true only if channel index below 8 holds given sound id and channel still active; callers stop or update the voice only when it holds
+KERN 0x060338d8 sfx_ComputeDistanceVolume CONFIRM distance from sound source to camera object, fades volume near range limit, pan from angle to camera yaw; returns 0 when out of range
+KERN 0x06033a2c sfx_PlayPositional CONFIRM computes volume/pan from distance, updates existing owned channel or allocates one and starts voice; stops channel when inaudible
+KERN 0x06033b88 sfx_ResetChannels CONFIRM zeroes request count and 0x60-byte channel table, resets LRU order list to 0..7; called once from game_ResetSubsystems

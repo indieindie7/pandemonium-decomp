@@ -1,0 +1,121 @@
+0x0602e0e4 func player_TrySwapLeadCharacter hand provisional: pad-triggered state change swapping lead character with partner, copies positions, returns new anim state
+0x0602e4c8 func player_ProcessPickupQueue hand provisional: per-frame collected-item handling, switch on item type for hearts, coins, power-up flags, counters, effects
+0x0602ff2e func stub_0602ff2e hand provisional: tiny stub with no own logic
+0x0602ff32 func stub_0602ff32 hand tiny stub, returns immediately
+0x0602ff5c func game_GetGlobalWord hand returns value stored at a fixed global
+0x0602ff88 func save_LoadPlayerStateFromBlock hand provisional: restores lives, hearts, flags and character from saved-state bytes into player globals
+0x0603005c func save_StorePlayerStateToBlock hand provisional: packs lives, hearts, flags and character from player globals into saved-state bytes
+0x060300e4 func player_GetActiveObjectIfIdle hand returns global object pointer when argument is zero, else 0
+0x060300f8 func obj_FollowPartnerCharacter hand provisional: partner object follows lead along rail, velocity from position delta, picks animation, fixed-point distance
+0x06030448 func obj_CopyState hand copies object fields (position, flags, velocity, anim) between objects using mem_CopyBlocks64
+0x060305b0 func player_ResetActiveObject hand provisional: resets active player object anim state, flags and fields to defaults
+0x06030648 func player_ResetObjectForSlot hand provisional: resets player slot object flags, fields and animation pointer by slot index
+0x060306b4 func obj_FindNearestAttachPoint hand provisional: loops points, fixed-point squared distance, returns nearest index within radius
+0x06030770 func obj_MoveAlongPathWithCollision hand provisional: large movement step on rail path, scans nearby objects for triggers, ground and wall collision
+0x06031764 func obj_CallHelperOnSlot hand provisional: computes slot struct address from index and calls helper on it
+0x06031788 func player_SpawnCharacterObject hand provisional: builds character object from level data (anim, model, hitbox) for slot index
+0x060318cc func player_SpawnAllCharacters hand provisional: loops six slots, initialising player slots and spawning others by bitmask
+0x06031974 func player_ClearSlotPointer hand clears slot pointer in object table if set
+0x06031990 func player_UpdateCharacterSlots hand provisional: re-applies per-slot character state in loop via helpers
+0x06031a00 func game_CheckPowerupFlag hand maps item codes to bits of a power-up flag byte
+0x06031a54 func player_SetCharacterId hand stores character id nibble into player flags word, returns previous value
+0x06031a88 func player_InitSlotDefaults hand provisional: resets per-player counters, hearts, state fields and object table at level start
+0x06031b7c func level_InitObjects hand provisional: installs callbacks, spawns player slots, loads level objects from stream, copies camera block
+0x06031d28 func level_ClearObjectSlots hand provisional: calls helper for each of two slots and zeroes pointer table
+0x06031d64 func player_ChangeCharacterAnim hand provisional: sets animation for slot, searches anim table, copies state block
+0x06031f58 func code_PushEntry hand provisional: appends 16-bit cheat or password entry to bounded table
+0x06031f88 func pw_CharPairToIndex hand provisional: maps two password characters (digit, lower, upper) to index, -1 if invalid
+0x0603200c func code_MatchEntries hand provisional: matches input words against stored code table, replaces with stored entry, returns match flag
+0x06032078 func obj_ProcessTriggerFlags hand provisional: reads object trigger records, switch on type sets or clears flags and calls handlers
+0x06032194 func render_SortObjectsByDepth hand provisional: builds depth-sorted linked list of visible objects by key
+0x06032318 func obj_UpdateAnimCounter hand provisional: advances object animation timer via helper callbacks
+0x060323a8 func obj_FinishAnimCounter hand provisional: calls helper with low byte of anim field then sets low byte to 0xff
+0x060323c8 func obj_CollideListWithList hand provisional: loops two object lists, bounding-box then detailed hit test, math_DivideUnsigned32, applies hit
+0x06032894 func level_RunCollisionPass hand provisional: per-frame collision pass over enemy and projectile lists, dispatches handlers
+0x06032994 func obj_UpdateHitReaction hand provisional: large per-object update with hit-test, knockback and velocity handling
+0x06033198 func math_SinTableLookup hand provisional: looks up 16-bit table by masked angle, mirrors sign for second half
+0x060331c4 func math_Atan2 hand provisional: arctangent of two values via table and math_DivideUnsigned32, returns angle
+0x06033254 func math_AtanRatio hand provisional: table arctangent of ratio using math_DivideUnsigned32
+0x060332a8 func math_AngleComplement hand provisional: wraps constant minus atan result into angle range
+0x060332d0 func enemy_UpdateStateA hand provisional: enemy state handler with countdown timer, anim set offset, spawns child object
+0x0603342c func enemy_UpdateStateB hand provisional: enemy state handler switching animations between anim set entries
+0x060336f8 func stub_060336f8 hand provisional: calls helper with global halfword and 1
+0x06033714 func stub_06033714 hand provisional: calls helper with global halfword
+0x06033730 func sfx_RegisterChannelEntry hand provisional: registers or finds entry in eight-slot sound table
+0x060337b8 func sfx_FindFreeChannel hand provisional: finds free or lowest-priority sound channel among eight, returns index or -1
+0x060338a0 func sfx_IsChannelOwner hand provisional: returns 1 if sound channel index below 8 holds given owner id
+0x060338d8 func sfx_ComputeDistanceVolume hand provisional: distance of sound source to camera, derives volume and pan
+0x06033a2c func sfx_PlayPositional hand provisional: starts positional sound on channel with volume from distance
+0x06033b88 func sfx_ResetChannels hand provisional: clears sound channel table with memset and initialises eight channel ids
+0x06033bc0 func sfx_UpdateChannels hand provisional: walks sound channel table, stops or restarts entries
+0x06033cb8 func ui_AdjustValueA hand provisional: adjusts global halfword by 0x40 steps with clamp
+0x06033d04 func ui_AdjustVolumeB hand provisional: adjusts global halfword by 0x40 steps, clamps, applies through helper
+0x06033d74 func enemy_UpdateStateC hand provisional: enemy state handler, anim switching, resets frame index at animation end
+0x06033fa8 func enemy_EnterState_0c hand provisional: sets state byte 0x0c and computes timer via helper
+0x06033ff4 func enemy_UpdateStateD hand provisional: enemy state handler with packed timer and anim set switching
+0x0603440c func gfx_UpdateAnimTexture hand provisional: derives texture block address from frame and size, uploads using math_DivideSigned32
+0x060345d8 func list_InitNode hand provisional: initialises node structure, links pointer to inline buffer, calls helper
+0x06034614 func gfx_ApplyVideoModeChange hand provisional: when mode differs from cached value, calls video helpers and updates cache
+0x0603469c func game_ClearFrameCounters hand provisional: zeroes two globals and sets pointer to base plus offset
+0x060346c8 func enemy_UpdateStateE hand provisional: enemy state handler toggling flag 0x40, anim offsets, angle computation
+0x060348e8 func sys_InitCdAndVideo hand provisional: initialises hardware, calls cache_InitClear, starts CD file system
+0x06034978 func sys_ResetPlayback hand provisional: clears flag and calls four reset helpers in sequence
+0x060349b4 func movie_StartIfEnabled hand provisional: when argument nonzero and flag clear, sets playing flag and starts movie
+0x06034a0c func mem_AllocZeroed hand provisional: allocates block through helper or fixed buffer, zero-fills
+0x06034aa0 func stub_06034aa0 hand provisional: forwards call to a helper and returns its result
+0x06034ab4 func movie_FeedStreamData hand provisional: loops filling stream buffer until requested bytes supplied
+0x06034b5c func movie_ResetCounters hand provisional: copies a frame counter, doubles it for a mode, clears three globals
+0x06034ba0 func movie_PresentFrame hand provisional: picks front or back buffer index and presents decoded frame
+0x06034d34 func movie_OpenStream hand provisional: opens stream, sets up decode buffers via helpers, sets success flag
+0x06034ec4 func movie_StopIfActive hand provisional: calls stop helper when movie active flag set
+0x06034ee4 func movie_SendAudioSetup hand provisional: calls snd_SendCmdSlotSetup when movie active flag set
+0x06034f10 func movie_UpdateAudioMode hand provisional: divides with math_DivideSigned32 to select audio flags, calls snd_SendCmdSlotSetup
+0x0603502c func movie_Shutdown hand provisional: stops stream and releases resources, clearing handles
+0x06035080 func cd_InitFileSystem hand calls GFS_Init with config table and stores result; matches GFS_Init usage
+0x060350cc func cd_StartReadNonblocking hand calls GFS_NwStartTransfer, GFS_NwCdReadSimple and GFS_NwExecOne on handle
+0x06035108 func cd_StartStreamRead hand provisional: sets read parameters via GFS_SetReadPara then starts transfer
+0x06035300 func cd_StopTransfer hand provisional: calls GFS_NwStop then helper on handle
+0x06035320 func cd_ReadBuffered hand provisional: reads bytes through buffer using memcpy, GFS_Fread, GFS_Seek, GFS_IsEof
+0x060354fc func cd_SeekStreamAligned hand provisional: stops transfer, waits GFS_NwIsComplete, GFS_Seek to offset, restarts read
+0x060355bc func cd_SeekStreamSimple hand provisional: GFS_Seek then waits for completion, without restart
+0x06035678 func mem_ClearWordBlock hand provisional: zero-fills block of words with count from constant
+0x06035698 func movie_InitVideoHardware hand provisional: sequence of video hardware init helper calls, clears buffer
+0x06035740 func movie_CreateDecoder hand provisional: creates decoder objects through helpers, stores handles, cleans up on failure
+0x060357e4 func movie_StartPlayback hand provisional: creates decoder, opens stream, allocates buffers
+0x06035920 func movie_SwapFrameBuffer hand provisional: toggles buffer flag, programs command table entries for two buffers
+0x060359ec func movie_InitPlayerState hand provisional: zeroes state block, sets defaults, fills 16-entry table
+0x06035ba4 func movie_ResetPlayerState hand provisional: clears flag, zeroes state byte, calls mode setter then mem_ClearWordBlock
+0x06035bc4 func movie_PlayLoop hand provisional: main decode and display loop calling helpers with decoder handles
+0x06035ef4 func movie_ClearPlayerState hand provisional: zeroes player state struct and its 16-entry table
+0x06035f50 func movie_SetDecoderMode hand provisional: switch on mode 1,2,4,8,0x10,0x20 programming decoder registers
+0x06036840 func hw_ResetRegisterShadows hand provisional: calls helper and zeroes many shadow register globals
+0x060368c4 func hw_InitRegisterShadows hand provisional: loads defaults into shadow register block, eight entries set to 0xffff
+0x06036a94 func hw_SetFlagAndValue hand provisional: clears flag if 1 and stores argument in global
+0x06036ab8 func hw_RequestUpdate hand provisional: sets update-request halfword to 1 if zero
+0x06036ad4 func hw_SetModeParams hand provisional: switch on global mode storing three parameters into state
+0x06036c24 func hw_AddModeParams hand provisional: switch on global mode adding three deltas to stored state
+0x06036db0 func hw_ClampModeParam hand provisional: switch on mode clamping parameter against limits
+0x06036eec func hw_FlushShadowToRam hand provisional: copies shadow tables to hardware memory via copy helper when dirty
+0x06037010 func hw_FlushByMode hand provisional: switch on dirty mode, copies two tables then clears
+0x060370a4 func mem_CopyWords16 hand provisional: copies halfwords from source to destination, count from byte size
+0x060370cc func hw_SetBitfieldMode hand provisional: sets register shadow field from 0,1,2 and raises update flag
+0x0603712c func hw_FlushDirtyBlocks hand provisional: copies shadow blocks to hardware for each dirty bit
+0x0603721c func hw_EnableChannelBits hand provisional: ORs mask table entry into shadow and updates registers
+0x060373bc func hw_ResetStatePointer hand provisional: clears halfword and stores pointer to default data
+0x060373dc func hw_SetPriorityConfig hand provisional: decodes 16-bit config, sets flags and stores masked value
+0x060374cc func hw_ClearStateBlock hand provisional: clears halfword, sets a flag, zeroes six state words
+0x0603751c func hw_CountFrameOrRun hand provisional: counts frames while state is 1, else calls helper
+0x06037560 func hw_StateMachineStep hand provisional: switch on halfword state updating state and registers
+0x060376d8 func hw_SetChannelMode hand provisional: switch on mode byte writing register constants and bits
+0x060378c4 func hw_ClearConfigStruct hand provisional: zeroes fields of small config struct
+0x060378fc func hw_ApplyConfigStruct hand provisional: writes config struct fields into hardware register shadows bit by bit
+0x06037db8 func hw_SetChannelValues hand provisional: for each selected channel mask bit writes value into register shadows
+0x06037fcc func hw_ClearMaskBits hand provisional: clears mask bits in eight table words and one global
+0x06038004 func hw_SetTimingMode hand provisional: queries mode then range-checks parameter and sets timing bits
+0x06038104 func hw_CopyEightHalfwords hand provisional: copies eight halfwords from argument buffer to a global table
+0x0603812c func hw_ResetAll hand provisional: calls reset helpers then zeroes eight-entry table and flags
+0x060381a4 func hw_ReadStatusBits hand provisional: returns bits 12 and 13 of a status halfword
+0x060381c0 func hw_ClearByteFlag hand provisional: clears a global byte flag
+0x060381d4 func hw_SetChannelRegisters hand provisional: writes channel register bits by mask with limit check
+0x06038638 func hw_UpdateTimedState hand provisional: state machine on byte with timer comparison and helper calls
+0x06038b4c func hw_AddScrollOffsets hand provisional: adds two offsets to shadow scroll registers for plane selected by argument

@@ -1,0 +1,50 @@
+0x06020bec func anim_StartChildSequence hand provisional: starts anim sequence on child object param_1 (+0x40 current, +0x3c speed), scaled by parent velocity, calls helper
+0x06020d04 func anim_SelectChildSequence hand provisional: picks idle/walk/run sequence index for child from parent state (+0x64 anim ptr, +0x7e frame), advances frame
+0x06020ee4 func coll_ResolveHitFlags hand provisional: collision response between object types (+0x7a/+0xc), sets hit flags at +0x2a of owner, returns hit-accepted
+0x060213b0 func obj_ComputeAttachOffset hand provisional: multiplies parent 3x3 matrix (16.16 MAC) by offset, stores attach-relative position; else idle-state countdown
+0x060216c8 func obj_InitChildFromParent hand provisional: sets child anim, state bytes, position copied from parent, clears slots, calls init callback table entry
+0x060217cc func obj_UpdateChildCountdown hand provisional: per-frame countdown for child object, advances anim frame, damps velocity, calls state callback
+0x06021900 func obj_SpawnChildFromParent hand provisional: allocates child via helper, sets scroll offsets from parent, links and runs obj_InitChildFromParent
+0x060219c0 func level_SpawnObjectFromStream hand provisional: reads object record from level data stream, allocates slot, assigns type vtable, copies attached data, advances stream by 5
+0x06021ae4 func obj_InitSpawnedObjectPosition hand provisional: sets object position from parent or default (+0x1c/+0x20 chain) and initialises spawned object fields
+0x06021cbc func obj_ResetAttachedState hand provisional: clears flag bit, resets attached record fields (+4,+0x18,+0x2a), reloads type definition pointer
+0x06021d04 func obj_LinkAttachedChild hand provisional: if type has attach def, spawns child, links it into global object list head (+0x6c)
+0x06021d44 func obj_UnlinkAttachedChild hand provisional: detaches child record, restores frame index (mirrored if flipped flag 0x10), clamps to anim length
+0x06021dc8 func obj_CheckFacingTowardTarget hand provisional: compares angle to target against facing angle via atan helper, returns 1 / -1 / 0
+0x06021ea4 func obj_ForEachSetBitCallback hand provisional: iterates bits of two 32-bit masks (+0x7c and next), calls helper with bit index for each set bit
+0x06021f04 func stub_06021f04 hand provisional: stores zero into a global byte flag then returns
+0x06021f10 func obj_InstallCallbackPointers hand provisional: writes function pointers into several global tables and clears a flag
+0x06021f64 func stub_06021f64 hand empty stub, only returns
+0x06021f68 func coll_TestSegmentVsPolygons hand provisional: large 16.16 collision test of moving point against geometry record list (param_4 header), returns hit distance or -1
+0x06022968 func coll_ResolveMovementAgainstGeometry hand provisional: large collision pass sliding object position against level geometry, uses stack-based fixed-point math
+0x060231ec func coll_SphereOverlapTest hand provisional: squares 16.16 distance components (dmul) and compares against summed radius squared, returns bool
+0x06023314 func coll_ObjectVsObjectContact hand provisional: relative velocity, overlap test and per-slot (0x10 stride) hit-box test, picks earliest contact
+0x060235e8 func coll_ObjectVsTriggerContact hand provisional: tests object against trigger/hazard record, classifies by type byte (+0xf) and flags, earliest hit over 4 slots
+0x060237b8 func coll_SweepHitboxSlots hand provisional: tests object's 4 hitbox slots against another record, dispatches type handler table, records earliest time
+0x0602388c func coll_DispatchStaticHandlers hand provisional: switch on object kind (+0x7a) selecting static-collision handler via table, handles kind 4 specially
+0x06023bbc func coll_CheckObjectAgainstLists hand provisional: walks global object lists with bounding-box prefilter, calls per-kind handler table and contact routine
+0x06023e90 func obj_UpdateCollisions hand provisional: static collision, parent velocity add, list walk vs other objects, object-vs-object contacts per kind
+0x06024070 func anim_GetLinkedSequence hand provisional: returns next/prev linked anim record depending on flip bit and sets frame index to start or end
+0x060240e8 func anim_AdvanceSequenceFrame hand provisional: large per-object animation stepper handling kinds, flip flag 0x10, frame index (+0x1c0) and chaining
+0x06024698 func anim_StepFrameChecked hand provisional: increments or decrements frame by direction flag, calls frame callback, checks against linked sequence limit
+0x06024794 func anim_ComputeFrameOffset hand provisional: clamps frame index to sequence length, computes per-frame displacement vector using fixed-point math
+0x06024c3c func obj_UpdateMotionFromAnim hand provisional: large routine applying animation-driven movement and velocity to object, uses fixed-point multiplies
+0x06025828 func obj_UpdateFlipAndSequence hand provisional: picks forward/back animation pointers by comparing vector to facing, toggles flip flag 0x40 and resets frame
+0x0602593c func obj_RebaseChildPointers hand provisional: adjusts +4/+8 child pointers by (new-old) delta then recurses over sibling list
+0x0602598c func obj_CloneObject hand provisional: allocates block, memcpy size from +param, relocates internal pointers, clears link, rebases children
+0x06025a58 func obj_ReturnToFreeList hand provisional: clears active bit 0x80 and pushes object onto free-list head global
+0x06025a70 func obj_CallWithDefaultArgs hand provisional: thin wrapper calling helper with object, a global pointer and zero
+0x06025a88 func obj_TurnYawToward hand provisional: moves 16-bit angle field toward target by at most step, handles wraparound, masks result
+0x06025b10 func obj_TurnYawToward_2 hand provisional: same as angle-steering helper but for a second angle field
+0x06025b94 func obj_FaceMovementDirection hand provisional: picks target heading from velocity (atan helper) or attached anim, then steers yaw with step limit
+0x06025d30 func table_FindEntryById hand provisional: linear search of pointer table for entry whose byte at +2 equals id, returns entry or 0
+0x06025d78 func obj_ApplyKnockbackVelocity hand provisional: scales parent/other velocity by factor in 16.16 into object velocity (+0x58..+0x60) for knockback or carry
+0x060261c4 func obj_CanHitTarget hand provisional: looks up damage-rule table entry by id, tests target kind flags (kind 1/2), returns whether hit allowed
+0x060264a4 func obj_ReverseFacingAndFrame hand provisional: negates anim speed, toggles flip flag 0x10, mirrors frame index within sequence length
+0x060264e4 func obj_SnapVelocityToAnim hand provisional: copies velocity to attached anim record and calls helper, fixed-point post-processing
+0x06026628 func obj_UpdateHitReaction hand provisional: reads damage-rule entry, handles flip and speed (+0xc), applies reaction motion to object per frame
+0x06026b18 func obj_AimChildProjectile hand provisional: for child kind 6 under kind 5, uses MAC regs 0xffffff00 divide unit, sets angles via sine helper
+0x06026be8 func obj_RunActionScriptStep hand provisional: walks action-script words matching mask, switch on opcode (0x27..) to run effect for object
+0x06026d94 func obj_ApplyHitToChildren hand provisional: iterates child list applying hit/frame data based on flip flag and anim index
+0x06026f5c func obj_ReleaseAnimHandle hand provisional: calls release helper with stored pointer and index, clears pointer and index to -1
+0x06026f98 func obj_UpdateMain hand provisional: very large per-frame object update (4 KB), state machine by object kind, handles input, motion, hits and animation

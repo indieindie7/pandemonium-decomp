@@ -1,0 +1,36 @@
+KERN 0x0603ed54 cdc_WaitStatusReady CONFIRM cdc_WaitStatusReady loops status fetch until low nibble is 1 or 2 (ready states), bounded by error flag and retry count
+KERN 0x0603ef48 cdc_GetToc CONFIRM cdc_GetToc sends command 0x02 and reads TOC data words; caller is drive init + TOC read
+KERN 0x0603f374 cdc_PollHirq CONFIRM cdc_PollHirq polls the HIRQ register for requested bits with a retry limit, returns -3 on timeout
+KERN 0x0603f4e8 cdc_CmdGetFileInfo CONFIRM cdc_CmdGetFileInfo sends command 0x73 (file info) with file id and reads the data words; used by cdc_GetFileInfoEntry
+KERN 0x0603f5b4 cdc_SetSectorLength CONFIRM cdc_SetSectorLength builds command 0x60 with get/put sector sizes via the discard-response sender; matches SBL sector length command
+KERN 0x0603f824 cdc_SetFilterSubheader CONFIRM cdc_SetFilterSubheader builds command 0x42 with six subheader condition bytes; used in the filter queue processing
+KERN 0x0603fca0 cdc_ExecIfStatusBit40 UNSURE cdc_ExecIfStatusBit40 runs a command only if HIRQ bit 0x40 is set, else returns -1; name is mechanical, bit meaning unclear (used by cmds 0x53 and 0x56)
+KERN 0x0603fed0 cdc_StoreResponse CONFIRM cdc_StoreResponse executes command then stores 1 status byte or unpacks full status; shared by GetStatus and wrappers
+KERN 0x0603ff40 cdc_CopyStatus12 CONFIRM cdc_CopyStatus12 copies the 12-byte saved response block into the caller buffer
+KERN 0x060403b4 sndcmd_PostByteAndPanE UNSURE sndcmd_PostByteAndPanE queues sound command: byte, then (p2<<5)|signed-level(p3); no callers, command id unknown
+KERN 0x06040580 sndcmd_PostFourBytesH CONFIRM sndcmd_PostFourBytesH queues a sound command with four raw payload bytes; caller posts (1,0,0,2) music restart
+KERN 0x06040818 sndcmd_PostPackedFieldsN RENAME sndcmd_PostChannelParam queues sound cmd with packed fields (chip/type/channel/param id/value); callers are channel volume, pan, pitch, stop, envelope, start
+KERN 0x060408d0 sndcmd_PostByteAndMergedO UNSURE sndcmd_PostByteAndMergedO queues byte plus OR of two bytes; no callers, purpose unknown
+KERN 0x06040ab4 snd_SendCmdSlotSetupSingle UNSURE snd_SendCmdSlotSetupSingle packs a 10-field struct into one queued sound command; no callers, purpose not provable
+KERN 0x06040c2c sndcmd_PostTwoShl5W UNSURE sndcmd_PostTwoShl5W queues two values each shifted left 5; no callers, purpose unknown
+KERN 0x06040ca8 sndcmd_PostTwoNibblesX RENAME sndcmd_PostTwoSignedLevels queues two bytes each passed through snd_ConvertSignedLevel; no nibble packing seen
+KERN 0x06041b1c smpc_CheckNextPeriphPending CONFIRM smpc_CheckNextPeriphPending sets state 2 when read pointer is past limit and SR bit 0x20 (next peripheral) is set; used in intback parsing
+KERN 0x06041b50 smpc_CopyOregBytes CONFIRM smpc_CopyOregBytes copies every other byte (OREG layout) from the intback read pointer into the output buffer up to a limit
+KERN 0x06041c0c smpc_ResetIntbackState CONFIRM smpc_ResetIntbackState clears intback counters and flags and the peripheral id buffer; called from init and read result
+KERN 0x06042dbc cache_PurgeRange CONFIRM cache_PurgeRange writes zero to cache-purge alias addresses in 16-byte steps; called around DMA transfers
+KERN 0x060430b4 strcmp_2 RENAME str_CompareBytes standard byte string compare returning difference; name has numeric suffix, used for locale name checks
+KERN 0x0604321c memcmp CONFIRM memcmp standard byte compare for count; caller compares 6 volume descriptor bytes
+KERN 0x06048a28 sys_CallVbrVector88 CONFIRM sys_CallVbrVector88 calls handler at VBR+0x88 with syscall number as first arg; used by read/write/lseek/open wrappers
+KERN 0x06048c04 mem_CopyBlocks64 CONFIRM mem_CopyBlocks64 copies 64-byte blocks (16 words) per loop until count exhausted; used for generic copies
+KERN 0x06049b2c softfp_CompareDoubleEQ CONFIRM softfp_CompareDoubleEQ unpacks both doubles and compares unpacked forms; used by cvt for zero test
+KERN 0x0604a5a8 softfp_DivPartsF CONFIRM softfp_DivPartsF divides unpacked float parts: sign xor, exponent subtract, bitwise mantissa divide, NaN/inf handling; no callers
+KERN 0x0604a7d0 softfp_CompareFloatEQ CONFIRM softfp_CompareFloatEQ unpacks both floats and compares; mirrors the double version
+KERN 0x0600409c stub_0600409c RENAME vdp1_TriggerFrameChange writes 3 to VDP1 register at base+2 right after command list copy in both flush routines (frame change trigger); exact register inferred
+KERN 0x06004c8c math_ReadAngleSincosHelper RENAME pkg_CalcGroupLoadSize computes aligned load size from stored sizes of package entries +5 and +7 (0x800 sectors); result feeds mem_Alloc, no trig
+KERN 0x06007064 pkg_GetEntryUnpackedSize RENAME pkg_GetEntryOffset first word of 8-byte table entry is used as byte offset into the package buffer (base+value) before upload/memcpy, with stored size separate
+KERN 0x06007e14 dsp_WriteDataWords RENAME dsp_LoadProgramWords writes control word with start index then streams words to the data port; sole caller is dsp_LoadDefaultProgram
+KERN 0x06007eb8 dsp_WriteControl CONFIRM dsp_WriteControl writes masked value ORed with constant to the control register; called with 0 after program load
+KERN 0x06007ed0 dsp_ClearRegister CONFIRM dsp_ClearRegister writes zero to a register before loading the DSP program
+KERN 0x060080a4 menu_DrawImageFromTable RENAME menu_DrawBoxFromTable looks up x/y pair from 8-byte table and draws a polygon twice (offset copy then plain); used for password, pause and quit panels
+KERN 0x060095c4 actor_SpawnFromRecord RENAME actor_DrawFromRecord positions an object from a record, sets facing via atan2, advances anim, updates world frame and draws it; callers are menu/complete/map screens drawing a display actor
+KERN 0x06009a34 level_RunCompleteScreen CONFIRM level_RunCompleteScreen computes treasure percent and award rank (0x60/0x61), runs the complete-screen loop until button press

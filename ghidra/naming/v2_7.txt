@@ -1,0 +1,36 @@
+KERN 0x06028438 queue_PushCommandByte CONFIRM queue_PushCommandByte appends entry to global queue storing byte at +2 and copying block; caller feeds each set bit index
+KERN 0x06028500 hook_InstallCallbacks_2 RENAME hook_InstallObjectUpdateCallbacks writes object update/hit-reaction/can-hit callbacks into dispatch tables; called from level setup stub; drops numeric suffix
+KERN 0x0602853c path_UpdateBranchChoice CONFIRM path_UpdateBranchChoice chooses forward or fork rail branch by heading angle difference and sets change flag
+KERN 0x060286ac res_StartIndexedRequest RENAME sfx_PlaySoundById callers are player/collide code; registers a sound channel entry with base+index id
+KERN 0x0602896c path_EvalRailPositionSigned CONFIRM path_EvalRailPositionSigned sign of node index sets reverse flag 0x40 then evaluates motion on rail; used by coll_ResolveMove and player movement
+KERN 0x060289a4 player_UpdateRailPlacement CONFIRM player_UpdateRailPlacement transforms position by parent matrix then evaluates rail and derives heading; called from main player update
+KERN 0x06028e20 player_BlendPositionToTarget CONFIRM player_BlendPositionToTarget polls pad, samples anim point and counts down a frame counter while computing world position; installed as per-object callback
+KERN 0x0602906c obj_ApplyPlatformDelta CONFIRM obj_ApplyPlatformDelta adds carrier object's position (linked at +0x6c) to this object's offsets and adjusts vertical and heading
+KERN 0x060292ac player_EnterRailPiece CONFIRM player_EnterRailPiece clears tile flag, places player onto rail piece via matrix transform and rail evaluation
+KERN 0x060297b4 player_ReverseRailDirection CONFIRM player_ReverseRailDirection toggles direction flag 0x10, negates velocity, re-evaluates placement on reversed piece
+KERN 0x060299bc player_CanLeaveRailPiece RENAME collide_IsOnDifferentRailPiece only callers are collision pair tests; compares neighbour rail data against object's own rail data to decide whether the pair interacts
+KERN 0x06029a1c collide_CheckPickupReach RENAME collide_CheckMoveClear subtracts relative positions and sweeps via geometry-resolve helper; returns 0 if blocked; no pickup specific logic
+KERN 0x06029af4 collide_IsObjectActive RENAME collide_CanPlayerTouchObject predicate called when no hit data is passed, same pattern as other can-hit callbacks; switches on object type/subtype and player power flags
+KERN 0x06029eb8 player_GetPowerupLevel CONFIRM player_GetPowerupLevel returns 0..3 (or -1) from state flags and countdown with blink thresholds
+KERN 0x0602a658 player_ClearHitState RENAME player_ResetMotionState calls tile flag clear and zeroes velocity, previous position and timer fields; nothing hit specific
+KERN 0x0602a6dc player_SetCharacterMode UNSURE player_SetCharacterMode mode 1 or 2 sets anim bytes and timer; looks like respawn or game-over setup but not certain
+KERN 0x0602a7f0 player_UpdateScriptedAnim CONFIRM player_UpdateScriptedAnim steps anim sequence with countdown and facing fade, ends via set-mode call; installed as an update callback
+KERN 0x0602aa58 mover_ClampRailSpeed CONFIRM mover_ClampRailSpeed clamps horizontal speed against rail limits using direction sign and fixed-point multiply
+KERN 0x0602ace4 mover_UpdateVerticalVelocity CONFIRM mover_UpdateVerticalVelocity applies gravity step and ground-piece push to vertical and horizontal velocity, sets airborne flag
+KERN 0x0602ae10 mover_SteerAlongRailSegment CONFIRM mover_SteerAlongRailSegment velocity along rail segment direction using atan ratio, scale and angle wrap
+KERN 0x0602b2fc mover_UpdateRailNodes CONFIRM mover_UpdateRailNodes reads 6-byte node records by index parity and aligns speed and heading to them
+KERN 0x0602b748 timer_TickNegativeCounter CONFIRM timer_TickNegativeCounter counts a negative counter up to zero, returns 1 at zero; used in player movement
+KERN 0x0602b774 player_StartKnockback UNSURE player_StartKnockback sets state 9 timer 10, saves and halves velocities; paired restore in the jump start suggests jump windup rather than knockback
+KERN 0x0602b7e8 player_StartJumpFromGround CONFIRM player_StartJumpFromGround restores saved velocities, state 9 to 2, sets upward vertical velocity; also called from actor collision
+KERN 0x0602b84c pad_PollPlayerInput CONFIRM pad_PollPlayerInput keeps previous pad word, maps buttons and edges unless input locked, then reads stream word
+KERN 0x0602cb70 obj_SetFacingFromParent UNSURE obj_SetFacingFromParent transforms position by parent matrix and normalizes a vector; purpose (facing) not shown in visible code
+KERN 0x0602cd98 path_LocatePlayerOnRail CONFIRM path_LocatePlayerOnRail walks linked rail pieces to find piece and node containing the position
+KERN 0x0602d3dc player_ApplyMotionAndRail CONFIRM player_ApplyMotionAndRail applies velocity, locates rail, handles piece change and ground contact
+KERN 0x0602dda8 player_RefreshRailPlacement CONFIRM player_RefreshRailPlacement recomputes world position from parent matrix and clamps to rail, optional direction output
+KERN 0x0602e098 table_FindSlotAndCall RENAME anim_QueueFromSlotTable scans 3 slot entries for id matching object byte then queues an animation on channel 0 with entry data
+KERN 0x0602e0e4 player_TrySwapLeadCharacter CONFIRM player_TrySwapLeadCharacter button-triggered swap of lead and partner characters copying positions, else changes character anim state
+KERN 0x0602e4c8 player_ProcessPickupQueue RENAME player_UpdateMainState huge per-frame player update callback: pickup switch is only the first part, then hurt/invuln, rail motion, character swap, anim
+KERN 0x0602ff2e stub_0602ff2e RENAME sys_CallThroughR1 four-byte thunk that calls the function pointer already in r1
+KERN 0x0602ff88 save_LoadPlayerStateFromBlock CONFIRM save_LoadPlayerStateFromBlock unpacks lives, hearts, flags, character from block bytes; caller is password entry screen
+KERN 0x0603005c save_StorePlayerStateToBlock CONFIRM save_StorePlayerStateToBlock packs lives, hearts, flags, character into block bytes; used by password encode and level select info
+KERN 0x060300f8 obj_FollowPartnerCharacter CONFIRM obj_FollowPartnerCharacter partner follows lead using position delta and velocity, flips with lead direction, installed as partner callback

@@ -1,0 +1,36 @@
+KERN 0x06021f04 stub_06021f04 CONFIRM stub_06021f04 empty stub, writes a flag and returns
+KERN 0x06021f10 obj_InstallCallbackPointers CONFIRM obj_InstallCallbackPointers writes handler pointers into global tables
+KERN 0x06021f68 coll_TestSegmentVsPolygons CONFIRM coll_TestSegmentVsPolygons 16.16 moving point against polygon list
+KERN 0x06022968 coll_ResolveMovementAgainstGeometry CONFIRM coll_ResolveMovementAgainstGeometry slide pass against static geometry
+KERN 0x060231ec coll_SphereOverlapTest CONFIRM coll_SphereOverlapTest squared distance vs radius sum
+KERN 0x06023314 coll_ObjectVsObjectContact CONFIRM coll_ObjectVsObjectContact object pair overlap and per-slot contact
+KERN 0x060235e8 coll_ObjectVsTriggerContact CONFIRM coll_ObjectVsTriggerContact object against trigger/hazard records
+KERN 0x060237b8 coll_SweepHitboxSlots CONFIRM coll_SweepHitboxSlots tests the four hitbox slots
+KERN 0x0602388c coll_DispatchStaticHandlers CONFIRM coll_DispatchStaticHandlers switch on kind byte +0x7a
+KERN 0x06023bbc coll_CheckObjectAgainstLists CONFIRM coll_CheckObjectAgainstLists walks object lists with bounds test
+KERN 0x06023e90 obj_UpdateCollisions CONFIRM obj_UpdateCollisions static collision, parent velocity, list walk
+KERN 0x06024070 anim_GetLinkedSequence CONFIRM anim_GetLinkedSequence next/prev linked record by direction
+KERN 0x060240e8 anim_AdvanceSequenceFrame CONFIRM anim_AdvanceSequenceFrame large per-object rail/animation stepper
+KERN 0x06024698 anim_StepFrameChecked CONFIRM anim_StepFrameChecked frame inc/dec by direction flag
+KERN 0x06024794 anim_ComputeFrameOffset CONFIRM anim_ComputeFrameOffset clamps frame to length and computes offset
+KERN 0x06024c3c obj_UpdateMotionFromAnim CONFIRM obj_UpdateMotionFromAnim applies animation-driven motion
+KERN 0x06025828 obj_UpdateFlipAndSequence CONFIRM obj_UpdateFlipAndSequence picks fwd/back pointers by flip flags
+KERN 0x0602593c obj_RebaseChildPointers CONFIRM obj_RebaseChildPointers adjusts child pointers by clone delta
+KERN 0x0602598c obj_CloneObject CONFIRM obj_CloneObject allocates, copies and relocates
+KERN 0x06025a58 obj_ReturnToFreeList RENAME obj_LinkIntoActiveList pushes object onto DAT_06066024 which is the active list head, not a free list
+KERN 0x06025a70 obj_CallWithDefaultArgs RENAME obj_RemoveFromActiveList calls list_MoveToFreeList with the active list head
+KERN 0x06025a88 obj_TurnYawToward CONFIRM obj_TurnYawToward steps 16-bit angle toward target by max step
+KERN 0x06025b10 obj_TurnYawToward_2 RENAME obj_TurnSecondAngleToward same steering on another angle field, suffix not allowed
+KERN 0x06025b94 obj_FaceMovementDirection CONFIRM obj_FaceMovementDirection heading from velocity atan then turn
+KERN 0x06025d30 table_FindEntryById CONFIRM table_FindEntryById linear search by id byte
+KERN 0x06025d78 obj_ApplyKnockbackVelocity CONFIRM obj_ApplyKnockbackVelocity scales other velocity by factor
+KERN 0x060261c4 obj_CanHitTarget RENAME obj_CollisionAllowsHit installed in per-kind collision handler table DAT_06066010, tests rule flags vs target kind
+KERN 0x060264a4 obj_ReverseFacingAndFrame CONFIRM obj_ReverseFacingAndFrame negates anim speed and toggles flip bit 0x10
+KERN 0x060264e4 obj_SnapVelocityToAnim CONFIRM obj_SnapVelocityToAnim copies velocity into attached record
+KERN 0x06026628 obj_UpdateHitReaction_2 RENAME obj_UpdateHitReactionAlt suffix not allowed, installed as alternate update handler
+KERN 0x06026b18 obj_AimChildProjectile CONFIRM obj_AimChildProjectile child kind 6 under kind 5 aiming
+KERN 0x06026be8 obj_RunActionScriptStep CONFIRM obj_RunActionScriptStep walks action-script words by mask
+KERN 0x06026d94 obj_ApplyHitToChildren CONFIRM obj_ApplyHitToChildren applies hit/frame data over child list
+KERN 0x06026f5c obj_ReleaseAnimHandle RENAME obj_ReleaseSoundChannel checks sfx_IsChannelOwner, stops channel, clears owner and index to -1
+KERN 0x06026f98 obj_UpdateMain CONFIRM obj_UpdateMain installed at update handler DAT_06066338, big per-kind state machine
+KERN 0x060281ec obj_InitWorldPosFromParent CONFIRM obj_InitWorldPosFromParent resets state, releases sound, transforms position by parent matrix

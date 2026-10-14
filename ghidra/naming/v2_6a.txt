@@ -1,0 +1,15 @@
+KERN 0x06021f04 stub_06021f04 RENAME state_ClearGlobalByte clears a global byte flag; called in game reset next to state_ClearGlobalWord
+KERN 0x06021f10 obj_InstallCallbackPointers CONFIRM obj_InstallCallbackPointers installs handler pointers (collision/attach/countdown) during level object init sequence
+KERN 0x06021f68 coll_TestSegmentVsPolygons CONFIRM coll_TestSegmentVsPolygons moves object against tile geometry record, returns hit distance or -1; used by move/ground checks
+KERN 0x06022968 coll_ResolveMovementAgainstGeometry RENAME coll_SweptHitboxContact callers pass a 0x10-stride hitbox slot, other object, relative offset, out time and other slot; returns hit flag plus contact time, not level geometry sliding
+KERN 0x060231ec coll_SphereOverlapTest CONFIRM coll_SphereOverlapTest callers use it as bool bounding-sphere prefilter before slot tests
+KERN 0x06023314 coll_ObjectVsObjectContact CONFIRM coll_ObjectVsObjectContact sole caller obj_UpdateCollisions loops it over object list pairs; picks earliest slot contact and calls per-kind handler
+KERN 0x060235e8 coll_ObjectVsTriggerContact CONFIRM coll_ObjectVsTriggerContact sphere prefilter then 4-slot sweep against static record in global lists, type-byte filtered; caller coll_CheckObjectAgainstLists
+KERN 0x060237b8 coll_SweepHitboxSlots CONFIRM coll_SweepHitboxSlots loops object's 4 slots through swept-contact test against one record then dispatches kind handler
+KERN 0x0602388c coll_DispatchStaticHandlers RENAME coll_TestObjectVsStaticGeometry walks static geometry lists (tile records) with prefilter, calls coll_TestSegmentVsPolygons, then kind handler on hit; only caller obj_UpdateCollisions
+KERN 0x06023bbc coll_CheckObjectAgainstLists CONFIRM coll_CheckObjectAgainstLists walks three global static lists with bounding prefilter, calls kind handler and trigger/sweep contact routines
+KERN 0x06023e90 obj_UpdateCollisions CONFIRM obj_UpdateCollisions per-object collision step called for each active object from frame update loop; static geometry, lists, object contacts
+KERN 0x06024070 anim_GetLinkedSequence CONFIRM anim_GetLinkedSequence returns next/prev linked sequence record by direction flag, resets frame index to start or last; frame-based so anim naming fits
+KERN 0x060240e8 anim_AdvanceSequenceFrame CONFIRM anim_AdvanceSequenceFrame follows linked sequence when frames run out, switches piece/sequence; sole caller obj_UpdateMotionFromAnim, frame-index based
+KERN 0x06024698 anim_StepFrameChecked CONFIRM anim_StepFrameChecked steps frame index by direction, samples frame position, checks sequence length and link limit; caller obj_UpdateMotionFromAnim
+KERN 0x06024794 anim_ComputeFrameOffset RENAME path_ProjectOntoTrackFrames samples track frames via path_SampleFramePosition and interpolates a point/offset between neighbouring frames against reference pos and radius; callers are path_EvalRailPosition, path_LocatePlayerOnRail, player_UpdateMovement

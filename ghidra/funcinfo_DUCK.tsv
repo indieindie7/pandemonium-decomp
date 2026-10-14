@@ -1,0 +1,106 @@
+F 060f3008 movie_AllocHandlePools USER_DEFINED 86
+F 060f307c duck_ReleaseSlot USER_DEFINED 22
+F 060f3092 duck_FreeStream USER_DEFINED 72
+F 060f30e0 duck_FreeAllPools USER_DEFINED 224
+F 060f31d8 movie_SetHandleParams USER_DEFINED 134
+F 060f325e movie_AllocFrameDesc USER_DEFINED 226
+F 060f334c duck_OpenStream USER_DEFINED 598
+C 060f448c
+F 060f361a duck_SetStreamSource USER_DEFINED 60
+F 060f3680 duck_GetStreamInfo USER_DEFINED 94
+F 060f375c duck_DecodeFrame USER_DEFINED 1124
+C 060f53f0
+C 060f56e4
+C 060f5720
+C 060f56e4
+C 060f53f0
+C 060f56e4
+C 060f5418
+C 060f5720
+F 060f3c60 duck_DecodeFrameChecked USER_DEFINED 48
+C 060f375c
+C 060f43d0
+F 060f3ca8 pcm_AllocPools USER_DEFINED 76
+F 060f3d0c pcm_FreePools USER_DEFINED 50
+F 060f3d4c pcm_StartStream USER_DEFINED 82
+F 060f3da4 pcm_OpenStream USER_DEFINED 236
+F 060f3e9c duck_ClearState18 USER_DEFINED 12
+F 060f3ea8 pcm_ConfigChannel USER_DEFINED 82
+F 060f3efa pcm_OpenChannel USER_DEFINED 136
+F 060f3f8c duck_ClearState18_2 USER_DEFINED 12
+F 060f3fa8 pcm_CopyToRingBuffer USER_DEFINED 486
+F 060f4194 duck_FeedAudio USER_DEFINED 236
+C 060f3fa8
+C 060f6ce4
+C 060f6ba8
+C 060f6e08
+F 060f42bc duck_DecodeStrips USER_DEFINED 260
+C 060f6fd4
+C 060f7334
+F 060f43d0 duck_StartDecodeJob USER_DEFINED 94
+C 060f42bc
+F 060f448c duck_ParseHeader USER_DEFINED 752
+C 060f7994
+C 060f7670
+C 060f7850
+F 060f53e8 duck_SetDecodeParam USER_DEFINED 8
+F 060f53f0 duck_SetRowParams USER_DEFINED 38
+F 060f5418 duck_RunRowLoop USER_DEFINED 228
+F 060f56e4 duck_SetBlitParams USER_DEFINED 58
+F 060f5720 duck_RunBlitLoop USER_DEFINED 302
+F 060f58d4 duck_JumpTableDispatch USER_DEFINED 16
+F 060f6088 duck_JumpTableDispatchMasked USER_DEFINED 18
+F 060f6ba8 duck_AdpcmFeedStereo USER_DEFINED 312
+C 060f9a50
+F 060f6ce4 duck_AdpcmFeedMono USER_DEFINED 288
+C 060f9b50
+F 060f6e08 duck_AdpcmFeedInterleaved USER_DEFINED 456
+C 060f9c08
+F 060f6fd4 duck_ExpandBlocks8x8 USER_DEFINED 852
+F 060f7334 duck_ExpandBlocks8x8Alt USER_DEFINED 490
+F 060f7608 duck_SwapRowGroups USER_DEFINED 86
+F 060f7670 duck_BuildDeltaTables8 USER_DEFINED 452
+C 060f7608
+F 060f7850 duck_BuildDeltaTables8Alt USER_DEFINED 298
+C 060f53e8
+C 060f7608
+F 060f7994 duck_SplitTableBits USER_DEFINED 48
+F 060f9a50 adpcm_DecodeStereoSplit USER_DEFINED 242
+F 060f9b50 adpcm_DecodeMono USER_DEFINED 170
+F 060f9c08 adpcm_DecodeInterleaved USER_DEFINED 448
+F 060f9ec0 movie_InitPools USER_DEFINED 114
+F 060f9f54 movie_FreePools USER_DEFINED 30
+F 060fa030 movie_OpenFilm USER_DEFINED 182
+C 060fad30
+C 060fa10c
+C 060facb4
+F 060fa10c movie_CloseStream USER_DEFINED 38
+C 060fae20
+F 060fa140 movie_OpenTrack USER_DEFINED 298
+F 060fa280 movie_ClearTrack USER_DEFINED 24
+F 060fa2a0 movie_AllocReader USER_DEFINED 84
+F 060fa304 movie_FreeReader USER_DEFINED 28
+F 060fa350 movie_NextSampleEntry USER_DEFINED 330
+F 060fa4a0 movie_MarkSampleDone USER_DEFINED 30
+F 060fa4c0 movie_GetFrameLayout USER_DEFINED 76
+F 060fa518 movie_CalcFrameTicks USER_DEFINED 74
+F 060fa580 movie_CalcSampleSize USER_DEFINED 204
+F 060fa664 movie_ParseChunk USER_DEFINED 966
+C 060faab4
+F 060faab4 movie_ParseChunkList USER_DEFINED 176
+C 060fa664
+F 060fab68 movie_ReadChunkHeader USER_DEFINED 296
+C 060fab68
+F 060facb4 movie_ReadChunksFromFile USER_DEFINED 102
+C 060fb980
+C 060fab68
+C 060fa664
+F 060fad30 movie_ReadFileHeader USER_DEFINED 198
+C 060fab68
+C 060fa664
+F 060fae20 movie_CloseFileHandles USER_DEFINED 60
+F 060fae6c movie_CountTrackBytes USER_DEFINED 154
+F 060fafe4 movie_SeekSampleBuffer USER_DEFINED 280
+F 060fb110 movie_BeginStreaming USER_DEFINED 908
+F 060fb814 movie_ReadAhead USER_DEFINED 302
+F 060fb980 movie_LoadSampleTable USER_DEFINED 324

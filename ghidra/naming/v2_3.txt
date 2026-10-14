@@ -1,0 +1,36 @@
+KERN 0x06009c6c level_DrawMapFrame RENAME menu_DrawMainMenuFrame only caller is main menu loop; draws two actor records, selection scroll and start prompt
+KERN 0x06009d04 menu_RunMainMenuLoop CONFIRM menu_RunMainMenuLoop three entries (new game, password, options) with idle timeout
+KERN 0x0600a388 screen_DrawCenteredImagePair CONFIRM screen_DrawCenteredImagePair fullscreen polygon then same centered sprite twice and flush (weak)
+KERN 0x0600a460 slave_InitCommandChannel CONFIRM slave_InitCommandChannel clears 32 flag slots and starts slave handshake
+KERN 0x0600a948 vdp2_InitCharTableRegs CONFIRM vdp2_InitCharTableRegs name fits body and callers
+KERN 0x0600aa00 vdp2_InitScrollSetup CONFIRM vdp2_InitScrollSetup name fits body and callers
+KERN 0x0600ad60 vdp2_InitMapPlanes CONFIRM vdp2_InitMapPlanes name fits body and callers
+KERN 0x0600aee0 vdp2_SetColorOffsetFromFade CONFIRM vdp2_SetColorOffsetFromFade used by seven fade and volume callers
+KERN 0x0600afdc vdp2_ApplyAndRefresh RENAME vdp2_CountFrameAndFlushRegs increments frame counter and flushes register shadow
+KERN 0x0600b10c sys_VblankOutHandler CONFIRM sys_VblankOutHandler per-vblank handler
+KERN 0x0600c2a0 gfx_RegisterQuadHandler RENAME gfx_PostQuadCullJob posts quad cull work to the slave job queue
+KERN 0x0600c5cc gfx_AddProjectedTexturedQuad CONFIRM gfx_AddProjectedTexturedQuad projects and emits a textured quad
+KERN 0x0600cd40 gfx_RunSlaveVertexJob CONFIRM gfx_RunSlaveVertexJob runs vertex transform on slave
+KERN 0x0600cfe4 gfx_EmitFacesTextured CONFIRM gfx_EmitFacesTextured face loop with texture
+KERN 0x0600d1e8 gfx_EmitFacesFlat CONFIRM gfx_EmitFacesFlat flat colour face loop
+KERN 0x0600d350 gfx_EmitFacesTwoPass RENAME gfx_EmitFacesAllLit always lights; two branches depend on override texture, not front/back two-pass
+KERN 0x0600d6fc gfx_BuildActorTransform CONFIRM gfx_BuildActorTransform builds actor matrix (weak)
+KERN 0x0600e060 actor_SmoothFollowVector RENAME actor_SetBoundsFromCorners center = (a+b)/2, half vector, then length
+KERN 0x0600f15c obj_UpdateCarryFlags RENAME obj_InheritParentFlagsByType copies parent flag bits depending on object type and state
+KERN 0x0600f52c obj_ResolveAttachedMotion RENAME obj_TransformPosByParentMatrix transforms position by parent matrix
+KERN 0x0600f900 obj_RunStateHandlerPrologue RENAME obj_UpdateObject real entry of the big per-object update routine
+KERN 0x0600f964 obj_UpdateStateMachine RENAME obj_UpdateObjectBody Ghidra mid-function fragment of the same routine; runs state handler table
+KERN 0x06011130 obj_UpdateEpilogueCheckParent CONFIRM obj_UpdateEpilogueCheckParent epilogue fragment of per-object update
+KERN 0x06011132 obj_UpdateEpilogueCheckReg CONFIRM obj_UpdateEpilogueCheckReg epilogue fragment of per-object update
+KERN 0x06011148 obj_UpdateEpilogueTailCall CONFIRM obj_UpdateEpilogueTailCall epilogue fragment of per-object update
+KERN 0x06011160 obj_UpdateEpiloguePop CONFIRM obj_UpdateEpiloguePop epilogue fragment of per-object update
+KERN 0x06011198 obj_UpdateAllChildren RENAME world_UpdateActorsAndViewMatrix updates actors, builds camera rotation matrix from global object angles; not a children walk
+KERN 0x06011f0c handle_ReleaseSlots RENAME anim_UpdateGlobalTracks calls anim_UpdateTracks on two global track slots each frame; releases nothing
+KERN 0x06011f58 handle_Advance RENAME anim_AdvanceTrackHandle advances packed track handle, sets flags, used by level load and carry flags
+KERN 0x06011fec handle_Resolve RENAME anim_ResolveTrackHandle resolves packed handle to table entry, sets current frame pointer
+KERN 0x0601206c handle_Step RENAME anim_StepTrackHandle steps handle counter via anim_StepCounter, returns done flag
+KERN 0x06012158 actor_TestSphereHits RENAME actor_MarkOutOfRangeActors distance-squared vs radius, sets bit 0 on actors outside range of object; called by actor_UpdateAll
+KERN 0x06012788 cam_SetParams UNSURE cam_SetParams tiny setter of two globals and clears a flag bit; callers truncated, purpose unclear
+KERN 0x060127a8 cam_BuildViewMatrix RENAME light_TransformLightsToView scales and copies matrix, transforms light vectors to view space, builds nearby light list; called before face emission
+KERN 0x06012e20 light_ComputeAttenuation CONFIRM light_ComputeAttenuation per-light distance falloff into three colour tables; callers are gouraud/flat lighting
+KERN 0x0601302c scene_RunFadeSequence RENAME scene_DrawFrameAndFade draws background poly, level select info, steps fade counter at +0x2e, flushes list

@@ -1,0 +1,61 @@
+0x06011f0c func handle_ReleaseSlots hand provisional: calls helper 06011db8 on two global slots, likely releasing or updating handles
+0x06011f58 func handle_Advance hand provisional: advances packed 32-bit handle, bit 17 picks table, index in bits 8-16
+0x06011fec func handle_Resolve hand provisional: resolves packed handle into 0x10-byte table entry pointer from one of two tables
+0x0601206c func handle_Step hand provisional: steps packed handle through table entries, returns next handle or entry
+0x06012158 func actor_TestSphereHits hand provisional: sphere distance-squared tests of actor against two lists, flags collisions or triggers
+0x06012318 func actor_UpdateAll hand per-frame loop over actor linked list, handles flag 0x2a/0x2b cases, calls per-actor update
+0x06012690 func actor_BuildNearbyList hand builds table of actors within radius by distance-squared and memsets remaining entries
+0x06012788 func cam_SetParams hand provisional: small setter storing parameters to globals and clearing a flag bit
+0x060127a8 func cam_BuildViewMatrix hand provisional: copies and scales matrix and camera shorts, runs actor loop, calls nearby-list builder
+0x06012e20 func light_ComputeAttenuation hand provisional: per-light distance falloff filling three short tables for colour attenuation
+0x0601302c func scene_RunFadeSequence hand provisional: per-frame sequence of callbacks with fade counter at offset 0x2e
+0x06013128 func actor_UpdateFlagsA hand provisional: updates actor flags then calls a function pointer
+0x06013178 func actor_UpdateFlagsB hand provisional: updates actor flags then calls a function pointer, sibling of previous
+0x0601320c func script_RunCommand hand switch on 4-bit command cases 1-10 over three script slots at offset 0x68
+0x060133d0 func counter_CompareCapped hand provisional: compares counter value capped at 99
+0x060134cc func stub_060134cc hand provisional: stub that only calls a callback
+0x06013518 func stub_06013518 hand provisional: stub that only calls a callback
+0x06013540 func state_FillCallbackTable hand provisional: fills a state callback table with function pointers
+0x0601359c func stub_0601359c hand provisional: stub that only calls a callback
+0x060135c4 func stub_060135c4 hand provisional: stub that only calls a callback
+0x060135ec func pad_HandleEdges hand provisional: pad input edge handler, detects newly pressed buttons
+0x060136f4 func anim_EaseTime hand ease timing with acceleration and deceleration profile for keyframe interpolation
+0x060138ac func anim_SplinePosition hand Hermite spline position keyframe interpolation between keys
+0x06013c58 func anim_EaseTimeShort hand short-key variant of keyframe ease timing profile
+0x06013e2c func quat_SlerpKeys hand quaternion slerp between two keyframes
+0x060142b8 func quat_FromMatrix hand rotation matrix to quaternion conversion
+0x0601449c func anim_GetBoneYaw hand takes bone orientation and returns yaw angle via atan2
+0x06014954 func anim_GetBoneYawAlt hand provisional: variant of bone yaw via atan2
+0x06014e98 func quat_FromYaw hand quaternion from Y-axis angle, multiplied by optional parent quaternion
+0x06015084 func anim_BuildBoneMatrices hand builds bone matrices from pose nodes with stride 0x1c and normalisation
+0x0601583c func anim_BlendPoses hand lerp between two poses then builds bone matrices
+0x06015914 func anim_CopyPose hand copies a pose then builds bone matrices
+0x06015984 func anim_SamplePose hand samples keyframe track at a frame then blends or copies pose
+0x06015ac8 func math_SmoothLerpVec3 hand smoothed vec3 lerp toward a target
+0x06015b18 func quat_DotWeight hand quaternion dot product used as blend weight
+0x06015d3c func anim_SampleObjectTracks hand samples scene-object tracks of types 5, 6, 7 and 2
+0x060161b0 func anim_AdvanceFrame hand clamps and advances animation frame stored at actor offset 0x7e
+0x06016228 func anim_TrackInRange hand provisional: returns bool whether track target position is within range
+0x060163ac func anim_UpdateObjectTracks hand updates animation tracks for an object
+0x060166f0 func anim_StepTrack hand per-frame animation track step
+0x06016be8 func anim_UpdateTrackKey hand updates track keyframe and writes shorts at offsets 0x24 and 0x26
+0x06016c6c func anim_ReadTrackExtent hand reads track into offsets 0x3c-0x42, keeping max of three values
+0x06016d20 func actor_TransformToParent hand provisional: position transform against parent object at offset 0x20
+0x0601729c func coll_FetchTileRecord hand fetches collision tile record copying 0x30 bytes or default plane, returns 0x1c-byte tile pointer
+0x06017398 func coll_ClearTileFlag hand clears tile flag
+0x060173dc func coll_GetTileSlopeFlags hand reads tile slope and solid flags
+0x06017424 func coll_IsBlockedAtTile hand tests whether position is blocked at a tile, returns bool
+0x060174ec func coll_CheckTile hand collision check returning tile index, uses tile fetch, clear and flag helpers
+0x06017bec func actor_MoveByDelta hand translates matrix rows and position by delta with parent adjustment
+0x06017e48 func coll_ResolveMove hand resolves movement against tiles, reverting move on negative result
+0x06018134 func actor_MoveWithCollision hand main actor move with collision, param flag scales velocity
+0x06018bdc func player_CheckGroundContact hand ground contact check clearing vertical velocity at offset 0x5c
+0x06018c74 func player_UpdateGround hand provisional: 1384-byte player idle and ground state update
+0x06019244 func sfx_PlayCharSound hand plays sound effect from character class sfx base plus index
+0x06019284 func player_StateHandlerA hand provisional: player state handler using char class struct at offset 0x44, spawns 5 debris at state 0x1d
+0x060197b8 func sfx_PlayLoopA hand plays looping sound with handle stored at offset 0x3e or 0x40
+0x06019850 func player_StateHandlerB hand provisional: player state handler using char class struct animation pointers and counter at 0x6c
+0x06019c64 func player_SetStateCallback hand sets state callback and makes a stub call
+0x06019cd4 func sfx_PlayLoopGlobal hand plays looping sound using a global handle
+0x06019d68 func player_StateHandlerC hand provisional: player state handler using char class struct and flags at offset 0x1c
+0x0601a2dc func player_StateHandlerD hand provisional: player state handler using char class struct and flags at offset 0x1c

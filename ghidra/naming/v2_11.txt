@@ -1,0 +1,36 @@
+KERN 0x06038e74 scl_ResetShadowRegsGroup20 CONFIRM scl_ResetShadowRegsGroup20 sets shadow regs with dirty bit 0x20; only caller hw_ResetAll calls the group resets in sequence
+KERN 0x06038ed0 scl_ResetShadowRegsGroup10 CONFIRM scl_ResetShadowRegsGroup10 masks/zeroes four shadow regs with dirty bit 0x10; called from hw_ResetAll group sequence
+KERN 0x06038f30 scl_ResetShadowRegsGroup08 CONFIRM scl_ResetShadowRegsGroup08 masks/zeroes four shadow regs with dirty bit 0x08; called from hw_ResetAll group sequence
+KERN 0x06038f88 scl_ResetShadowRegsGroup04 CONFIRM scl_ResetShadowRegsGroup04 clears fields in two regs and zeroes six with dirty bit 0x04; called from hw_ResetAll group sequence
+KERN 0x060391d0 scl_SetColorRamEntries CONFIRM scl_SetColorRamEntries copies count halfwords of palette into color RAM via copy routine; movie init writes one entry (black) with it
+KERN 0x060392f0 scl_SetScreenPriority RENAME scl_SetScreenColorRamOffset param_2 is the bank slot index from hw_SetTimingMode and the matching getter result is used by scl_WriteColorRam as color RAM bank offset*0x400/0x200, so it is the per-screen color RAM offset (CRAOFA/B-like) plus enable bit, not priority
+KERN 0x060394a4 scl_GetScreenPriority RENAME scl_GetScreenColorRamOffset returns the 3-bit per-screen field that scl_WriteColorRam multiplies by 0x400/0x200 to address color RAM, i.e. the bank offset
+KERN 0x0603a3b0 gfs_ExchangeHandleField68 CONFIRM gfs_ExchangeHandleField68 GFS_Fread sets field to a constant, waits for transfer, then restores the returned old value; swap semantics match
+KERN 0x0603a414 gfs_CallHandleOp6c RENAME gfs_ExchangeHandleField6c helper swaps a field at handle+0x6c and returns the old value (same pattern as the 0x68 twin); cd_StartStreamRead sets it to 4 before starting a stream read
+KERN 0x0603f154 cd_ReadHirqRegister CONFIRM cd_ReadHirqRegister callers test interrupt bits 0x20/0x40 style flags from the returned halfword (vblank handler, status error, test-bits helper)
+KERN 0x0603f168 cd_SetHirqBits RENAME cd_ClearHirqBits all callers pass clear masks like 0xffffffe7/0xffffffeb (zeros clear bits) after commands; it ors the pending flags into a shadow word then writes param|1 to the HIRQ register
+KERN 0x0603f198 cd_WriteHirqMaskRegister RENAME cd_WriteHirqClear callers pass 0xfffffffd after command completion, a clear mask where zero bits acknowledge flags (cdc_EndDataTransfer); the stored value acts as write-to-clear
+KERN 0x0603f1a8 cd_ResetHirqMask UNSURE cd_ResetHirqMask writes one constant to the register and the shadow word, called only after CD system init; role of the constant not provable
+KERN 0x0603f1d0 cd_OrRegister RENAME cd_OrHirqShadow ors a value into the RAM shadow word (06052ec8), not a hardware register; callers pass 0x41/flag before init and abort-file commands
+KERN 0x0603f1e4 cd_ReadResponseRegister UNSURE cd_ReadResponseRegister no callers; just returns a halfword from a pointer, which register is not shown
+KERN 0x0603ffec snd_LoadDriverAndBank CONFIRM snd_LoadDriverAndBank halts sound CPU (cmd 7), clears sound RAM, copies driver and bank, sets table pointers, restarts (cmd 6); caller snd_UploadDriverProgram feeds it the driver data
+KERN 0x06040164 snd_WriteDataBlock CONFIRM snd_WriteDataBlock finds the table slot by two ids, copies the data block into sound RAM and flags the entry; caller snd_QueuePackageEntryLoad passes package entry data
+KERN 0x06040288 smpc_SendCmd1Arg_06040288 RENAME snd_SendCmdSetMasterVolume not SMPC: posts a command to the sound driver slot queue (snd_FindFreeSlot); caller snd_InitDriverAndChannels sends 0xf (max 4-bit level) with retry loop right after driver upload
+KERN 0x060402e8 smpc_SendCmd1Arg_060402e8 UNSURE smpc_SendCmd1Arg_060402e8 actually a sound driver command post with one arg; no callers so its command is unknown (prefix should be snd_)
+KERN 0x06040348 smpc_SendCmd2Arg_06040348 UNSURE smpc_SendCmd2Arg_06040348 actually a sound driver command post with two args; no callers so its command is unknown (prefix should be snd_)
+KERN 0x0604052c smpc_SendCmd0Arg_0604052c RENAME snd_SendCmdNoArg sound driver command with no args posted through the slot queue; used with retry loop after stopping all 8 channels and by snd_PollCmdWithRetry
+KERN 0x06040604 smpc_SendCmd1Arg_06040604 RENAME snd_SendCmdOneArg sound driver command post with one arg; sole caller snd_PollCmdWithRetry1 passes 1 in a retry loop; exact command meaning not shown
+KERN 0x06040664 smpc_SendCmd1Arg_06040664 UNSURE smpc_SendCmd1Arg_06040664 actually a sound driver command post with one arg; no callers (prefix should be snd_)
+KERN 0x060406c4 smpc_SendCmd1Arg_060406c4 UNSURE smpc_SendCmd1Arg_060406c4 actually a sound driver command post with one arg; no callers (prefix should be snd_)
+KERN 0x06040724 smpc_SendCmd3Arg_06040724 RENAME snd_SendCmdSetVolume sound driver command with three args; sole caller snd_SetMusicVolumeCmd passes 1, a volume looked up from a 0x40-entry table by level>>5, and 0
+KERN 0x0604079c smpc_SendCmd2Arg_0604079c UNSURE smpc_SendCmd2Arg_0604079c actually a sound driver command post with two args (one duplicated at offset 5); no callers
+KERN 0x06040a54 smpc_SendCmd1Arg_06040a54 RENAME snd_SendCmdStopMovieAudio sound driver command with arg 2, called only by movie_StopIfActive and movie_Shutdown when the movie audio flag is set
+KERN 0x06040b84 smpc_SendCmd0Arg_06040b84 UNSURE smpc_SendCmd0Arg_06040b84 actually a sound driver command post with no args; no callers (prefix should be snd_)
+KERN 0x06040bd8 smpc_SendCmd0Arg_06040bd8 UNSURE smpc_SendCmd0Arg_06040bd8 actually a sound driver command post with no args; no callers (prefix should be snd_)
+KERN 0x06040d24 snd_ReadTableEntry CONFIRM snd_ReadTableEntry reads a halfword entry by index from the sound driver table and returns masked value plus low byte; no callers
+KERN 0x06040d68 snd_ReadTableEntryBytes CONFIRM snd_ReadTableEntryBytes reads high and low bytes of an indexed halfword from a driver table; movie code reads entry 2 to track audio progress
+KERN 0x06040d90 snd_ReadTwoHalfwords CONFIRM snd_ReadTwoHalfwords returns first two halfwords of a driver block; no callers
+KERN 0x06040dac snd_ReadSixHalfwords CONFIRM snd_ReadSixHalfwords copies six halfwords from a driver block to a buffer; no callers
+KERN 0x06040e14 snd_FindTableEntry CONFIRM snd_FindTableEntry walks 8-byte entries matching two id fields and outputs data address and entry pointer; used by snd_WriteDataBlock
+KERN 0x06040e9c snd_ConvertSignedLevel RENAME snd_EncodePan converts signed value to a 5-bit sign-flagged code (negative -> ~x+0x11) that callers OR under a 3-bit field in the second arg byte, matching a pan field
+KERN 0x06040ed0 snd_FindFreeSlot RENAME snd_FindFreeCmdSlot scans seven 16-byte command slots for a free one and sets the current slot pointer; all 25 callers are sound command senders

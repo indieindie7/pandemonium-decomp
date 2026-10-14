@@ -1,0 +1,67 @@
+0x060f3008 func movie_AllocHandlePools hand bsim 1.00 feat 24 from ManxTT
+0x060f31d8 func movie_SetHandleParams hand bsim 0.96 feat 24 from ManxTT
+0x060f325e func movie_AllocFrameDesc hand bsim 0.94 feat 56 from ManxTT (was movie_OpenHandle)
+0x060f3ca8 func pcm_AllocPools hand bsim 1.00 feat 18 from ManxTT
+0x060f3d0c func pcm_FreePools hand bsim 1.00 feat 14 from ManxTT
+0x060f3d4c func pcm_StartStream hand bsim 1.00 feat 26 from ManxTT
+0x060f3da4 func pcm_OpenStream hand bsim 1.00 feat 64 from ManxTT
+0x060f3ea8 func pcm_ConfigChannel hand bsim 1.00 feat 39 from ManxTT
+0x060f3efa func pcm_OpenChannel hand bsim 1.00 feat 56 from ManxTT
+0x060f3fa8 func pcm_CopyToRingBuffer hand bsim 0.98 feat 121 from ManxTT
+0x060f9a50 func adpcm_DecodeStereoSplit hand bsim 1.00 feat 82 from ManxTT
+0x060f9b50 func adpcm_DecodeMono hand bsim 1.00 feat 79 from ManxTT
+0x060f9c08 func adpcm_DecodeInterleaved hand bsim 0.97 feat 135 from ManxTT
+0x060fa4a0 func movie_MarkSampleDone hand bsim 1.00 feat 14 from ManxTT
+0x060fa4c0 func movie_GetFrameLayout hand bsim 1.00 feat 29 from ManxTT
+0x060faab4 func movie_ParseChunkList hand bsim 0.88 feat 33 from ManxTT
+0x060fae20 func movie_CloseFileHandles hand bsim 1.00 feat 22 from ManxTT
+0x060f307c func duck_ReleaseSlot hand clears in-use bit 7 of flag byte at +0x2a and zeroes first field of 0x30-byte slot
+0x060f3092 func duck_FreeStream hand if in-use flag set, frees buffer pointers via callback, clears flag and fields
+0x060f30e0 func duck_FreeAllPools hand releases every slot in first pool and frees each stream in second pool, frees both arrays
+0x060f334c func duck_OpenStream hand finds free stream slot, parses header of given source, allocates frame and lookup buffers, returns stream
+0x060f361a func duck_SetStreamSource hand rebinds existing stream to new source and re-parses header, returns status codes minus one, two, three
+0x060f3680 func duck_GetStreamInfo hand returns width, height and two further halfword fields from stream, adjusted when flag set
+0x060f375c func duck_DecodeFrame hand picks one of many decoder routines by stream flags, dispatches to decode frame into destination buffer
+0x060f3c60 func duck_DecodeFrameChecked hand runs helper, and when it returns zero and mode is three calls second helper
+0x060f3e9c func duck_ClearState18 hand zeroes field at +0x18 if pointer non-null
+0x060f3f8c func duck_ClearState18_2 hand zeroes field at +0x18 if pointer non-null, duplicate of sibling helper
+0x060f4194 func duck_FeedAudio hand copies decoded samples into pcm ring buffer via pcm_CopyToRingBuffer, or loops through chunk helpers
+0x060f42bc func duck_DecodeStrips hand loops over 8-line strips calling row decoder, advancing source and destination, one of two modes
+0x060f43d0 func duck_StartDecodeJob hand waits for busy flag, builds offset table, launches decoder with stream pointers, sets busy flag
+0x060f448c func duck_ParseHeader hand parses frame header bytes, xors consecutive bytes into stream fields, reads version and flag bits
+0x060f53e8 func duck_SetDecodeParam hand stores one argument in module global, returns pointer to that global
+0x060f53f0 func duck_SetRowParams hand stores five arguments in module globals for row decoder, returns pointer to last one
+0x060f5418 func duck_RunRowLoop hand stores geometry globals, then per row calls one of two row callbacks depending on bit mask
+0x060f56e4 func duck_SetBlitParams hand stores buffer pointers and callbacks, selects variant by bit one of mode
+0x060f5720 func duck_RunBlitLoop hand stores geometry, fills row buffer with constant, then calls one of two callbacks per row
+0x060f58d4 func duck_JumpTableDispatch hand provisional: indirect jump through table indexed by register r12, decompiler lost arguments
+0x060f6088 func duck_JumpTableDispatchMasked hand provisional: indirect jump through table indexed by r12 with third argument masked
+0x060f6ba8 func duck_AdpcmFeedStereo hand refills block headers then calls adpcm_DecodeStereoSplit for left and right outputs
+0x060f6ce4 func duck_AdpcmFeedMono hand refills block header then calls adpcm_DecodeMono, toggles nibble phase flag
+0x060f6e08 func duck_AdpcmFeedInterleaved hand reads 16-byte block header, calls adpcm_DecodeInterleaved for stereo samples
+0x060f6fd4 func duck_ExpandBlocks8x8 hand translates 8x8 block of bytes through 256-entry word lookup table adding per-row bias, writes 64 words
+0x060f7334 func duck_ExpandBlocks8x8Alt hand variant of 8x8 table-lookup block expander using two-pass inner loop
+0x060f7608 func duck_SwapRowGroups hand loops swapping words between six offset rows in the module buffer at 0x060f0000, in-place transpose
+0x060f7670 func duck_BuildDeltaTables8 hand copies two 8-byte tables, expands 16-byte-stride entries into three lookup word tables, then calls follow-up
+0x060f7850 func duck_BuildDeltaTables8Alt hand variant building two lookup word tables from 8-byte inputs and entry list, calls setup first
+0x060f7994 func duck_SplitTableBits hand loops eight halfwords clearing low bit, stores shifted high bytes and odd bytes into two tables
+0x060f9ec0 func movie_InitPools hand stores three pool counts, allocates three arrays (0x5c-byte entries), clears per-entry in-use word for second pool
+0x060f9f54 func movie_FreePools hand calls one free routine on each of three pool base pointers
+0x060fa030 func movie_OpenFilm hand finds free 0x6c-byte handle slot, opens file, sets type 1 or 2 by comparing two probe values, initializes (was movie_OpenStream_2)
+0x060fa10c func movie_CloseStream hand if handle type is 2 calls movie_CloseFileHandles, then clears the handle structure
+0x060fa140 func movie_OpenTrack hand finds free 0x5c-byte track slot, locates entry by name, index or type match, initializes fields
+0x060fa280 func movie_ClearTrack hand zeroes a 0x5c-byte track structure and clears its first word
+0x060fa2a0 func movie_AllocReader hand finds free reader slot, stores size and parameter after calling a helper with mode 2
+0x060fa304 func movie_FreeReader hand calls helper on reader buffer field then zeroes the whole reader structure
+0x060fa350 func movie_NextSampleEntry hand scans sample table forward or backward for next entry of this track, returns offset and size
+0x060fa518 func movie_CalcFrameTicks hand divides rate field via two helper calls using reciprocal multiply, returns ticks per frame
+0x060fa580 func movie_CalcSampleSize hand computes per-track byte count from rate and chunk size, output scaled by three quarters if unset
+0x060fa664 func movie_ParseChunk hand big-endian chunk parser handling header, track table, sample table, and cvid/audio info; byte swaps fields
+0x060fab68 func movie_ReadChunkHeader hand reads 8-byte big-endian chunk header, handles container tags, skips or reads payload, recurses into list parser
+0x060facb4 func movie_ReadChunksFromFile hand loops reading chunk headers and dispatching each to chunk handler until end or error (was movie_ParseChunkList_2)
+0x060fad30 func movie_ReadFileHeader hand reads 12-byte header, checks two magic words, resets track indices, parses chunk list, returns negative error codes
+0x060fae6c func movie_CountTrackBytes hand sums sample sizes for this track over entries, scales by channel count when not mono
+0x060fafe4 func movie_SeekSampleBuffer hand clears per-track buffer state and flags, aligns file position to 2048 sectors, sets buffer remainders
+0x060fb110 func movie_BeginStreaming hand sets up ring buffer bounds, marks sample entries consumed by seek target, issues first reads (was movie_StartPlayback_2)
+0x060fb814 func movie_ReadAhead hand reads next sector block, updates rolling average of read sizes, tops up buffer when below threshold
+0x060fb980 func movie_LoadSampleTable hand reads 16-byte table entries in chunks, byte swaps offset and size, tracks maximum size, allocates temp buffer

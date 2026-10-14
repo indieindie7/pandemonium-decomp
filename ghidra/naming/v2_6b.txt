@@ -1,0 +1,15 @@
+KERN 0x06024c3c obj_UpdateMotionFromAnim UNSURE obj_UpdateMotionFromAnim big routine scales direction vector by speed into velocity +0x58..0x60 (callers: path move, attach offset, partner follow); body mostly unseen
+KERN 0x06025828 obj_UpdateFlipAndSequence CONFIRM obj_UpdateFlipAndSequence toggles flip flag 0x40, swaps forward/back anim pointer, resets frame, selects child sequence
+KERN 0x0602593c obj_RebaseChildPointers CONFIRM obj_RebaseChildPointers recursive pointer relocation by delta; used by clone
+KERN 0x0602598c obj_CloneObject CONFIRM obj_CloneObject alloc+memcpy object, relocate pointers; callers spawn effects/children from template
+KERN 0x06025a88 obj_TurnYawToward CONFIRM obj_TurnYawToward step-limited turn of yaw field with wraparound; used by player state and facing code
+KERN 0x06025b94 obj_FaceMovementDirection CONFIRM obj_FaceMovementDirection yaw from velocity via atan2 then step-limited turn, also pitch from velocity
+KERN 0x06025d30 table_FindEntryById CONFIRM table_FindEntryById linear search of object-type table by byte +2; callers pass obj+0x70 type id
+KERN 0x06025d78 obj_ApplyKnockbackVelocity RENAME obj_ReflectVelocityOnContact only caller obj_CanHitTarget; combines two objects' velocities with factor or dots velocity with tile-record normals (coll_FetchTileRecord): contact response, not knockback
+KERN 0x060264a4 obj_ReverseFacingAndFrame CONFIRM obj_ReverseFacingAndFrame negates anim speed, toggles flip 0x10, mirrors frame index
+KERN 0x060264e4 obj_SnapVelocityToAnim RENAME obj_SyncAnimMotionFromVelocity writes horizontal speed (sqrt vx,vz), vertical, and normalized direction into attached anim record from obj velocity; called from hit reaction, action script, update
+KERN 0x06026b18 obj_AimChildProjectile UNSURE obj_AimChildProjectile recursive over children kind 6 under kind 5 writing sin/cos pair at +0x28/+0x2a from angle; projectile meaning unproven
+KERN 0x06026be8 obj_RunActionScriptStep CONFIRM obj_RunActionScriptStep walks frame action words matching obj mask, switch on opcode sets velocity/state; single caller obj_UpdateMain
+KERN 0x06026d94 obj_ApplyHitToChildren RENAME obj_OrientAlongAnimPath samples path frame positions via path_SampleFramePosition, atan2 of frame delta gives yaw, atan ratio gives pitch, writes quaternion; no hit logic
+KERN 0x06026f98 obj_UpdateMain CONFIRM obj_UpdateMain huge per-frame object update dispatching on +0x7b/+0x78 state with motion, anim, action script; generic name fits
+KERN 0x060281ec obj_InitWorldPosFromParent CONFIRM obj_InitWorldPosFromParent releases anim handle, resets state/velocity, sets spline position then transforms by 3x3 short matrix of attached anim; caller obj_UpdateCarryFlags runs it for state 0x16

@@ -1,0 +1,423 @@
+KERN 0x06037498 vdp2_WaitFrameSync CONFIRM vdp2_WaitFrameSync sets a request flag then spins until the vblank handler clears it and a second busy flag clears; no callers seen
+KERN 0x06039b1c GFS_IsEof CONFIRM GFS_IsEof returns tell position >= file size; used by cd_ReadBuffered after short reads
+KERN 0x06039bcc GFS_GetFileSizeInfo CONFIRM GFS_GetFileSizeInfo copies file info for the handle, zeroes size for directories; callers Seek/IsEof use the size
+KERN 0x0603a04c GFS_NwIsComplete CONFIRM GFS_NwIsComplete true when handle's pending-transfer field is 0; callers spin on it after NwStop
+KERN 0x0603a16c gfs_PollTransferDone CONFIRM gfs_PollTransferDone checks CD play mode state, marks transfer done at state 2, returns the done flag
+KERN 0x0603a480 gfs_SetupCustomCopyTransfer CONFIRM gfs_SetupCustomCopyTransfer sets seek params, read mode 4, and transfer target on a handle; no callers
+KERN 0x0603a5c8 GFS_GetErrStat CONFIRM GFS_GetErrStat copies the 3-word global error status to caller buffer
+KERN 0x0603a9c4 gfs_AddOpenFileEntry CONFIRM gfs_AddOpenFileEntry appends handle to open-file table if not already present
+KERN 0x0603aa5c gfs_InitHandleOpen CONFIRM gfs_InitHandleOpen inits read state and stream entry on a handle, zeros state fields, returns handle or 0; used by GFS_Open and volume reads
+KERN 0x0603aea0 gfs_SetReadTotal CONFIRM gfs_SetReadTotal sets total sectors to read (via sector limit or direct) and clears progress; called by NwFread/NwCdReadSimple
+KERN 0x0603aee0 gfs_CopyFileInfo CONFIRM gfs_CopyFileInfo copies optional file-info fields to out pointers; callers GetFileSize and GetFileSizeInfo
+KERN 0x0603b23c gfs_SetSectorLimit CONFIRM gfs_SetSectorLimit stores sector total and clamps available transfer size; called from gfs_SetReadTotal
+KERN 0x0603b4e8 gfs_CdPlayMode3Locked CONFIRM gfs_CdPlayMode3Locked if lock held issues a CD play command with mode 3, returns 2 on success else 8; used by PollTransferDone
+KERN 0x0603b5fc gfs_AddSectorGapOffset CONFIRM gfs_AddSectorGapOffset converts a sector index adding per-group gap sectors; used by seek-read and chunk planning
+KERN 0x0603b6e8 gfs_SectorSizeFromFlags CONFIRM gfs_SectorSizeFromFlags maps file attribute flag bits to a per-sector data size (0 for a flag combo); used by gfs_InitStreamEntry
+KERN 0x0603bc10 gfs_InitRecordReader CONFIRM gfs_InitRecordReader initializes reader struct with handle, buffer, position -1 and size; used before reading dir records
+KERN 0x0603bd50 gfs_ReaderReadBothEndianU16 CONFIRM gfs_ReaderReadBothEndianU16 reads 2 bytes then 2 more and returns the second (ISO9660 both-endian field); used by dir record parse
+KERN 0x0603bda4 gfs_ReaderReadBothEndianU32 CONFIRM gfs_ReaderReadBothEndianU32 reads 4+4 bytes both-endian, returns second; used for extent and size in dir record
+KERN 0x0603c8cc scu_DmaPollAndFinish UNSURE scu_DmaPollAndFinish polls sh2_DmacIsTransferEnd (SH-2 DMAC, not SCU) then copies leftover tail bytes; prefix may be wrong but evidence not firm
+KERN 0x0603cbc0 mem_CopyTailBytes CONFIRM mem_CopyTailBytes copies first n bytes of a word to dest bytewise; used to finish DMA remainders and strided copy
+KERN 0x0603d26c gfs_CdSetupFilter UNSURE gfs_CdSetupFilter sets a CD request from stream fields then waits queues idle, returns 1 on success; callers shown do not obviously call it so role unclear
+KERN 0x0603d2b0 gfs_CdSeekDefaultLength UNSURE gfs_CdSeekDefaultLength clears request, defaults length from struct when -1, seeks and zeroes a field; shown caller does not call it
+KERN 0x0603d314 gfs_CdSetLockOwner CONFIRM gfs_CdSetLockOwner sets CD command owner from handle fields then waits idle; step-read calls it after acquiring the lock
+KERN 0x0603d348 gfs_CdAcquireLock CONFIRM gfs_CdAcquireLock takes the CDC lock and stores the id in handle; used before play/seek commands
+KERN 0x0603d3a0 cdc_SetModeFlags CONFIRM cdc_SetModeFlags sets two work-area flag bytes to the boolean arg; called from init paths
+KERN 0x0603d60c cdc_FreeFilterSlot CONFIRM cdc_FreeFilterSlot releases an allocated filter slot (index below 0x18) by clearing its flag; called by free-partition-and-filter
+KERN 0x0603d748 cdc_LockAcquire CONFIRM cdc_LockAcquire sets the lock flag, bumps and returns an owner token, fails if already held; wrapped by gfs_CdAcquireLock
+KERN 0x0603d77c cdc_LockRelease CONFIRM cdc_LockRelease clears the lock flag only if the token matches the owner; wrapped by gfs_CdLockRelease
+KERN 0x0603d7a8 cdc_IsLockHeldBy CONFIRM cdc_IsLockHeldBy true when lock is set and owner token equals arg; wrapped by gfs_CdIsLockHeld
+KERN 0x0603d890 cdc_QueryFilterSubheader CONFIRM cdc_QueryFilterSubheader checks filter mode then reads subheader condition and stores status; no callers
+KERN 0x0603d930 cdc_PlayWithLock CONFIRM cdc_PlayWithLock if token owns lock and no error, clears HIRQ bits and issues play command; used by step-read and mode3 play
+KERN 0x0603da54 cdc_ClearRequestB CONFIRM cdc_ClearRequestB ends the data transfer and resets request slot to -1, pair of SetRequestB; caller is seek-default-length
+KERN 0x0603daf4 cdc_IsOwnerMismatch CONFIRM cdc_IsOwnerMismatch returns 0 only when slot busy flag set and owner equals arg else 1; FreePartitionWait loops until it returns 1
+KERN 0x0603dbd8 cdc_FinishIfOwner RENAME cdc_SeekWithLock body checks lock token then issues cdc_SeekDisc with the position; mirrors cdc_PlayWithLock and gfs_StartSeekRead passes sector position
+KERN 0x0603e0d0 cdc_StepSlotCommand CONFIRM cdc_StepSlotCommand switch on slot command type 0-7 calling per-command step handlers; called per slot from cdc_PollQueues
+KERN 0x0603ed10 cdc_WaitNotBusy UNSURE cdc_WaitNotBusy polls an HIRQ test up to a limit, calls a clear fn and returns false when set else true; exact meaning of result unclear
+KERN 0x0603ed54 cdc_WaitStatusReady CONFIRM cdc_WaitStatusReady loops status fetch until low nibble is 1 or 2 (ready states), bounded by error flag and retry count
+KERN 0x0603ef48 cdc_GetToc CONFIRM cdc_GetToc sends command 0x02 and reads TOC data words; caller is drive init + TOC read
+KERN 0x0603f374 cdc_PollHirq CONFIRM cdc_PollHirq polls the HIRQ register for requested bits with a retry limit, returns -3 on timeout
+KERN 0x0603f4e8 cdc_CmdGetFileInfo CONFIRM cdc_CmdGetFileInfo sends command 0x73 (file info) with file id and reads the data words; used by cdc_GetFileInfoEntry
+KERN 0x0603f5b4 cdc_SetSectorLength CONFIRM cdc_SetSectorLength builds command 0x60 with get/put sector sizes via the discard-response sender; matches SBL sector length command
+KERN 0x0603f824 cdc_SetFilterSubheader CONFIRM cdc_SetFilterSubheader builds command 0x42 with six subheader condition bytes; used in the filter queue processing
+KERN 0x0603fca0 cdc_ExecIfStatusBit40 UNSURE cdc_ExecIfStatusBit40 runs a command only if HIRQ bit 0x40 is set, else returns -1; name is mechanical, bit meaning unclear (used by cmds 0x53 and 0x56)
+KERN 0x0603fed0 cdc_StoreResponse CONFIRM cdc_StoreResponse executes command then stores 1 status byte or unpacks full status; shared by GetStatus and wrappers
+KERN 0x0603ff40 cdc_CopyStatus12 CONFIRM cdc_CopyStatus12 copies the 12-byte saved response block into the caller buffer
+KERN 0x060403b4 sndcmd_PostByteAndPanE UNSURE sndcmd_PostByteAndPanE queues sound command: byte, then (p2<<5)|signed-level(p3); no callers, command id unknown
+KERN 0x06040580 sndcmd_PostFourBytesH CONFIRM sndcmd_PostFourBytesH queues a sound command with four raw payload bytes; caller posts (1,0,0,2) music restart
+KERN 0x06040818 sndcmd_PostPackedFieldsN RENAME sndcmd_PostChannelParam queues sound cmd with packed fields (chip/type/channel/param id/value); callers are channel volume, pan, pitch, stop, envelope, start
+KERN 0x060408d0 sndcmd_PostByteAndMergedO UNSURE sndcmd_PostByteAndMergedO queues byte plus OR of two bytes; no callers, purpose unknown
+KERN 0x06040ab4 snd_SendCmdSlotSetupSingle UNSURE snd_SendCmdSlotSetupSingle packs a 10-field struct into one queued sound command; no callers, purpose not provable
+KERN 0x06040c2c sndcmd_PostTwoShl5W UNSURE sndcmd_PostTwoShl5W queues two values each shifted left 5; no callers, purpose unknown
+KERN 0x06040ca8 sndcmd_PostTwoNibblesX RENAME sndcmd_PostTwoSignedLevels queues two bytes each passed through snd_ConvertSignedLevel; no nibble packing seen
+KERN 0x06041b1c smpc_CheckNextPeriphPending CONFIRM smpc_CheckNextPeriphPending sets state 2 when read pointer is past limit and SR bit 0x20 (next peripheral) is set; used in intback parsing
+KERN 0x06041b50 smpc_CopyOregBytes CONFIRM smpc_CopyOregBytes copies every other byte (OREG layout) from the intback read pointer into the output buffer up to a limit
+KERN 0x06041c0c smpc_ResetIntbackState CONFIRM smpc_ResetIntbackState clears intback counters and flags and the peripheral id buffer; called from init and read result
+KERN 0x06042dbc cache_PurgeRange CONFIRM cache_PurgeRange writes zero to cache-purge alias addresses in 16-byte steps; called around DMA transfers
+KERN 0x060430b4 strcmp_2 RENAME str_CompareBytes standard byte string compare returning difference; name has numeric suffix, used for locale name checks
+KERN 0x0604321c memcmp CONFIRM memcmp standard byte compare for count; caller compares 6 volume descriptor bytes
+KERN 0x06048a28 sys_CallVbrVector88 CONFIRM sys_CallVbrVector88 calls handler at VBR+0x88 with syscall number as first arg; used by read/write/lseek/open wrappers
+KERN 0x06048c04 mem_CopyBlocks64 CONFIRM mem_CopyBlocks64 copies 64-byte blocks (16 words) per loop until count exhausted; used for generic copies
+KERN 0x06049b2c softfp_CompareDoubleEQ CONFIRM softfp_CompareDoubleEQ unpacks both doubles and compares unpacked forms; used by cvt for zero test
+KERN 0x0604a5a8 softfp_DivPartsF CONFIRM softfp_DivPartsF divides unpacked float parts: sign xor, exponent subtract, bitwise mantissa divide, NaN/inf handling; no callers
+KERN 0x0604a7d0 softfp_CompareFloatEQ CONFIRM softfp_CompareFloatEQ unpacks both floats and compares; mirrors the double version
+KERN 0x0600409c stub_0600409c RENAME vdp1_TriggerFrameChange writes 3 to VDP1 register at base+2 right after command list copy in both flush routines (frame change trigger); exact register inferred
+KERN 0x06004c8c math_ReadAngleSincosHelper RENAME pkg_CalcGroupLoadSize computes aligned load size from stored sizes of package entries +5 and +7 (0x800 sectors); result feeds mem_Alloc, no trig
+KERN 0x06007064 pkg_GetEntryUnpackedSize RENAME pkg_GetEntryOffset first word of 8-byte table entry is used as byte offset into the package buffer (base+value) before upload/memcpy, with stored size separate
+KERN 0x06007e14 dsp_WriteDataWords RENAME dsp_LoadProgramWords writes control word with start index then streams words to the data port; sole caller is dsp_LoadDefaultProgram
+KERN 0x06007eb8 dsp_WriteControl CONFIRM dsp_WriteControl writes masked value ORed with constant to the control register; called with 0 after program load
+KERN 0x06007ed0 dsp_ClearRegister CONFIRM dsp_ClearRegister writes zero to a register before loading the DSP program
+KERN 0x060080a4 menu_DrawImageFromTable RENAME menu_DrawBoxFromTable looks up x/y pair from 8-byte table and draws a polygon twice (offset copy then plain); used for password, pause and quit panels
+KERN 0x060095c4 actor_SpawnFromRecord RENAME actor_DrawFromRecord positions an object from a record, sets facing via atan2, advances anim, updates world frame and draws it; callers are menu/complete/map screens drawing a display actor
+KERN 0x06009a34 level_RunCompleteScreen CONFIRM level_RunCompleteScreen computes treasure percent and award rank (0x60/0x61), runs the complete-screen loop until button press
+KERN 0x06009c6c level_DrawMapFrame RENAME menu_DrawMainMenuFrame only caller is main menu loop; draws two actor records, selection scroll and start prompt
+KERN 0x06009d04 menu_RunMainMenuLoop CONFIRM menu_RunMainMenuLoop three entries (new game, password, options) with idle timeout
+KERN 0x0600a388 screen_DrawCenteredImagePair CONFIRM screen_DrawCenteredImagePair fullscreen polygon then same centered sprite twice and flush (weak)
+KERN 0x0600a460 slave_InitCommandChannel CONFIRM slave_InitCommandChannel clears 32 flag slots and starts slave handshake
+KERN 0x0600a948 vdp2_InitCharTableRegs CONFIRM vdp2_InitCharTableRegs name fits body and callers
+KERN 0x0600aa00 vdp2_InitScrollSetup CONFIRM vdp2_InitScrollSetup name fits body and callers
+KERN 0x0600ad60 vdp2_InitMapPlanes CONFIRM vdp2_InitMapPlanes name fits body and callers
+KERN 0x0600aee0 vdp2_SetColorOffsetFromFade CONFIRM vdp2_SetColorOffsetFromFade used by seven fade and volume callers
+KERN 0x0600afdc vdp2_ApplyAndRefresh RENAME vdp2_CountFrameAndFlushRegs increments frame counter and flushes register shadow
+KERN 0x0600b10c sys_VblankOutHandler CONFIRM sys_VblankOutHandler per-vblank handler
+KERN 0x0600c2a0 gfx_RegisterQuadHandler RENAME gfx_PostQuadCullJob posts quad cull work to the slave job queue
+KERN 0x0600c5cc gfx_AddProjectedTexturedQuad CONFIRM gfx_AddProjectedTexturedQuad projects and emits a textured quad
+KERN 0x0600cd40 gfx_RunSlaveVertexJob CONFIRM gfx_RunSlaveVertexJob runs vertex transform on slave
+KERN 0x0600cfe4 gfx_EmitFacesTextured CONFIRM gfx_EmitFacesTextured face loop with texture
+KERN 0x0600d1e8 gfx_EmitFacesFlat CONFIRM gfx_EmitFacesFlat flat colour face loop
+KERN 0x0600d350 gfx_EmitFacesTwoPass RENAME gfx_EmitFacesAllLit always lights; two branches depend on override texture, not front/back two-pass
+KERN 0x0600d6fc gfx_BuildActorTransform CONFIRM gfx_BuildActorTransform builds actor matrix (weak)
+KERN 0x0600e060 actor_SmoothFollowVector RENAME actor_SetBoundsFromCorners center = (a+b)/2, half vector, then length
+KERN 0x0600f15c obj_UpdateCarryFlags RENAME obj_InheritParentFlagsByType copies parent flag bits depending on object type and state
+KERN 0x0600f52c obj_ResolveAttachedMotion RENAME obj_TransformPosByParentMatrix transforms position by parent matrix
+KERN 0x0600f900 obj_RunStateHandlerPrologue RENAME obj_UpdateObject real entry of the big per-object update routine
+KERN 0x0600f964 obj_UpdateStateMachine RENAME obj_UpdateObjectBody Ghidra mid-function fragment of the same routine; runs state handler table
+KERN 0x06011130 obj_UpdateEpilogueCheckParent CONFIRM obj_UpdateEpilogueCheckParent epilogue fragment of per-object update
+KERN 0x06011132 obj_UpdateEpilogueCheckReg CONFIRM obj_UpdateEpilogueCheckReg epilogue fragment of per-object update
+KERN 0x06011148 obj_UpdateEpilogueTailCall CONFIRM obj_UpdateEpilogueTailCall epilogue fragment of per-object update
+KERN 0x06011160 obj_UpdateEpiloguePop CONFIRM obj_UpdateEpiloguePop epilogue fragment of per-object update
+KERN 0x06011198 obj_UpdateAllChildren RENAME world_UpdateActorsAndViewMatrix updates actors, builds camera rotation matrix from global object angles; not a children walk
+KERN 0x06011f0c handle_ReleaseSlots RENAME anim_UpdateGlobalTracks calls anim_UpdateTracks on two global track slots each frame; releases nothing
+KERN 0x06011f58 handle_Advance RENAME anim_AdvanceTrackHandle advances packed track handle, sets flags, used by level load and carry flags
+KERN 0x06011fec handle_Resolve RENAME anim_ResolveTrackHandle resolves packed handle to table entry, sets current frame pointer
+KERN 0x0601206c handle_Step RENAME anim_StepTrackHandle steps handle counter via anim_StepCounter, returns done flag
+KERN 0x06012158 actor_TestSphereHits RENAME actor_MarkOutOfRangeActors distance-squared vs radius, sets bit 0 on actors outside range of object; called by actor_UpdateAll
+KERN 0x06012788 cam_SetParams UNSURE cam_SetParams tiny setter of two globals and clears a flag bit; callers truncated, purpose unclear
+KERN 0x060127a8 cam_BuildViewMatrix RENAME light_TransformLightsToView scales and copies matrix, transforms light vectors to view space, builds nearby light list; called before face emission
+KERN 0x06012e20 light_ComputeAttenuation CONFIRM light_ComputeAttenuation per-light distance falloff into three colour tables; callers are gouraud/flat lighting
+KERN 0x0601302c scene_RunFadeSequence RENAME scene_DrawFrameAndFade draws background poly, level select info, steps fade counter at +0x2e, flushes list
+KERN 0x06013128 actor_UpdateFlagsA RENAME actor_StepAnimByFlagDir sets +/-1 direction word from flag test then calls anim_StepTrack; callback in behavior table
+KERN 0x06013178 actor_UpdateFlagsB RENAME actor_StepAnimFromLinked copies anim word from linked actor (+0x68), sets flags, calls anim_StepTrack with it
+KERN 0x060133d0 counter_CompareCapped RENAME counter_TestOrAddCapped mode 0 compares counter byte and sets flag; else sets/adds counter clamped 0..99
+KERN 0x060134cc stub_060134cc RENAME level_InitObjectsAndCallbacks loads object tables, installs callbacks, inits objects; called by menu screen init
+KERN 0x06013518 stub_06013518 RENAME level_TeardownObjects clears object slots then two stubs; called from reset-and-run-callbacks teardown
+KERN 0x06013540 state_FillCallbackTable RENAME actor_InitBehaviorTable clears block, inits object free list, fills actor behavior callback table
+KERN 0x0601359c stub_0601359c RENAME sys_FreeHandleAndClearStubs frees handle if set then two stub calls; teardown partner of level_TeardownObjects
+KERN 0x060135c4 stub_060135c4 RENAME pkg_FinishLoadSteps loops pkg_LoadStateMachineStep until done then sets a status flag bit
+KERN 0x060135ec pad_HandleEdges RENAME pad_FilterSpecialButtons on edge presses adjusts a value by +/-8 or sets a flag and returns 0 to consume input, else passes pad bits through
+KERN 0x06014954 anim_GetBoneYawAlt RENAME anim_RotateVecByBoneKey slerps keys, composes quats, builds rotation matrix and applies it to a 3-vector; no atan2 seen
+KERN 0x06016228 anim_TrackInRange RENAME anim_AdvanceAlongSpline loops advancing frame index along spline while consuming a distance budget; returns true if moved
+KERN 0x06016d20 actor_TransformToParent CONFIRM actor_TransformToParent dots actor position with linked parent matrix rows plus translation; caller uses result as position
+KERN 0x06018c74 player_UpdateGround UNSURE player_UpdateGround no direct callers; uses hit-reaction target and chase-like anim picks, role (player vs creature AI) unclear
+KERN 0x06019284 player_StateHandlerA UNSURE player_StateHandlerA no callers; creature-style attack/idle state logic with 5 radial spawned objects; player vs AI not provable
+KERN 0x06019850 player_StateHandlerB UNSURE player_StateHandlerB set by player_SetStateCallback but body faces a target via atan2 and picks random idle sounds, no pad reads; role unclear
+KERN 0x06019d68 player_StateHandlerC UNSURE player_StateHandlerC no callers; turns toward a target and spawns a projectile-like object via factory pointer, using char-class anim table; player vs AI unclear
+KERN 0x0601a2dc player_StateHandlerD UNSURE player_StateHandlerD no callers; anim-state machine spawning an object at own position on a given frame; role unclear
+KERN 0x0601a670 path_UpdateSpeedRamp RENAME actor_RampMoveSpeed accelerates or decelerates speed field of linked move object toward char-class limits, then calls update callback; not path data
+KERN 0x0601a764 enemy_UpdatePatrolAnimState CONFIRM enemy_UpdatePatrolAnimState enemy state machine picks idle/walk/turn animation from target distance and nearest path frame
+KERN 0x0601ab64 enemy_SpawnProjectileOnRail CONFIRM enemy_SpawnProjectileOnRail at attack frame checks range and facing then spawns object type 0x1a or 0x1c via factory and positions it
+KERN 0x0601af5c path_GetKeyframeOffset CONFIRM path_GetKeyframeOffset scans 0x28-byte records for the one covering current frame, returns scaled offset from table start
+KERN 0x0601aff4 enemy_AdvanceRailKeyframe CONFIRM enemy_AdvanceRailKeyframe on countdown expiry steps to next/prev 0x28-byte keyframe record, recomputes position, switches anim
+KERN 0x0601b3f0 path_SamplePositionAndApply RENAME enemy_SelectSequenceFromTarget calls obj_UpdateHitReaction for target vectors then anim_SelectChildSequence with char-class data; no path sampling
+KERN 0x0601b4cc path_SampleObjectRailPoint CONFIRM path_SampleObjectRailPoint evaluates anim spline at frame (mirrored if flag 0) then applies 3x3 matrix+offset at typedef +0x20; callers are rail eval/placement
+KERN 0x0601b5c0 obj_SampleAnimPoint CONFIRM obj_SampleAnimPoint evaluates object's own spline at +0x28 (mirrored unless flag), transforms by matrix at +0x20; callers sample object point
+KERN 0x0601b6d0 obj_ComputeMovementDeltaSquared RENAME obj_AimAlongMovement computes delta (+0x10 minus +4), sqrt length, atan2 yaw to +0x2a and pitch to +0x28 of global object; not just squared delta; callers then build rotation from those angles
+KERN 0x0601b774 path_ComputeSegmentDeltaLength RENAME path_ComputeSegmentDirection delta of consecutive 0x28-byte keyframes, sqrt then hardware divide and multiply, writes normalized 3-vector to param_2 (zeros if degenerate); not a length
+KERN 0x0601b970 path_SampleFramePosition CONFIRM path_SampleFramePosition evaluates spline at frame (mirrored when flag 0) then applies matrix at +0x20; used by FindNearestFrame and rail callers
+KERN 0x0601ba68 path_FindNearestFrame CONFIRM path_FindNearestFrame loops frames sampling positions and compares squared distance and cross terms to target point; callers use returned frame
+KERN 0x0601c460 player_BuildFacingMatrices UNSURE player_BuildFacingMatrices takes a scale value (>>4), builds cross-product basis vectors with sqrt normalize into short vectors of a global struct; no sin/cos seen, callers pass ramping scale or constant
+KERN 0x0601c9fc player_SetFacingAngle RENAME player_SetCurrentRailPiece param is a rail piece object (path_SwitchRailPiece passes it) stored at player +0x78, matrices rebuilt first if a flag differs; not an angle
+KERN 0x0601ca90 player_ApplyImpulseDecay CONFIRM player_ApplyImpulseDecay counts down per-axis timers at +0x48..0x4a and scales velocity delta by decay table/divide, adds to position; called from player state runner
+KERN 0x0601cc00 player_StartImpulseTimers CONFIRM player_StartImpulseTimers sets per-axis timers +0x48..0x4a to half abs component plus 1 capped 0x2d, consumed by ApplyImpulseDecay
+KERN 0x0601ccac player_ApplyPushDecay CONFIRM player_ApplyPushDecay moves player position toward stored target scaled by decreasing table entry while counter counts down, clears flag at zero
+KERN 0x0601cd90 screen_RunFadeLoop RENAME game_RunFramesUntilInput runs 30 iterations of collision pass, sfx update and pkg step paced 6-7 frames each, returns 1 early on pad input; no fade or palette work
+KERN 0x0601ce4c screen_RunFadeTransition RENAME attract_RunDemoStep seeds RNG, swaps character id and dialog id from 3-entry tables, runs frame loop, drains pkg steps, resets subsystems, cycles counter 0..2; called from title attract loop
+KERN 0x0601cf54 enemy_UpdateIdleBlink CONFIRM enemy_UpdateIdleBlink random timer swaps idle/blink anim pointers, then hit-reaction and child sequence select
+KERN 0x0601d0c8 effect_SpawnAtObject CONFIRM effect_SpawnAtObject clones effect template by type, copies parent position, offsets, links into active list; callers are hit/pickup code
+KERN 0x0601d1b4 effect_UpdateAnimEndDespawn CONFIRM effect_UpdateAnimEndDespawn frees object when anim frame wraps; installed as update callback in level_InitObjects
+KERN 0x0601d554 level_LoadObjectTables CONFIRM level_LoadObjectTables loads package entry, copies 16-byte command records, builds 30 record pointers; called from level setup stub
+KERN 0x0601d6a4 effect_SpawnSprite CONFIRM effect_SpawnSprite allocs sprite entry, picks def from 30-entry table by type, sets position and scale, links into list
+KERN 0x0601d8a8 path_SamplePositionAndApply_2 RENAME enemy_UpdateHitReactionAnim body only calls obj_UpdateHitReaction then anim_SelectChildSequence (idle-blink minus blink); no path code
+KERN 0x0601d948 pkg_LoadObjectGroup CONFIRM pkg_LoadObjectGroup registers group record, loads four sub-entries with relocation; called per set bit and with 0,0xb,0xc
+KERN 0x0601da88 obj_ResetState RENAME obj_CloneAndResetState clones object if not a template (flag 0x80), else unlinks; clears frame, velocity, flags; returns object
+KERN 0x0601db00 obj_InitFromTemplate CONFIRM obj_InitFromTemplate sets +0x79=6, copies position/flags/fields from source object into new object, transforms through parent matrix; sole caller is the type-6 update
+KERN 0x0601e8c8 sound_StopObjectVoice CONFIRM sound_StopObjectVoice type-6 object: stops channel if owned then sets voice id -1; called from object list teardown loops
+KERN 0x0601e928 obj_UpdateType6Frame CONFIRM obj_UpdateType6Frame per-frame update of type-6 objects (anim frame, move-and-collide, countdown, sound); installed as callback in hook_InstallCallbackInit
+KERN 0x0601f1a4 menu_UpdateDialogFrame RENAME level_StepLoadStateMachine 8-state loader: reads package entries, uploads textures, queues sound, spawns characters for screen id; returns done flag; no menu logic
+KERN 0x0601f5b4 menu_RunDialogLoop RENAME level_RunLoadScreenLoop loops level_StepLoadStateMachine while drawing bouncing sprite/polygon each frame; callers are title loop and fade transition
+KERN 0x0601f72c game_ResetSubsystems CONFIRM game_ResetSubsystems frees actor lists, resets sound channels, frees load buffer, restores 0x28-byte table copy; called after load screens
+KERN 0x0601f884 collide_TestObjectPair CONFIRM collide_TestObjectPair checks direction bytes, state and type of two objects and returns whether they interact; called by collide_RecordHit when no hit record
+KERN 0x0601f9e4 collide_RecordHit CONFIRM collide_RecordHit keeps up to three nearest hit objects in slots by distance; installed as collision callback in hook_InstallCallbacks
+KERN 0x0601fb10 obj_ApplyVelocityAngle CONFIRM obj_ApplyVelocityAngle type-6: yaw from velocity vector, speed via sqrt, then obj_UpdateMotionFromAnim; installed as callback
+KERN 0x0601fc0c obj_MoveAndCollide CONFIRM obj_MoveAndCollide scales velocity, adds platform motion, tests against collision record shorts, resolves position; used by type-6 update
+KERN 0x06020268 obj_TickStateCountdown CONFIRM obj_TickStateCountdown counter decrement; at zero sets state byte 2 and angle fields else advances angle; installed in callback table
+KERN 0x06020340 obj_UpdateDeathCountdown UNSURE obj_UpdateDeathCountdown releases voice, hit-flag test sets sfx and clears +0x7c, else counts down +0x70 then calls function; death role not proven
+KERN 0x060203e8 obj_UpdateScaleFade CONFIRM obj_UpdateScaleFade ramps scale ceiling up/down with sfx at ends and writes scaled x/y into child +0x24/+0x26; caller is hit reaction
+KERN 0x060204fc obj_UpdateHitReaction CONFIRM obj_UpdateHitReaction checks owner hit flags (+0x2a), health at +0x7c, knockback and yaw, outputs motion vectors; called by enemy updates
+KERN 0x06020bec anim_StartChildSequence RENAME sfx_SwitchObjectLoop releases old voice if changed, scales rate by parent speed, stores new id at +0x40 and starts positional sound; no animation work
+KERN 0x06020d04 anim_SelectChildSequence CONFIRM anim_SelectChildSequence faces movement, picks idle/walk/run sequence by state and random, starts it, then steps +0x7e frame and calls anim_AdvanceFrame; 17 callers
+KERN 0x06020ee4 coll_ResolveHitFlags CONFIRM coll_ResolveHitFlags per-type collision response setting owner +0x2a hit bits and returning accept/reject; installed in callback table
+KERN 0x060213b0 obj_ComputeAttachOffset UNSURE obj_ComputeAttachOffset init callback in table 06066380; first branch sets countdown 15 and state bytes, then transforms position by parent matrix; role of branch not fully proven
+KERN 0x060216c8 obj_InitChildFromParent CONFIRM obj_InitChildFromParent sets anim from parent type entry, state bytes, copies parent position or spline, clears slots, calls init fn; callers spawn/countdown
+KERN 0x060217cc obj_UpdateChildCountdown CONFIRM obj_UpdateChildCountdown decrements +0x70-area counter, advances anim frame, damps velocity, at zero re-inits or flags parent; installed in table 06066360
+KERN 0x06021900 obj_SpawnChildFromParent CONFIRM obj_SpawnChildFromParent clones object from +0x30 or reuses it, sets child scroll fields from parent, links parent and calls obj_InitChildFromParent
+KERN 0x060219c0 level_SpawnObjectFromStream CONFIRM level_SpawnObjectFromStream reads package entries, allocates object slot, assigns type callback, relocates anim track, advances stream index by 5; called per set bit
+KERN 0x06021ae4 obj_InitSpawnedObjectPosition RENAME obj_ComputeDepthSortKey computes position from parent/path, transforms by matrix and returns a value that render_SortObjectsByDepth stores as sort key and compares
+KERN 0x06021cbc obj_ResetAttachedState CONFIRM obj_ResetAttachedState clears flag bit, zeroes link and hit flags in +0x24 record, restores frame index, reloads type entry by id
+KERN 0x06021d04 obj_LinkAttachedChild CONFIRM obj_LinkAttachedChild if type has attach def and none linked, spawns child and pushes it on list head; called from trigger flag handler
+KERN 0x06021d44 obj_UnlinkAttachedChild CONFIRM obj_UnlinkAttachedChild releases voice, clears child link, restores frame index (mirrored by flip flag), flags child; callers trigger flags and draw-mode free
+KERN 0x06021dc8 obj_CheckFacingTowardTarget CONFIRM obj_CheckFacingTowardTarget compares atan angle to path point vs to target, returns 1, -1 or 0; used by player and enemy updates
+KERN 0x06021ea4 obj_ForEachSetBitCallback RENAME level_SpawnObjectsFromBitmask walks bits of two 32-bit masks and calls level_SpawnObjectFromStream with the bit index per set bit; only caller is the load state machine
+KERN 0x06025a58 obj_ReturnToFreeList RENAME obj_LinkIntoActiveList pushes object onto DAT_06066024 which is the active list head, not a free list
+KERN 0x06025a70 obj_CallWithDefaultArgs RENAME obj_RemoveFromActiveList calls list_MoveToFreeList with the active list head
+KERN 0x06025b10 obj_TurnYawToward_2 RENAME obj_TurnSecondAngleToward same steering on another angle field, suffix not allowed
+KERN 0x060261c4 obj_CanHitTarget RENAME obj_CollisionAllowsHit installed in per-kind collision handler table DAT_06066010, tests rule flags vs target kind
+KERN 0x06026628 obj_UpdateHitReaction_2 RENAME obj_UpdateHitReactionAlt suffix not allowed, installed as alternate update handler
+KERN 0x06026f5c obj_ReleaseAnimHandle RENAME obj_ReleaseSoundChannel checks sfx_IsChannelOwner, stops channel, clears owner and index to -1
+KERN 0x06028438 queue_PushCommandByte CONFIRM queue_PushCommandByte appends entry to global queue storing byte at +2 and copying block; caller feeds each set bit index
+KERN 0x06028500 hook_InstallCallbacks_2 RENAME hook_InstallObjectUpdateCallbacks writes object update/hit-reaction/can-hit callbacks into dispatch tables; called from level setup stub; drops numeric suffix
+KERN 0x0602853c path_UpdateBranchChoice CONFIRM path_UpdateBranchChoice chooses forward or fork rail branch by heading angle difference and sets change flag
+KERN 0x060286ac res_StartIndexedRequest RENAME sfx_PlaySoundById callers are player/collide code; registers a sound channel entry with base+index id
+KERN 0x0602896c path_EvalRailPositionSigned CONFIRM path_EvalRailPositionSigned sign of node index sets reverse flag 0x40 then evaluates motion on rail; used by coll_ResolveMove and player movement
+KERN 0x060289a4 player_UpdateRailPlacement CONFIRM player_UpdateRailPlacement transforms position by parent matrix then evaluates rail and derives heading; called from main player update
+KERN 0x06028e20 player_BlendPositionToTarget CONFIRM player_BlendPositionToTarget polls pad, samples anim point and counts down a frame counter while computing world position; installed as per-object callback
+KERN 0x0602906c obj_ApplyPlatformDelta CONFIRM obj_ApplyPlatformDelta adds carrier object's position (linked at +0x6c) to this object's offsets and adjusts vertical and heading
+KERN 0x060292ac player_EnterRailPiece CONFIRM player_EnterRailPiece clears tile flag, places player onto rail piece via matrix transform and rail evaluation
+KERN 0x060297b4 player_ReverseRailDirection CONFIRM player_ReverseRailDirection toggles direction flag 0x10, negates velocity, re-evaluates placement on reversed piece
+KERN 0x060299bc player_CanLeaveRailPiece RENAME collide_IsOnDifferentRailPiece only callers are collision pair tests; compares neighbour rail data against object's own rail data to decide whether the pair interacts
+KERN 0x06029a1c collide_CheckPickupReach RENAME collide_CheckMoveClear subtracts relative positions and sweeps via geometry-resolve helper; returns 0 if blocked; no pickup specific logic
+KERN 0x06029af4 collide_IsObjectActive RENAME collide_CanPlayerTouchObject predicate called when no hit data is passed, same pattern as other can-hit callbacks; switches on object type/subtype and player power flags
+KERN 0x06029eb8 player_GetPowerupLevel CONFIRM player_GetPowerupLevel returns 0..3 (or -1) from state flags and countdown with blink thresholds
+KERN 0x0602a658 player_ClearHitState RENAME player_ResetMotionState calls tile flag clear and zeroes velocity, previous position and timer fields; nothing hit specific
+KERN 0x0602a6dc player_SetCharacterMode UNSURE player_SetCharacterMode mode 1 or 2 sets anim bytes and timer; looks like respawn or game-over setup but not certain
+KERN 0x0602a7f0 player_UpdateScriptedAnim CONFIRM player_UpdateScriptedAnim steps anim sequence with countdown and facing fade, ends via set-mode call; installed as an update callback
+KERN 0x0602aa58 mover_ClampRailSpeed CONFIRM mover_ClampRailSpeed clamps horizontal speed against rail limits using direction sign and fixed-point multiply
+KERN 0x0602ace4 mover_UpdateVerticalVelocity CONFIRM mover_UpdateVerticalVelocity applies gravity step and ground-piece push to vertical and horizontal velocity, sets airborne flag
+KERN 0x0602ae10 mover_SteerAlongRailSegment CONFIRM mover_SteerAlongRailSegment velocity along rail segment direction using atan ratio, scale and angle wrap
+KERN 0x0602b2fc mover_UpdateRailNodes CONFIRM mover_UpdateRailNodes reads 6-byte node records by index parity and aligns speed and heading to them
+KERN 0x0602b748 timer_TickNegativeCounter CONFIRM timer_TickNegativeCounter counts a negative counter up to zero, returns 1 at zero; used in player movement
+KERN 0x0602b774 player_StartKnockback UNSURE player_StartKnockback sets state 9 timer 10, saves and halves velocities; paired restore in the jump start suggests jump windup rather than knockback
+KERN 0x0602b7e8 player_StartJumpFromGround CONFIRM player_StartJumpFromGround restores saved velocities, state 9 to 2, sets upward vertical velocity; also called from actor collision
+KERN 0x0602b84c pad_PollPlayerInput CONFIRM pad_PollPlayerInput keeps previous pad word, maps buttons and edges unless input locked, then reads stream word
+KERN 0x0602cb70 obj_SetFacingFromParent UNSURE obj_SetFacingFromParent transforms position by parent matrix and normalizes a vector; purpose (facing) not shown in visible code
+KERN 0x0602cd98 path_LocatePlayerOnRail CONFIRM path_LocatePlayerOnRail walks linked rail pieces to find piece and node containing the position
+KERN 0x0602d3dc player_ApplyMotionAndRail CONFIRM player_ApplyMotionAndRail applies velocity, locates rail, handles piece change and ground contact
+KERN 0x0602dda8 player_RefreshRailPlacement CONFIRM player_RefreshRailPlacement recomputes world position from parent matrix and clamps to rail, optional direction output
+KERN 0x0602e098 table_FindSlotAndCall RENAME anim_QueueFromSlotTable scans 3 slot entries for id matching object byte then queues an animation on channel 0 with entry data
+KERN 0x0602e0e4 player_TrySwapLeadCharacter CONFIRM player_TrySwapLeadCharacter button-triggered swap of lead and partner characters copying positions, else changes character anim state
+KERN 0x0602e4c8 player_ProcessPickupQueue RENAME player_UpdateMainState huge per-frame player update callback: pickup switch is only the first part, then hurt/invuln, rail motion, character swap, anim
+KERN 0x0602ff2e stub_0602ff2e RENAME sys_CallThroughR1 four-byte thunk that calls the function pointer already in r1
+KERN 0x0602ff88 save_LoadPlayerStateFromBlock CONFIRM save_LoadPlayerStateFromBlock unpacks lives, hearts, flags, character from block bytes; caller is password entry screen
+KERN 0x0603005c save_StorePlayerStateToBlock CONFIRM save_StorePlayerStateToBlock packs lives, hearts, flags, character into block bytes; used by password encode and level select info
+KERN 0x060300f8 obj_FollowPartnerCharacter CONFIRM obj_FollowPartnerCharacter partner follows lead using position delta and velocity, flips with lead direction, installed as partner callback
+KERN 0x060305b0 player_ResetActiveObject CONFIRM player_ResetActiveObject resets flags/anim fields of active slot object, returns it; callers use it as dialog object
+KERN 0x06030648 player_ResetObjectForSlot CONFIRM player_ResetObjectForSlot same reset as above by slot index; menu loop calls with 0 and 1
+KERN 0x060306b4 obj_FindNearestAttachPoint RENAME anim_FindNearestFrameToPoint samples each frame position of an anim/path object via path_SampleFramePosition, returns index of closest frame to a point within a radius
+KERN 0x06030770 obj_MoveAlongPathWithCollision UNSURE obj_MoveAlongPathWithCollision visible part is slot setup, child lookup, anim change, facing, spline position; called from anim channel switch; collision part not visible
+KERN 0x06031764 obj_CallHelperOnSlot RENAME coll_ClearSlotTileFlag only wraps coll_ClearTileFlag on a slot struct at fixed stride; caller level_UpdateActorsAndFreeNodes passes 0
+KERN 0x06031788 player_SpawnCharacterObject CONFIRM sets slot pointer from package entries, relocates anim track, appends records, 5 entries per slot
+KERN 0x060318cc player_SpawnAllCharacters CONFIRM loops six slots; slots 0-1 initialised, others spawned per bitmask
+KERN 0x06031990 player_UpdateCharacterSlots RENAME player_ResetCharacterSlots clears hit state and slot pointers for slots 2-5, reapplies anim; sole caller is game_ResetSubsystems
+KERN 0x06031a88 player_InitSlotDefaults CONFIRM sets per-player hearts/counters and clears slot table; called at level and menu start
+KERN 0x06031b7c level_InitObjects CONFIRM installs update callbacks, spawns two player slots, loads 8 object entries, copies camera block; called from level setup
+KERN 0x06031d28 level_ClearObjectSlots CONFIRM clears slot pointers for two slots and the object pointer table; called from teardown stub
+KERN 0x06031d64 player_ChangeCharacterAnim RENAME player_SwitchActiveCharacter installs another character object into the slot (finds matching anim index, copies state block); callers are lead-character swap and slot reset
+KERN 0x06031f58 code_PushEntry RENAME trigger_PushEvent appends id|type<<16 to bounded 40-entry event table; fed from depth-sort/collision/anim code, not password code
+KERN 0x06031f88 pw_CharPairToIndex CONFIRM maps two chars (digit, lower, upper) to base-62 pair index, 0 for underscore, -1 if invalid
+KERN 0x0603200c code_MatchEntries RENAME trigger_MatchEvents masks input ids and replaces with matching stored event entry; callers are actor script/counter/trigger handlers
+KERN 0x06032078 obj_ProcessTriggerFlags CONFIRM reads trigger record switch, matches id via event table, links/unlinks attached child and sets flags
+KERN 0x06032194 render_SortObjectsByDepth RENAME level_UpdateTriggerObjects flushes pending event queue, ticks respawn timers, sorts object list by key with budget of 8, calls obj_ProcessTriggerFlags; no rendering
+KERN 0x06032318 obj_UpdateAnimCounter RENAME obj_UpdateEmitterSound calls sound helper with id and handle from field +0x4c, stores returned handle byte; used for sound-emitter objects in the timer loop
+KERN 0x060323a8 obj_FinishAnimCounter RENAME obj_StopSoundChannel calls snd_StopAndClearChannel on low byte of field +0x4c then sets it to 0xff; callers run it over object list at teardown
+KERN 0x060323c8 obj_CollideListWithList RENAME level_UpdateTriggerZones first loop resolves movement vs solid objects, second loop ticks timers of trigger and sound emitter objects, plays sfx or pushes events
+KERN 0x06032894 level_RunCollisionPass CONFIRM per-frame pass: collide lists, per-object collision update, trigger sort, world frame update; also called from fade loop
+KERN 0x06032994 obj_UpdateHitReaction_3 RENAME obj_UpdateHitReaction drop numeric suffix; large per-object update using attached ground object transform; body mostly unseen, called from obj_UpdateActiveList
+KERN 0x06033198 math_SinTableLookup CONFIRM masks angle, indexes 16-bit table, negates for second half; callers build rotation matrices from it
+KERN 0x060331c4 math_Atan2 CONFIRM abs of both args, divides smaller by larger via table, folds into quadrant by signs; callers use it for yaw
+KERN 0x06033254 math_AtanRatio CONFIRM returns table angle of |a|/|b| with sign fixup; zero divisor returns constant; callers use it for pitch/steering
+KERN 0x060332a8 math_AngleComplement CONFIRM atan of ratio then constant minus result wrapped into angle range; used by slerp and polygon tests
+KERN 0x060332d0 enemy_UpdateStateA RENAME enemy_UpdateShooterAI faces target, counts down timer, then spawns child projectile via table function and resets timer; no direct callers (table dispatch)
+KERN 0x0603342c enemy_UpdateStateB RENAME enemy_UpdateChaseAI picks walk/run/attack anim entries from distance and facing, flips direction; no direct callers (table dispatch)
+KERN 0x060336f8 stub_060336f8 RENAME snd_StartCurrentMusic passes current music handle and 1 to music helper; called right after sound bank entries load
+KERN 0x06033714 stub_06033714 RENAME snd_StopCurrentMusic polls command on current music handle; always followed by release of the handle and zeroing it (reset, buffer swap, title exit)
+KERN 0x06033730 sfx_RegisterChannelEntry RENAME sfx_QueueSoundRequest appends or replaces one of eight 0x14-byte request records (id, key, volume, priority) with a counter; callers pass id, volume, priority 3; not a channel table
+KERN 0x060337b8 sfx_FindFreeChannel CONFIRM scans eight channels for idle one or steals lowest-priority via LRU order list, stores id/time/priority, returns index or -1
+KERN 0x060338a0 sfx_IsChannelOwner CONFIRM true only if channel index below 8 holds given sound id and channel still active; callers stop or update the voice only when it holds
+KERN 0x060338d8 sfx_ComputeDistanceVolume CONFIRM distance from sound source to camera object, fades volume near range limit, pan from angle to camera yaw; returns 0 when out of range
+KERN 0x06033a2c sfx_PlayPositional CONFIRM computes volume/pan from distance, updates existing owned channel or allocates one and starts voice; stops channel when inaudible
+KERN 0x06033b88 sfx_ResetChannels CONFIRM zeroes request count and 0x60-byte channel table, resets LRU order list to 0..7; called once from game_ResetSubsystems
+KERN 0x06033bc0 sfx_UpdateChannels RENAME sfx_FlushPlayQueue walks queued sound requests (5-word entries), dedupes recent repeats, finds free channel and starts voice
+KERN 0x06033cb8 ui_AdjustValueA RENAME menu_AdjustSfxVolume options screen row 0: +/-0x40 clamp, value used as volume of test sfx voice
+KERN 0x06033d04 ui_AdjustVolumeB RENAME menu_AdjustMusicVolume options screen row 1: +/-0x40 clamp then sends music volume command
+KERN 0x06033d74 enemy_UpdateStateC RENAME enemy_UpdateWander random timers swap between idle/walk anim sets, flips facing toward target
+KERN 0x06033fa8 enemy_EnterState_0c RENAME enemy_EnterWander sets state 0x0c, installs enemy_UpdateStateC handler, random countdown timer
+KERN 0x06033ff4 enemy_UpdateStateD UNSURE enemy_UpdateStateD no callers; picks random offset target near nearest path frame and steers/flips, unclear behaviour
+KERN 0x0603440c gfx_UpdateAnimTexture RENAME gfx_UpdateBackgroundScroll derives scroll offsets from camera heading (sqrt/atan) and sets VDP1 base and clamped Y; drawn in scene fade sequence
+KERN 0x060345d8 list_InitNode UNSURE list_InitNode caller body truncated before use; sets inline buffer pointer and copies words via vdp2 helper, purpose unclear
+KERN 0x06034614 gfx_ApplyVideoModeChange CONFIRM gfx_ApplyVideoModeChange when cached mode differs, reinitialises vdp2 char tables, bitmap, map planes and caches mode
+KERN 0x0603469c game_ClearFrameCounters RENAME gfx_ResetVideoModeState zeroes the current and cached video mode words (the ones gfx_ApplyVideoModeChange compares) and sets a base pointer; not frame counters
+KERN 0x060346c8 enemy_UpdateStateE UNSURE enemy_UpdateStateE no callers; toggles flag 0x40 by hit reaction, steers facing and vertical offset, role unclear
+KERN 0x060348e8 sys_InitCdAndVideo CONFIRM sys_InitCdAndVideo inits heap, loads duck player, configures cache, opens CD filesystem and movie video hardware
+KERN 0x06034978 sys_ResetPlayback RENAME movie_ResetPlayback clears playing flag (same one movie_StartIfEnabled sets), runs reset helpers, reinits default heap
+KERN 0x060349b4 movie_StartIfEnabled CONFIRM movie_StartIfEnabled nonzero arg and status bit clear sets playing flag and calls movie_StartPlayback
+KERN 0x06034a0c mem_AllocZeroed CONFIRM mem_AllocZeroed allocates (or uses fixed buffer) and zero-fills clamped size
+KERN 0x06034aa0 stub_06034aa0 RENAME scu_DmaCopyThunk tail wrapper that just calls scu_DmaCopyChecked
+KERN 0x06034ab4 movie_FeedStreamData CONFIRM movie_FeedStreamData loops pulling stream chunks into ring buffer until requested byte count satisfied
+KERN 0x06034b5c movie_ResetCounters CONFIRM movie_ResetCounters reloads next-frame time from per-frame step (doubled for one mode) and clears frame/audio counters
+KERN 0x06034ba0 movie_PresentFrame RENAME movie_AdvanceFrameTiming vblank-called; advances elapsed and next-frame counters, resyncs on audio change, does not draw
+KERN 0x06034d34 movie_OpenStream CONFIRM movie_OpenStream reads stream header params, creates ring buffer, prefeeds data, sets active flag
+KERN 0x06034ec4 movie_StopIfActive RENAME movie_StopAudioIfActive when active flag set sends one-arg audio command 2 from play loop
+KERN 0x06034ee4 movie_SendAudioSetup CONFIRM movie_SendAudioSetup when active sends the two audio parameter blocks to the sound command routine
+KERN 0x06034f10 movie_UpdateAudioMode CONFIRM movie_UpdateAudioMode builds audio parameter blocks from stream channels/rate, sends them, resets counters, sets run flag
+KERN 0x0603502c movie_Shutdown CONFIRM movie_Shutdown stops audio, releases stream buffer and decoder handles, clears them
+KERN 0x06035108 cd_StartStreamRead CONFIRM cd_StartStreamRead sets GFS read params and starts nonblocking transfer
+KERN 0x060354fc cd_SeekStreamAligned CONFIRM cd_SeekStreamAligned stops transfer, seeks to sector, restarts streaming read, discards remainder; no callers
+KERN 0x06035300 cd_StopTransfer CONFIRM cd_StopTransfer stops GFS transfer then releases handle; no callers
+KERN 0x06035320 cd_ReadBuffered CONFIRM cd_ReadBuffered reads bytes via sector buffer with memcpy and GFS_Fread, handling EOF and aligned bulk reads
+KERN 0x060355bc cd_SeekStreamSimple CONFIRM cd_SeekStreamSimple stops transfer, GFS_Seek and wait, no read restart, discards sector remainder; no callers
+KERN 0x06035678 mem_ClearWordBlock CONFIRM mem_ClearWordBlock zero-fills fixed block of words (video table) with constant count
+KERN 0x06035698 movie_InitVideoHardware CONFIRM movie_InitVideoHardware resets video register shadows, sets modes, clears table, writes color RAM for playback
+KERN 0x06035740 movie_CreateDecoder CONFIRM movie_CreateDecoder creates decoder objects, stores handles, cleans up and returns -1 on failure
+KERN 0x060357e4 movie_StartPlayback CONFIRM movie_StartPlayback creates decoder, opens stream, runs play loop, shuts down and frees all handles
+KERN 0x06035920 movie_SwapFrameBuffer CONFIRM movie_SwapFrameBuffer called from vblank handlers; toggles buffer index and reprograms display table for the other buffer
+KERN 0x060359ec movie_InitPlayerState CONFIRM movie_InitPlayerState zeroes player state, fills 16-entry table and 64x64 tile maps for the movie display, sets ready flag
+KERN 0x06035ba4 movie_ResetPlayerState CONFIRM movie_ResetPlayerState clears ready flag and state byte, sets decoder mode, clears word block
+KERN 0x06035bc4 movie_PlayLoop CONFIRM movie_PlayLoop main FMV loop: inits player state, decoder, pad reset combo, calls movie_ helpers
+KERN 0x06035ef4 movie_ClearPlayerState CONFIRM movie_ClearPlayerState zeroes player struct and 16-word table; called by movie_PlayLoop
+KERN 0x06035f50 movie_SetDecoderMode RENAME scl_SelectScrollScreen switch on scroll screen id 1,2,4,8,0x10,0x20 into VDP2 shadow regs (SCL library, not movie code)
+KERN 0x06036840 hw_ResetRegisterShadows RENAME scl_InitVdp2 called from vdp2 scroll setup; resets VDP2 shadow state (SCL init)
+KERN 0x060368c4 hw_InitRegisterShadows RENAME scl_InitShadowDefaults loads defaults into shadow block at 0x06067e90 (TVMD, RAMCTL, cycle pattern)
+KERN 0x06036a94 hw_SetFlagAndValue RENAME scl_SetFrameInterval frame interval state at 0x0604e88c..; SCL_SetFrameInterval-like, moderate confidence
+KERN 0x06036ab8 hw_RequestUpdate RENAME scl_RequestUpdate sets dirty/update request to 1 if zero
+KERN 0x06036ad4 hw_SetModeParams RENAME scl_SetModeParams switch on global mode stores three params; SCL prefix
+KERN 0x06036c24 hw_AddModeParams RENAME scl_AddModeParams switch on global mode adds three deltas; SCL prefix
+KERN 0x06036db0 hw_ClampModeParam UNSURE hw_ClampModeParam clamps param per mode; exact register meaning not established
+KERN 0x06036eec hw_FlushShadowToRam RENAME scl_FlushShadowTables copies dirty shadow tables to VDP2 memory via mem_CopyWords16
+KERN 0x06037010 hw_FlushByMode RENAME scl_FlushByMode switch on dirty mode copies two tables then clears; SCL prefix
+KERN 0x060370a4 mem_CopyWords16 CONFIRM mem_CopyWords16 copies halfwords, count from byte size; used by flush routines
+KERN 0x060370cc hw_SetBitfieldMode RENAME scl_SetColRamMode sets color RAM mode 0,1,2 in RAMCTL shadow and raises update flag
+KERN 0x0603712c hw_FlushDirtyBlocks RENAME scl_FlushDirtyBlocks calls timed update then copies shadow blocks per dirty bit in 0x060680c0
+KERN 0x0603721c hw_EnableChannelBits UNSURE hw_EnableChannelBits ORs mask table entry into shadow; register meaning low confidence
+KERN 0x060373bc hw_ResetStatePointer RENAME scl_ResetStatePointer clears halfword, stores default data pointer; SCL prefix
+KERN 0x060373dc hw_SetPriorityConfig RENAME scl_SetPriority decodes config into priority shadows (sprite 0x06068758, NBG 0x06068110)
+KERN 0x060374cc hw_ClearStateBlock RENAME scl_ClearStateBlock clears halfword, sets flag, zeroes six state words; SCL prefix
+KERN 0x0603751c hw_CountFrameOrRun RENAME scl_CountFrameOrRun counts frames while state 1 else calls helper; SCL prefix
+KERN 0x06037560 hw_StateMachineStep RENAME scl_StateMachineStep switch on state halfword updating VDP2 registers; SCL prefix
+KERN 0x060376d8 hw_SetChannelMode RENAME scl_SetChannelMode switch on mode byte writing register constants; SCL prefix (cycle table like)
+KERN 0x060378c4 hw_ClearConfigStruct RENAME scl_InitVramConfigTb zeroes small VRAM config struct (SCL_InitVramConfigTb behaviour)
+KERN 0x060378fc hw_ApplyConfigStruct RENAME scl_SetVramConfig applies config struct to shadow registers bit by bit (SCL_SetVramConfig behaviour)
+KERN 0x06037db8 hw_SetChannelValues RENAME scl_SetChannelValues per selected mask bit writes value into register shadows; SCL prefix
+KERN 0x06037fcc hw_ClearMaskBits RENAME scl_FreeColRam clears mask bits in 8-slot table at 0x060680d0 and global 0x06068108
+KERN 0x06038004 hw_SetTimingMode RENAME scl_SetTimingMode range-checks param and sets timing bits; SCL prefix
+KERN 0x06038104 hw_CopyEightHalfwords RENAME scl_CopyEightHalfwords copies eight halfwords to a global table; SCL prefix
+KERN 0x0603812c hw_ResetAll RENAME scl_ResetAll calls scl_ResetShadowRegs* group resets, clears color RAM table and state byte
+KERN 0x060381a4 hw_ReadStatusBits RENAME scl_ReadStatusBits returns bits 12,13 of status halfword; SCL prefix
+KERN 0x060381c0 hw_ClearByteFlag RENAME scl_ClearByteFlag clears a global byte flag; SCL prefix
+KERN 0x060381d4 hw_SetChannelRegisters RENAME scl_SetChannelRegisters writes channel register bits by mask with limit check; SCL prefix
+KERN 0x06038638 hw_UpdateTimedState RENAME scl_UpdateTimedState 3-state timed fade/scroll update using state byte 0x0606811a, writes color RAM; SCL prefix
+KERN 0x06038b4c hw_AddScrollOffsets RENAME scl_AddScrollOffsets adds three offsets to shadow scroll regs at 0x060680b0 for plane arg; SCL prefix
+KERN 0x06038bcc scl_ResetShadowRegsAll CONFIRM scl_ResetShadowRegsAll clears many shadow register bits, dirty bit 0x80; called by scl reset-all
+KERN 0x06038e08 scl_ResetShadowRegsGroup40 CONFIRM scl_ResetShadowRegsGroup40 masks four sprite priority shadow words at 0x06068758 with dirty bit 0x40
+KERN 0x06038e74 scl_ResetShadowRegsGroup20 CONFIRM scl_ResetShadowRegsGroup20 sets shadow regs with dirty bit 0x20; only caller hw_ResetAll calls the group resets in sequence
+KERN 0x06038ed0 scl_ResetShadowRegsGroup10 CONFIRM scl_ResetShadowRegsGroup10 masks/zeroes four shadow regs with dirty bit 0x10; called from hw_ResetAll group sequence
+KERN 0x06038f30 scl_ResetShadowRegsGroup08 CONFIRM scl_ResetShadowRegsGroup08 masks/zeroes four shadow regs with dirty bit 0x08; called from hw_ResetAll group sequence
+KERN 0x06038f88 scl_ResetShadowRegsGroup04 CONFIRM scl_ResetShadowRegsGroup04 clears fields in two regs and zeroes six with dirty bit 0x04; called from hw_ResetAll group sequence
+KERN 0x060391d0 scl_SetColorRamEntries CONFIRM scl_SetColorRamEntries copies count halfwords of palette into color RAM via copy routine; movie init writes one entry (black) with it
+KERN 0x060392f0 scl_SetScreenPriority RENAME scl_SetScreenColorRamOffset param_2 is the bank slot index from hw_SetTimingMode and the matching getter result is used by scl_WriteColorRam as color RAM bank offset*0x400/0x200, so it is the per-screen color RAM offset (CRAOFA/B-like) plus enable bit, not priority
+KERN 0x060394a4 scl_GetScreenPriority RENAME scl_GetScreenColorRamOffset returns the 3-bit per-screen field that scl_WriteColorRam multiplies by 0x400/0x200 to address color RAM, i.e. the bank offset
+KERN 0x0603a3b0 gfs_ExchangeHandleField68 CONFIRM gfs_ExchangeHandleField68 GFS_Fread sets field to a constant, waits for transfer, then restores the returned old value; swap semantics match
+KERN 0x0603a414 gfs_CallHandleOp6c RENAME gfs_ExchangeHandleField6c helper swaps a field at handle+0x6c and returns the old value (same pattern as the 0x68 twin); cd_StartStreamRead sets it to 4 before starting a stream read
+KERN 0x0603f154 cd_ReadHirqRegister CONFIRM cd_ReadHirqRegister callers test interrupt bits 0x20/0x40 style flags from the returned halfword (vblank handler, status error, test-bits helper)
+KERN 0x0603f168 cd_SetHirqBits RENAME cd_ClearHirqBits all callers pass clear masks like 0xffffffe7/0xffffffeb (zeros clear bits) after commands; it ors the pending flags into a shadow word then writes param|1 to the HIRQ register
+KERN 0x0603f198 cd_WriteHirqMaskRegister RENAME cd_WriteHirqClear callers pass 0xfffffffd after command completion, a clear mask where zero bits acknowledge flags (cdc_EndDataTransfer); the stored value acts as write-to-clear
+KERN 0x0603f1a8 cd_ResetHirqMask UNSURE cd_ResetHirqMask writes one constant to the register and the shadow word, called only after CD system init; role of the constant not provable
+KERN 0x0603f1d0 cd_OrRegister RENAME cd_OrHirqShadow ors a value into the RAM shadow word (06052ec8), not a hardware register; callers pass 0x41/flag before init and abort-file commands
+KERN 0x0603f1e4 cd_ReadResponseRegister UNSURE cd_ReadResponseRegister no callers; just returns a halfword from a pointer, which register is not shown
+KERN 0x0603ffec snd_LoadDriverAndBank CONFIRM snd_LoadDriverAndBank halts sound CPU (cmd 7), clears sound RAM, copies driver and bank, sets table pointers, restarts (cmd 6); caller snd_UploadDriverProgram feeds it the driver data
+KERN 0x06040164 snd_WriteDataBlock CONFIRM snd_WriteDataBlock finds the table slot by two ids, copies the data block into sound RAM and flags the entry; caller snd_QueuePackageEntryLoad passes package entry data
+KERN 0x06040288 smpc_SendCmd1Arg_06040288 RENAME snd_SendCmdSetMasterVolume not SMPC: posts a command to the sound driver slot queue (snd_FindFreeSlot); caller snd_InitDriverAndChannels sends 0xf (max 4-bit level) with retry loop right after driver upload
+KERN 0x060402e8 smpc_SendCmd1Arg_060402e8 UNSURE smpc_SendCmd1Arg_060402e8 actually a sound driver command post with one arg; no callers so its command is unknown (prefix should be snd_)
+KERN 0x06040348 smpc_SendCmd2Arg_06040348 UNSURE smpc_SendCmd2Arg_06040348 actually a sound driver command post with two args; no callers so its command is unknown (prefix should be snd_)
+KERN 0x0604052c smpc_SendCmd0Arg_0604052c RENAME snd_SendCmdNoArg sound driver command with no args posted through the slot queue; used with retry loop after stopping all 8 channels and by snd_PollCmdWithRetry
+KERN 0x06040604 smpc_SendCmd1Arg_06040604 RENAME snd_SendCmdOneArg sound driver command post with one arg; sole caller snd_PollCmdWithRetry1 passes 1 in a retry loop; exact command meaning not shown
+KERN 0x06040664 smpc_SendCmd1Arg_06040664 UNSURE smpc_SendCmd1Arg_06040664 actually a sound driver command post with one arg; no callers (prefix should be snd_)
+KERN 0x060406c4 smpc_SendCmd1Arg_060406c4 UNSURE smpc_SendCmd1Arg_060406c4 actually a sound driver command post with one arg; no callers (prefix should be snd_)
+KERN 0x06040724 smpc_SendCmd3Arg_06040724 RENAME snd_SendCmdSetVolume sound driver command with three args; sole caller snd_SetMusicVolumeCmd passes 1, a volume looked up from a 0x40-entry table by level>>5, and 0
+KERN 0x0604079c smpc_SendCmd2Arg_0604079c UNSURE smpc_SendCmd2Arg_0604079c actually a sound driver command post with two args (one duplicated at offset 5); no callers
+KERN 0x06040a54 smpc_SendCmd1Arg_06040a54 RENAME snd_SendCmdStopMovieAudio sound driver command with arg 2, called only by movie_StopIfActive and movie_Shutdown when the movie audio flag is set
+KERN 0x06040b84 smpc_SendCmd0Arg_06040b84 UNSURE smpc_SendCmd0Arg_06040b84 actually a sound driver command post with no args; no callers (prefix should be snd_)
+KERN 0x06040bd8 smpc_SendCmd0Arg_06040bd8 UNSURE smpc_SendCmd0Arg_06040bd8 actually a sound driver command post with no args; no callers (prefix should be snd_)
+KERN 0x06040d24 snd_ReadTableEntry CONFIRM snd_ReadTableEntry reads a halfword entry by index from the sound driver table and returns masked value plus low byte; no callers
+KERN 0x06040d68 snd_ReadTableEntryBytes CONFIRM snd_ReadTableEntryBytes reads high and low bytes of an indexed halfword from a driver table; movie code reads entry 2 to track audio progress
+KERN 0x06040d90 snd_ReadTwoHalfwords CONFIRM snd_ReadTwoHalfwords returns first two halfwords of a driver block; no callers
+KERN 0x06040dac snd_ReadSixHalfwords CONFIRM snd_ReadSixHalfwords copies six halfwords from a driver block to a buffer; no callers
+KERN 0x06040e14 snd_FindTableEntry CONFIRM snd_FindTableEntry walks 8-byte entries matching two id fields and outputs data address and entry pointer; used by snd_WriteDataBlock
+KERN 0x06040e9c snd_ConvertSignedLevel RENAME snd_EncodePan converts signed value to a 5-bit sign-flagged code (negative -> ~x+0x11) that callers OR under a 3-bit field in the second arg byte, matching a pan field
+KERN 0x06040ed0 snd_FindFreeSlot RENAME snd_FindFreeCmdSlot scans seven 16-byte command slots for a free one and sets the current slot pointer; all 25 callers are sound command senders
+KERN 0x06040f68 smpc_SendCmd2Arg_06040f68 CONFIRM smpc_SendCmd2Arg_06040f68 lock, slot check, two args at +2/+3, command word, 0 on success; no callers
+KERN 0x06040fd4 smpc_SendCmd3Arg_06040fd4 CONFIRM smpc_SendCmd3Arg_06040fd4 same pattern with three args at +3..+5; no callers
+KERN 0x0604104c smpc_SendCmd0Arg_0604104c CONFIRM smpc_SendCmd0Arg_0604104c same pattern with no args; no callers
+KERN 0x06041af0 snd_SetFlagIfLimitReached RENAME smpc_SetStateIfPeriphFull sole caller is smpc_ParseIntbackData; compares peripheral count to max and sets the parse state byte to 1
+KERN 0x06041d6c snd_StoreByteInRow RENAME smpc_StoreRowByte0 callers are intback parse and PadMissingPeriphs; writes first byte of a peripheral row
+KERN 0x06041d98 snd_StoreByteInRow1 RENAME smpc_StoreRowByte1 callers are intback read/parse/pad; writes second byte of the peripheral row
+KERN 0x0604214c scu_DmaPollOrPurge UNSURE scu_DmaPollOrPurge no callers; status-byte check then cache purge of a range, owner module unclear
+KERN 0x0604235c table_ReadByte RENAME cd_ReadStatusByte callers are cd_CheckStatusIsOne and the DMA poll; reads one byte of a status table, compared to 1
+KERN 0x060426a4 sh2_DmacSetChannelHandler RENAME sh2_SetIrqVectorHandler callers pass vector numbers 0x40/0x41/0x47/0x49-0x4b (vblank, intback, SCU DMA end), not DMAC channels
+KERN 0x060426d0 sh2_DmacGetChannelHandler RENAME sh2_GetIrqVectorHandler reads same vector table; scu_DmaInstallIrq saves the old vector handler with it
+KERN 0x0604324c stdio_FreeBuffer RENAME stdio_FlushIovec called from the printf loop when 8 iovec entries are filled; calls the scatter-write and clears count fields
+KERN 0x06043280 stdio_UnbufferedWrite RENAME stdio_PrintfViaTempFile vfprintf builds a stack temp FILE, formats into it, flushes, copies error bit 0x40 back
+KERN 0x06043502 vfprintf_FormatLoop CONFIRM vfprintf_FormatLoop format parse loop with flag/width/precision switch, cvt calls and iovec flush; fits
+KERN 0x060453d6 vfprintf_ReturnTail CONFIRM vfprintf_ReturnTail only caller is the format loop; restores frame offset, returns -1 on FILE error bit else char count
+KERN 0x060455ec stdio_FreeNode RENAME reent_FreeChain recursively frees a linked chain (self-call on first field) then frees node; used by reent_FreeAll
+KERN 0x06045a50 stdio_SetLocaleName CONFIRM stdio_SetLocaleName accepts only two strings via strcmp and stores them in struct; called from reent_Call2 wrapper
+KERN 0x06045e08 softfp_IsEqual RENAME softfp_IsInf double-class test: masked high word ORed with low-nonzero flag compared to one constant (exponent-all-ones), only caller is printf loop
+KERN 0x06045e3c softfp_IsLess RENAME softfp_IsNan same masked value but sign of constant minus value, true when above infinity pattern; only caller is printf loop
+KERN 0x06047978 close_r RENAME sbrk_r body calls sbrk with one arg; caller mem_RefillFreeList uses it to grow heap (apply swap of *_r names together)
+KERN 0x060479ac lseek_r RENAME open_r wraps sys_Open (trap 5), no callers; wrapper names are shifted by one against the traps
+KERN 0x060479e4 isatty_r RENAME close_r wraps sys_Close (trap 6); caller is the stdio close callback
+KERN 0x06047a18 read_r RENAME lseek_r wraps sys_Lseek (trap 0x13); callers are seek callback and write callback seeking to end (args 0,2)
+KERN 0x06047a50 write_r RENAME read_r wraps sys_Read (trap 3); caller is the stdio read callback adding returned count
+KERN 0x06047a88 open_r RENAME write_r wraps sys_Write (trap 4); caller is the stdio write callback
+KERN 0x06047ac0 fstat_r CONFIRM fstat_r wraps fstat stub with errno copy; caller stdio_MakeBuffer reads mode bits
+KERN 0x06047af8 sys_Read CONFIRM sys_Read trap 3 with three args is read
+KERN 0x06047b18 sys_Lseek CONFIRM sys_Lseek trap 0x13 three args is lseek
+KERN 0x06047b38 sys_Write CONFIRM sys_Write trap 4 three args is write; sbrk also uses it for heap-collision message
+KERN 0x06047b58 sys_Close CONFIRM sys_Close trap 6 one arg is close
+KERN 0x06047bf0 fstat_Stub CONFIRM fstat_Stub sets one mode field constant, returns 0
+KERN 0x06047c00 sys_Open CONFIRM sys_Open trap 5 two args is open
+KERN 0x06047c20 sys_Creat CONFIRM sys_Creat trap 8 two args is creat; no callers
+KERN 0x06047c58 sys_Exit CONFIRM sys_Exit trap 1 one arg is exit; called from abort loop
+KERN 0x06047c78 sys_ExitConst CONFIRM sys_ExitConst trap 1 with constant arg; called from an errno wrapper
+KERN 0x06047cd4 sys_Call0F RENAME sys_Chmod trap 0xf with path and halfword mode, no callers
+KERN 0x06047cf4 sys_Call10 RENAME sys_Chown trap 0x10 with path and two halfword ids, no callers
+KERN 0x06047d18 sys_CallDat_06047d18 UNSURE sys_CallDat_06047d18 trap wrapper with constant number from literal and two args; no callers, number meaning unknown
+KERN 0x06047d38 sys_Call02 CONFIRM sys_Call02 trap call number 2 no args, no callers
+KERN 0x06047d50 sys_CallDat_06047d50 UNSURE sys_CallDat_06047d50 trap wrapper with constant from literal, no args; no callers, meaning unknown
+KERN 0x06047d6c sys_Call3B CONFIRM sys_Call3B trap call 0x3b with three args, body matches
+KERN 0x06047d8c sys_Call0B CONFIRM sys_Call0B trap call 0xb with two args, body matches
+KERN 0x06047da8 sys_Call2A CONFIRM sys_Call2A trap call 0x2a with one arg, body matches
+KERN 0x06048acc mem_AllocWrapper RENAME signal_RaiseR gets a pid-like value via helper then does errno-wrapped two-arg call (pid,signal): reentrant raise; caller is a global-reent wrapper, no allocation involved
+KERN 0x06048b00 errnoCall2_06048b00 RENAME signal_KillR zeroes errno, makes two-arg syscall, copies errno into reent struct; used with (pid,sig) by raise
+KERN 0x06048b38 reent_CallNoArg RENAME sys_GetPid no-arg stub whose result is passed as first syscall arg by the raise wrapper (process id)
+KERN 0x06049b8c __eqdf2 CONFIRM __eqdf2 unpacks two doubles and compares when neither is nan; used by float printing
+KERN 0x06049bec __gtdf2 CONFIRM __gtdf2 unpacks two doubles, returns -1 on nan else compare result
+KERN 0x06049c50 __gedf2 CONFIRM __gedf2 same pattern, nan returns -1 else compare result
+KERN 0x06049cb4 __ltdf2 CONFIRM __ltdf2 unpacks, compares when not nan; cvt uses it for negative test
+KERN 0x06049d14 __ledf2 CONFIRM __ledf2 unpacks, compares when not nan
+KERN 0x06049f00 __truncdfsf2 CONFIRM __truncdfsf2 unpacks double and packs single float
+KERN 0x0604a78c softfp_CompareFloats CONFIRM softfp_CompareFloats unpacks two floats and compares with no nan special case
+KERN 0x0604a82c __eqsf2 CONFIRM __eqsf2 float version of eq compare
+KERN 0x0604a888 __gtsf2 CONFIRM __gtsf2 float version, nan returns -1
+KERN 0x0604a8e8 __gesf2 CONFIRM __gesf2 float version, nan returns -1
+KERN 0x0604a948 __ltsf2 CONFIRM __ltsf2 float version of lt compare
+KERN 0x0604a9a4 __lesf2 CONFIRM __lesf2 float version of le compare

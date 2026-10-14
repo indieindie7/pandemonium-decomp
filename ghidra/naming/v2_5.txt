@@ -1,0 +1,36 @@
+KERN 0x0601cf54 enemy_UpdateIdleBlink CONFIRM enemy_UpdateIdleBlink random timer swaps idle/blink anim pointers, then hit-reaction and child sequence select
+KERN 0x0601d0c8 effect_SpawnAtObject CONFIRM effect_SpawnAtObject clones effect template by type, copies parent position, offsets, links into active list; callers are hit/pickup code
+KERN 0x0601d1b4 effect_UpdateAnimEndDespawn CONFIRM effect_UpdateAnimEndDespawn frees object when anim frame wraps; installed as update callback in level_InitObjects
+KERN 0x0601d554 level_LoadObjectTables CONFIRM level_LoadObjectTables loads package entry, copies 16-byte command records, builds 30 record pointers; called from level setup stub
+KERN 0x0601d6a4 effect_SpawnSprite CONFIRM effect_SpawnSprite allocs sprite entry, picks def from 30-entry table by type, sets position and scale, links into list
+KERN 0x0601d8a8 path_SamplePositionAndApply_2 RENAME enemy_UpdateHitReactionAnim body only calls obj_UpdateHitReaction then anim_SelectChildSequence (idle-blink minus blink); no path code
+KERN 0x0601d948 pkg_LoadObjectGroup CONFIRM pkg_LoadObjectGroup registers group record, loads four sub-entries with relocation; called per set bit and with 0,0xb,0xc
+KERN 0x0601da88 obj_ResetState RENAME obj_CloneAndResetState clones object if not a template (flag 0x80), else unlinks; clears frame, velocity, flags; returns object
+KERN 0x0601db00 obj_InitFromTemplate CONFIRM obj_InitFromTemplate sets +0x79=6, copies position/flags/fields from source object into new object, transforms through parent matrix; sole caller is the type-6 update
+KERN 0x0601e8c8 sound_StopObjectVoice CONFIRM sound_StopObjectVoice type-6 object: stops channel if owned then sets voice id -1; called from object list teardown loops
+KERN 0x0601e928 obj_UpdateType6Frame CONFIRM obj_UpdateType6Frame per-frame update of type-6 objects (anim frame, move-and-collide, countdown, sound); installed as callback in hook_InstallCallbackInit
+KERN 0x0601f1a4 menu_UpdateDialogFrame RENAME level_StepLoadStateMachine 8-state loader: reads package entries, uploads textures, queues sound, spawns characters for screen id; returns done flag; no menu logic
+KERN 0x0601f5b4 menu_RunDialogLoop RENAME level_RunLoadScreenLoop loops level_StepLoadStateMachine while drawing bouncing sprite/polygon each frame; callers are title loop and fade transition
+KERN 0x0601f72c game_ResetSubsystems CONFIRM game_ResetSubsystems frees actor lists, resets sound channels, frees load buffer, restores 0x28-byte table copy; called after load screens
+KERN 0x0601f884 collide_TestObjectPair CONFIRM collide_TestObjectPair checks direction bytes, state and type of two objects and returns whether they interact; called by collide_RecordHit when no hit record
+KERN 0x0601f9e4 collide_RecordHit CONFIRM collide_RecordHit keeps up to three nearest hit objects in slots by distance; installed as collision callback in hook_InstallCallbacks
+KERN 0x0601fb10 obj_ApplyVelocityAngle CONFIRM obj_ApplyVelocityAngle type-6: yaw from velocity vector, speed via sqrt, then obj_UpdateMotionFromAnim; installed as callback
+KERN 0x0601fc0c obj_MoveAndCollide CONFIRM obj_MoveAndCollide scales velocity, adds platform motion, tests against collision record shorts, resolves position; used by type-6 update
+KERN 0x06020268 obj_TickStateCountdown CONFIRM obj_TickStateCountdown counter decrement; at zero sets state byte 2 and angle fields else advances angle; installed in callback table
+KERN 0x06020340 obj_UpdateDeathCountdown UNSURE obj_UpdateDeathCountdown releases voice, hit-flag test sets sfx and clears +0x7c, else counts down +0x70 then calls function; death role not proven
+KERN 0x060203e8 obj_UpdateScaleFade CONFIRM obj_UpdateScaleFade ramps scale ceiling up/down with sfx at ends and writes scaled x/y into child +0x24/+0x26; caller is hit reaction
+KERN 0x060204fc obj_UpdateHitReaction CONFIRM obj_UpdateHitReaction checks owner hit flags (+0x2a), health at +0x7c, knockback and yaw, outputs motion vectors; called by enemy updates
+KERN 0x06020bec anim_StartChildSequence RENAME sfx_SwitchObjectLoop releases old voice if changed, scales rate by parent speed, stores new id at +0x40 and starts positional sound; no animation work
+KERN 0x06020d04 anim_SelectChildSequence CONFIRM anim_SelectChildSequence faces movement, picks idle/walk/run sequence by state and random, starts it, then steps +0x7e frame and calls anim_AdvanceFrame; 17 callers
+KERN 0x06020ee4 coll_ResolveHitFlags CONFIRM coll_ResolveHitFlags per-type collision response setting owner +0x2a hit bits and returning accept/reject; installed in callback table
+KERN 0x060213b0 obj_ComputeAttachOffset UNSURE obj_ComputeAttachOffset init callback in table 06066380; first branch sets countdown 15 and state bytes, then transforms position by parent matrix; role of branch not fully proven
+KERN 0x060216c8 obj_InitChildFromParent CONFIRM obj_InitChildFromParent sets anim from parent type entry, state bytes, copies parent position or spline, clears slots, calls init fn; callers spawn/countdown
+KERN 0x060217cc obj_UpdateChildCountdown CONFIRM obj_UpdateChildCountdown decrements +0x70-area counter, advances anim frame, damps velocity, at zero re-inits or flags parent; installed in table 06066360
+KERN 0x06021900 obj_SpawnChildFromParent CONFIRM obj_SpawnChildFromParent clones object from +0x30 or reuses it, sets child scroll fields from parent, links parent and calls obj_InitChildFromParent
+KERN 0x060219c0 level_SpawnObjectFromStream CONFIRM level_SpawnObjectFromStream reads package entries, allocates object slot, assigns type callback, relocates anim track, advances stream index by 5; called per set bit
+KERN 0x06021ae4 obj_InitSpawnedObjectPosition RENAME obj_ComputeDepthSortKey computes position from parent/path, transforms by matrix and returns a value that render_SortObjectsByDepth stores as sort key and compares
+KERN 0x06021cbc obj_ResetAttachedState CONFIRM obj_ResetAttachedState clears flag bit, zeroes link and hit flags in +0x24 record, restores frame index, reloads type entry by id
+KERN 0x06021d04 obj_LinkAttachedChild CONFIRM obj_LinkAttachedChild if type has attach def and none linked, spawns child and pushes it on list head; called from trigger flag handler
+KERN 0x06021d44 obj_UnlinkAttachedChild CONFIRM obj_UnlinkAttachedChild releases voice, clears child link, restores frame index (mirrored by flip flag), flags child; callers trigger flags and draw-mode free
+KERN 0x06021dc8 obj_CheckFacingTowardTarget CONFIRM obj_CheckFacingTowardTarget compares atan angle to path point vs to target, returns 1, -1 or 0; used by player and enemy updates
+KERN 0x06021ea4 obj_ForEachSetBitCallback RENAME level_SpawnObjectsFromBitmask walks bits of two 32-bit masks and calls level_SpawnObjectFromStream with the bit index per set bit; only caller is the load state machine

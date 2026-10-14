@@ -1,0 +1,35 @@
+# Pandemonium (Sega Saturn, Crystal Dynamics / Toys for Bob, 1996-97) -- disc copy 2026-10-09
+
+- Copied from the user's USB CD reader so the drive could be unplugged. No reverse-engineering started yet.
+- saturn/cd/: 000KERN (512 KB boot kernel), DUCK.BIN (48 KB), JESTERS.PKG (46 MB game data), INTRO.V / LOGO.V / OUTRO.V (video),
+  ABS.TXT BIB.TXT CPY.TXT. ZZCDDA1 is the CD-audio placeholder (not a real file, skipped).
+- saturn/image/Pandemonium.cue: track01.bin (35842 sectors MODE1/2048) + track02.bin (3079 raw audio sectors), 0 read errors.
+  Ripped with Tools\saturnrip.py (generic mixed-mode ripper).
+- Emulation: Mednafen in Documents\Tools\mednafen, still needs a Saturn BIOS (sega_101.bin / mpr-17933.bin).
+
+## Ghidra setup (10-14)
+- IP.BIN: T-15914H V1.001 1997-02-26 "PANDEMONIUM", area JTUBKAEL, 1st read address 0x06004000 (000KERN). Port by Jumpin' Jack Software (ABS.TXT).
+- Project ghidra/Pandemonium.gpr, runner ghidra/pmrun.sh <abs log> <args> (SP= overrides scriptPath; AMOK scripts: ExportFuncInfo, CreateAt, CsDumpAll).
+- KERN.BIN = 000KERN (524288 bytes) at 0x06004000, code ends ~0x0604f000 (tail zeros/data). FindSh2FunctionsMem 998 -> CreateAt 85 prologue pointer targets (ghidra/create1.txt) + 12 indirect-call targets (create2_kern.txt) = 1095 functions (funcinfo_KERN.tsv, decomp_KERN.c 118625 lines).
+- DUCK.BIN (48052 bytes, magic "DUCKDATA") = second code module at 0x060f0000, loaded by FUN_06007188 (called from FUN_060348e8, pool 0x06034948 = 0x060f0000; retry 5x then FUN_06006e8c). 13 + 36 indirect targets (create2_duck.txt) = 67 functions (funcinfo_DUCK.tsv, decomp_DUCK.c).
+- JESTERS.PKG (46 MB): table of BE (offset,size) pairs with -1 separators; opened by FUN_06006e8c / FUN_06007074. No code: all indirect call targets land in KERN or DUCK; rts density in the PKG is noise.
+- Kernel strings include game menu text and cheat passwords (never publish strings).
+- Next: BSim sigs (Tools/bsim) to transfer Saturn library names, then Sonnet naming round 1 (slice.py from CyberSpeedway/tools, prompt like SonicR ghidra/scripts/n1_prompt.txt).
+- BSim 10-14: fresh sigs for the Saturn projects + Pandemonium (scratchpad bsim/gen2.sh), match report Tools/bsim/reports/match_2026-10-14b.tsv. 223 Pandemonium functions got library names from ManxTT/PowerDrift/SegaRally/SonicR/CyberSpeedway (GFS_/gfs_/cdc_/smpc_/scu_/libgcc/softfp; 68 provisional = sim < 0.95 or < 20 features): ghidra/bsim_KERN.txt (206) + bsim_DUCK.txt (17), copied to hand_KERN.txt / hand_DUCK.txt and applied (206 + 17 named). SBL library region ~0x06039000-0x0604b000. DUCK.BIN matches movie_/pcm_ = the FMV (.V) player module.
+- Naming round 1 (10-14): decomp_all.c (KERN + DUCK) sliced by CyberSpeedway tools/slice.py into ghidra/naming/s1-s8.c (939 FUN_), prompt scripts/n1_prompt.txt -> naming/p1-p8.txt, 8 Sonnet agents write naming/h1-h8.txt.
+  - Round 1 result: h1-h8 merged into naming/r1_all.txt, appended by address (>= 0x060f0000 -> hand_DUCK): KERN 1095 / DUCK 67 named, 0 FUN_. Provisional: 453 KERN + 46 DUCK.
+- Round 2 (10-14): naming/prov_list.txt (499), tools/provctx.py adapted (BASE KERN/DUCK, image from ghidra/) -> naming/r2_1..14.txt (36 each), prompt naming/prompt_r2.txt (read-every-body rule), 14 Sonnet reviewers write naming/v2_1..14.txt. Apply: back up hand files, split verdicts by PROG, tools/srprovapply.py per hand file, ApplyNames + ExportFuncInfo + CsDumpAll.
+  - Round 2 result (10-14): backups naming/hand_*.pre_r2.txt. KERN confirmed 226 / renamed 158 / unsure 39; DUCK 40 / 4 / 2. srprovapply.py now frees renamed-away names first (the six newlib *_r wrappers were a shift-by-one swap). Applied + funcinfo re-exported: KERN 1095, DUCK 67, 0 FUN_. Provisional left: KERN 69, DUCK 2.
+  - Batch 6 reviewer lost its context: only its 6 RENAMEs applied (naming/v2_6r.txt); its 30 other entries rerun as naming/r2_6a/6b -> v2_6a/6b.txt (apply with srprovapply on hand_KERN, then ApplyNames again).
+  - Found: 0x0600f964 obj_UpdateObjectBody is a Ghidra split of obj_UpdateObject 0x0600f900 (merge later). smpc_SendCmd* were sound-driver command posts (now snd_). 0x06035f50-0x06038b4c is the SCL (VDP2) library: hw_* -> scl_*.
+  - Batch 6 rerun applied (v2_6a/6b): 21 confirmed, 7 renamed, 2 unsure. Provisional now: KERN 41, DUCK 2; 0 FUN_. Lead for the rail study: anim_ComputeFrameOffset was renamed path_ProjectOntoTrackFrames (callers path_EvalRailPosition, path_LocatePlayerOnRail, player_UpdateMovement); anim_GetLinkedSequence / anim_AdvanceSequenceFrame / anim_StepFrameChecked call path_SampleFramePosition and may be path_ too.
+- Publish rule (10-14): funcinfo_*.tsv for the repo must drop S (string) rows; hand comments must not quote menu text.
+
+## Study (10-14)
+Three Sonnet study passes over slices of decomp_KERN.c (prompt ghidra/study/study_prompt.txt). Full notes: ghidra/study/notes_rail.md (104 lines), notes_move.md (137), notes_cam_enemy.md (119); published as study_rail.md / study_move.md / study_cam_enemy.md.
+- Rail: pieces link prev/next (+0x10/+0x14), mirror flag 0x08 marks a reverse twin, direction bit 0x10 is passed to every path_ function; path_UpdateBranchChoice 0x0602853c picks from the branch table (+0x44, default forward link +0x48); path_EvalRailPosition 0x060286fc maps distance to a 3D position with a landing y fixup; transitions are gated by path_CanSwitchToPiece 0x060299bc. Tuning constants are unresolved literal-pool words (DAT_), so the notes give structure and thresholds, not speeds.
+- Movement: motion is 1D along the rail; jump buffer about 6 frames (pl+0x36); knockback = 10-frame stun keeping half the velocity; impulse timers capped at 45 frames; per-character class struct; a character swap keeps the rail position.
+- Enemies/collision: time-of-impact contacts (coll_SweptHitboxContact returns time + face index, no slide); 4 hitbox slots per object; per-class handler tables; stomp rule; per-axis broad phase; triggers fire only on the same rail piece; enemies ride the rail data (enemy_AdvanceRailKeyframe 0x0601aff4, 0x28-byte keyframes).
+- No camera code was in the cam_ slice: the two cam_ functions were a package relocator and a global setter.
+- Renames applied (17 hand edits, backup ghidra/naming/hand_KERN.pre_study.txt): 0x06018c74 enemy_StateIdleChase, 0x06019284/0x06019850/0x06019d68/0x0601a2dc enemy_StateHandlerA..D, 0x06019c64 enemy_SetStateCallback, 0x0602e4c8 player_UpdatePickupsAndAnimState, 0x06004cf4 pkg_RelocateGroupBase, 0x06012788 sys_SetGlobalsClearFlag, 0x0601b3f0 enemy_UpdateIdleSampleTarget + 0x0601d8a8 enemy_UpdateIdleSampleTargetB (identical bodies), 0x06033ff4 enemy_UpdateHoverToRailTarget, 0x060346c8 enemy_UpdateHoverBob, 0x06024070 path_GetLinkedPiece, 0x060299bc path_CanSwitchToPiece; comments fixed on 0x06022968 and 0x0602a7f0 (maybe the death/respawn sequence). Skipped as low confidence: anim_AdvanceSequenceFrame 0x060240e8 / anim_StepFrameChecked 0x06024698 -> path_?, mover_ClampRailSpeed 0x0602aa58.
+- ApplyNames 1095 named / 0 created; funcinfo re-exported (1095 fn, 3098 calls); decomp_KERN.c re-dumped. Provisional lines in hand_KERN.txt: 33.

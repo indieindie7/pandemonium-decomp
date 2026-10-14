@@ -1,0 +1,36 @@
+KERN 0x06033bc0 sfx_UpdateChannels RENAME sfx_FlushPlayQueue walks queued sound requests (5-word entries), dedupes recent repeats, finds free channel and starts voice
+KERN 0x06033cb8 ui_AdjustValueA RENAME menu_AdjustSfxVolume options screen row 0: +/-0x40 clamp, value used as volume of test sfx voice
+KERN 0x06033d04 ui_AdjustVolumeB RENAME menu_AdjustMusicVolume options screen row 1: +/-0x40 clamp then sends music volume command
+KERN 0x06033d74 enemy_UpdateStateC RENAME enemy_UpdateWander random timers swap between idle/walk anim sets, flips facing toward target
+KERN 0x06033fa8 enemy_EnterState_0c RENAME enemy_EnterWander sets state 0x0c, installs enemy_UpdateStateC handler, random countdown timer
+KERN 0x06033ff4 enemy_UpdateStateD UNSURE enemy_UpdateStateD no callers; picks random offset target near nearest path frame and steers/flips, unclear behaviour
+KERN 0x0603440c gfx_UpdateAnimTexture RENAME gfx_UpdateBackgroundScroll derives scroll offsets from camera heading (sqrt/atan) and sets VDP1 base and clamped Y; drawn in scene fade sequence
+KERN 0x060345d8 list_InitNode UNSURE list_InitNode caller body truncated before use; sets inline buffer pointer and copies words via vdp2 helper, purpose unclear
+KERN 0x06034614 gfx_ApplyVideoModeChange CONFIRM gfx_ApplyVideoModeChange when cached mode differs, reinitialises vdp2 char tables, bitmap, map planes and caches mode
+KERN 0x0603469c game_ClearFrameCounters RENAME gfx_ResetVideoModeState zeroes the current and cached video mode words (the ones gfx_ApplyVideoModeChange compares) and sets a base pointer; not frame counters
+KERN 0x060346c8 enemy_UpdateStateE UNSURE enemy_UpdateStateE no callers; toggles flag 0x40 by hit reaction, steers facing and vertical offset, role unclear
+KERN 0x060348e8 sys_InitCdAndVideo CONFIRM sys_InitCdAndVideo inits heap, loads duck player, configures cache, opens CD filesystem and movie video hardware
+KERN 0x06034978 sys_ResetPlayback RENAME movie_ResetPlayback clears playing flag (same one movie_StartIfEnabled sets), runs reset helpers, reinits default heap
+KERN 0x060349b4 movie_StartIfEnabled CONFIRM movie_StartIfEnabled nonzero arg and status bit clear sets playing flag and calls movie_StartPlayback
+KERN 0x06034a0c mem_AllocZeroed CONFIRM mem_AllocZeroed allocates (or uses fixed buffer) and zero-fills clamped size
+KERN 0x06034aa0 stub_06034aa0 RENAME scu_DmaCopyThunk tail wrapper that just calls scu_DmaCopyChecked
+KERN 0x06034ab4 movie_FeedStreamData CONFIRM movie_FeedStreamData loops pulling stream chunks into ring buffer until requested byte count satisfied
+KERN 0x06034b5c movie_ResetCounters CONFIRM movie_ResetCounters reloads next-frame time from per-frame step (doubled for one mode) and clears frame/audio counters
+KERN 0x06034ba0 movie_PresentFrame RENAME movie_AdvanceFrameTiming vblank-called; advances elapsed and next-frame counters, resyncs on audio change, does not draw
+KERN 0x06034d34 movie_OpenStream CONFIRM movie_OpenStream reads stream header params, creates ring buffer, prefeeds data, sets active flag
+KERN 0x06034ec4 movie_StopIfActive RENAME movie_StopAudioIfActive when active flag set sends one-arg audio command 2 from play loop
+KERN 0x06034ee4 movie_SendAudioSetup CONFIRM movie_SendAudioSetup when active sends the two audio parameter blocks to the sound command routine
+KERN 0x06034f10 movie_UpdateAudioMode CONFIRM movie_UpdateAudioMode builds audio parameter blocks from stream channels/rate, sends them, resets counters, sets run flag
+KERN 0x0603502c movie_Shutdown CONFIRM movie_Shutdown stops audio, releases stream buffer and decoder handles, clears them
+KERN 0x06035108 cd_StartStreamRead CONFIRM cd_StartStreamRead sets GFS read params and starts nonblocking transfer
+KERN 0x060354fc cd_SeekStreamAligned CONFIRM cd_SeekStreamAligned stops transfer, seeks to sector, restarts streaming read, discards remainder; no callers
+KERN 0x06035300 cd_StopTransfer CONFIRM cd_StopTransfer stops GFS transfer then releases handle; no callers
+KERN 0x06035320 cd_ReadBuffered CONFIRM cd_ReadBuffered reads bytes via sector buffer with memcpy and GFS_Fread, handling EOF and aligned bulk reads
+KERN 0x060355bc cd_SeekStreamSimple CONFIRM cd_SeekStreamSimple stops transfer, GFS_Seek and wait, no read restart, discards sector remainder; no callers
+KERN 0x06035678 mem_ClearWordBlock CONFIRM mem_ClearWordBlock zero-fills fixed block of words (video table) with constant count
+KERN 0x06035698 movie_InitVideoHardware CONFIRM movie_InitVideoHardware resets video register shadows, sets modes, clears table, writes color RAM for playback
+KERN 0x06035740 movie_CreateDecoder CONFIRM movie_CreateDecoder creates decoder objects, stores handles, cleans up and returns -1 on failure
+KERN 0x060357e4 movie_StartPlayback CONFIRM movie_StartPlayback creates decoder, opens stream, runs play loop, shuts down and frees all handles
+KERN 0x06035920 movie_SwapFrameBuffer CONFIRM movie_SwapFrameBuffer called from vblank handlers; toggles buffer index and reprograms display table for the other buffer
+KERN 0x060359ec movie_InitPlayerState CONFIRM movie_InitPlayerState zeroes player state, fills 16-entry table and 64x64 tile maps for the movie display, sets ready flag
+KERN 0x06035ba4 movie_ResetPlayerState CONFIRM movie_ResetPlayerState clears ready flag and state byte, sets decoder mode, clears word block

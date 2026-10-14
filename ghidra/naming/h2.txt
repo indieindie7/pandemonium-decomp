@@ -1,0 +1,23 @@
+0x0600e954 func obj_UpdateActiveList hand walks linked object list, dispatches per-state handlers by type byte at +0x79, advances stack-allocation counter by 0x20 
+0x0600f15c func obj_UpdateCarryFlags hand provisional: sets or clears object flag bits at +0xd/+0x1c by state at +0x79 (states 3,4,0x1c,0x1d,0x16), returns 1
+0x0600f438 func obj_SaveTransformFromCurrent hand copies current 3x3 matrix and position into object, computes velocity delta unless flag set, handles carried-by-platform flag
+0x0600f52c func obj_ResolveAttachedMotion hand provisional: checks flag at +0x1c, follows attached object pointer, derives position and velocity from parent's fields at +0x10..+0x18
+0x0600f814 func obj_InheritParentVelocity hand copies position/velocity vector from parent (+8) into child, copies current player position, then calls state handler indexed by byte +0x78
+0x0600f900 func obj_RunStateHandlerPrologue hand provisional: small prologue of per-object state update, preserves registers before dispatch into big update body
+0x0600f964 func obj_UpdateStateMachine hand provisional: very large per-object state-machine update with jump tables indexed by byte at +0x79, flags at +0x1c/+0xd
+0x06011130 func obj_UpdateEpilogueCheckParent hand provisional: split epilogue fragment; calls helper if parent set, tail-calls handler, else pops 0x20 stack counter
+0x06011132 func obj_UpdateEpilogueCheckReg hand provisional: split epilogue fragment; calls helper if r1 nonzero, tail-calls handler, else pops 0x20 stack counter
+0x06011148 func obj_UpdateEpilogueTailCall hand provisional: split epilogue fragment; tail-calls handler if saved pointer nonzero, else pops 0x20 stack counter
+0x06011160 func obj_UpdateEpiloguePop hand provisional: split epilogue fragment that only decrements the 0x20 allocation counter
+0x06011198 func obj_UpdateAllChildren hand provisional: large per-frame object update helper called with owner pointer, iterates children and updates state
+0x06011534 func player_CopyMatrixAndRestart hand copies 9-short rotation matrix to player object, zeroes position, calls state-change helper with argument 0
+0x06011594 func player_RunCurrentStateHandler hand gets current object, calls state handler from table by +0x79 (or +0x7b), checks button flags 0x48, may restart
+0x06011678 func obj_UpdateWorldFrame hand updates one frame: calls player handler, runs obj_UpdateAllChildren, then updates owner child list calling handlers by +0x78
+0x060117b4 func math_Mat3x3Mul16 hand multiplies two 3x3 matrices of 16-bit fixed values with saturating 32-bit accumulate (MAC.W)
+0x060118d4 func math_MatMulQuaternion hand converts quaternion (4 shorts) to 3x3 rotation matrix then multiplies via math_Mat3x3Mul16, or copies if identity
+0x06011a14 func math_BuildRotationMatrixZ hand builds single-axis rotation matrix from angle using sine lookup of angle and complement, multiplies result with source
+0x06011a7c func math_BuildRotationMatrixXY hand builds two single-axis rotation matrices from two angles and multiplies them with input matrix
+0x06011b2c func math_BuildRotationMatrixYX hand builds two single-axis rotation matrices in opposite order from two angles, multiplies with input matrix
+0x06011be0 func math_BuildRotationMatrixXYZ hand builds up to three axis rotation matrices (third optional) from three angles and chains matrix multiplies
+0x06011ce8 func anim_StepCounter hand advances animation index per mode flags at +5: count down, count up, ping-pong, or random non-repeating via div
+0x06011db8 func anim_UpdateTracks hand per-frame ticker for animation track array, decrements timers, copies or steps frame entries using anim_StepCounter and memmove-like helper

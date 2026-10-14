@@ -1,0 +1,40 @@
+0x060281ac func stub_060281ac hand Empty function that only returns
+0x060281ec func obj_InitWorldPosFromParent hand provisional: resets object state, transforms local position by parent 3x3 fixed-point matrix, adds parent translation, stores world position
+0x06028438 func queue_PushCommandByte hand provisional: appends a new entry to a global queue, stores the byte argument, copies data block, advances write cursor by 3
+0x060284bc func bitmask_CallForEachSetBit hand Walks the bitmask at an object field and calls a handler with the index of every set bit
+0x060284f4 func state_ClearGlobalWord hand Stores zero to a global word variable
+0x06028500 func hook_InstallCallbacks hand provisional: writes four callback function pointers into global dispatch tables
+0x0602853c func path_UpdateBranchChoice hand provisional: picks forward or fork branch of the current rail piece using heading angle difference and node index, flags change
+0x060286a0 func game_GetShortGlobal hand Returns a signed 16-bit global value
+0x060286ac func res_StartIndexedRequest hand provisional: calls a helper with base plus index, special flag when index is 2 and a nibble of a state word is zero
+0x060286fc func path_EvalRailPosition hand Evaluates interpolated position on a rail piece at fractional node index using DIVU registers, writes position to output vector
+0x0602896c func path_EvalRailPositionSigned hand provisional: wrapper that handles negative node index as reverse direction flag 0x40 then evaluates position
+0x060289a4 func player_UpdateRailPlacement hand provisional: transforms player position by parent matrix, evaluates rail at node index, derives heading angles and facing offsets
+0x06028cb0 func player_ComputeWorldPos hand Saves previous position then transforms player local position by parent matrix into world position vector
+0x06028e20 func player_BlendPositionToTarget hand provisional: computes world position then divides delta by frame counter using math_DivideSigned32 to move smoothly to target
+0x0602906c func obj_ApplyPlatformDelta hand provisional: adds moving platform or carrier position delta to object offset and adjusts vertical position and heading
+0x06029200 func path_SwitchRailPiece hand Makes a different rail piece current at given node, evaluates rail positions via path_EvalRailPosition
+0x060292ac func player_EnterRailPiece hand provisional: places player onto a rail piece at node index, sets direction flags, evaluates entry position and velocity reset
+0x060297b4 func player_ReverseRailDirection hand provisional: flips direction for a reversed rail piece, negates velocity vector, switches rail piece via path_SwitchRailPiece
+0x060299bc func player_CanLeaveRailPiece hand provisional: checks flags and whether target rail piece matches current rail data, returns 1 if transition allowed
+0x06029a1c func collide_CheckPickupReach hand provisional: tests whether object is within reach by relative position, calls a distance test helper, returns 1 on hit
+0x06029af4 func collide_IsObjectActive hand provisional: decides from object type and subtype switch plus power-up and key flags whether an object is currently active or blocked
+0x06029eb8 func player_GetPowerupLevel hand provisional: derives a 0 to 3 level from state flags and a countdown value thresholds 0x25 and 0x4b
+0x06029f28 func collide_HandleHitObject hand Collision response: switch on hit object type and subtype, records pickup, enemy, trigger entries into per-frame hit lists
+0x0602a658 func player_ClearHitState hand provisional: calls a helper then clears flag bits in two state words
+0x0602a6dc func player_SetCharacterMode hand provisional: mode 0, 1 or 2 selects character animation bytes, sets state flags and timer 0xf
+0x0602a7f0 func player_UpdateScriptedAnim hand provisional: steps an animation sequence by frame index and countdown, fades a global value, ends by clearing the sequence pointer
+0x0602aa58 func mover_ClampRailSpeed hand provisional: clamps horizontal speed field against rail min and max using direction sign and fixed-point multiply
+0x0602ace4 func mover_UpdateVerticalVelocity hand provisional: adjusts vertical velocity and offset from ground piece, gravity step constant 0x65, sets airborne field
+0x0602ae10 func mover_SteerAlongRailSegment hand provisional: computes velocity along rail segment direction vector with fixed-point scale and angle wrap, updates speed fields
+0x0602b2fc func mover_UpdateRailNodes hand provisional: reads 6-byte node records of current rail piece by index parity, aligns speed and heading to next node
+0x0602b748 func timer_TickNegativeCounter hand provisional: counter tick that resets positive value to zero, increments negative counter, returns 1 when it reaches zero
+0x0602b774 func player_StartKnockback hand provisional: sets flag, state byte 9 and timer 10, halves two velocity fields via fixed-point multiply
+0x0602b7e8 func player_StartJumpFromGround hand provisional: clears flag bit, converts state 9 to 2, copies jump velocity values, sets vertical velocity constant and calls state helper with 7
+0x0602b84c func pad_PollPlayerInput hand provisional: copies a pad word, reads pad via two helper calls unless input locked, stores result and refreshes
+0x0602b8a8 func player_UpdateMovement hand Main per-frame player update: reads pad buttons into move bits, jump, attack, handles states and calls movement helpers
+0x0602cb70 func obj_SetFacingFromParent hand provisional: transforms position by parent matrix, negates offset vector and normalizes it with fixed-point square root helper
+0x0602cd98 func path_LocatePlayerOnRail hand provisional: loops over linked rail pieces to find rail piece and node index containing the player position, stores result
+0x0602d3dc func player_ApplyMotionAndRail hand provisional: applies velocity step, calls path_LocatePlayerOnRail and obj_SetFacingFromParent, handles rail piece changes and ground contact
+0x0602dda8 func player_RefreshRailPlacement hand provisional: recomputes world position from parent matrix, clamps to rail, optionally outputs direction vector
+0x0602e098 func table_FindSlotAndCall hand provisional: scans three table entries for id match against byte of object, then calls a handler with entry data

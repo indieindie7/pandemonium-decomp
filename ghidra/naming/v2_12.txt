@@ -1,0 +1,36 @@
+KERN 0x06040f68 smpc_SendCmd2Arg_06040f68 CONFIRM smpc_SendCmd2Arg_06040f68 lock, slot check, two args at +2/+3, command word, 0 on success; no callers
+KERN 0x06040fd4 smpc_SendCmd3Arg_06040fd4 CONFIRM smpc_SendCmd3Arg_06040fd4 same pattern with three args at +3..+5; no callers
+KERN 0x0604104c smpc_SendCmd0Arg_0604104c CONFIRM smpc_SendCmd0Arg_0604104c same pattern with no args; no callers
+KERN 0x06041af0 snd_SetFlagIfLimitReached RENAME smpc_SetStateIfPeriphFull sole caller is smpc_ParseIntbackData; compares peripheral count to max and sets the parse state byte to 1
+KERN 0x06041d6c snd_StoreByteInRow RENAME smpc_StoreRowByte0 callers are intback parse and PadMissingPeriphs; writes first byte of a peripheral row
+KERN 0x06041d98 snd_StoreByteInRow1 RENAME smpc_StoreRowByte1 callers are intback read/parse/pad; writes second byte of the peripheral row
+KERN 0x0604214c scu_DmaPollOrPurge UNSURE scu_DmaPollOrPurge no callers; status-byte check then cache purge of a range, owner module unclear
+KERN 0x0604235c table_ReadByte RENAME cd_ReadStatusByte callers are cd_CheckStatusIsOne and the DMA poll; reads one byte of a status table, compared to 1
+KERN 0x060426a4 sh2_DmacSetChannelHandler RENAME sh2_SetIrqVectorHandler callers pass vector numbers 0x40/0x41/0x47/0x49-0x4b (vblank, intback, SCU DMA end), not DMAC channels
+KERN 0x060426d0 sh2_DmacGetChannelHandler RENAME sh2_GetIrqVectorHandler reads same vector table; scu_DmaInstallIrq saves the old vector handler with it
+KERN 0x0604324c stdio_FreeBuffer RENAME stdio_FlushIovec called from the printf loop when 8 iovec entries are filled; calls the scatter-write and clears count fields
+KERN 0x06043280 stdio_UnbufferedWrite RENAME stdio_PrintfViaTempFile vfprintf builds a stack temp FILE, formats into it, flushes, copies error bit 0x40 back
+KERN 0x06043502 vfprintf_FormatLoop CONFIRM vfprintf_FormatLoop format parse loop with flag/width/precision switch, cvt calls and iovec flush; fits
+KERN 0x060453d6 vfprintf_ReturnTail CONFIRM vfprintf_ReturnTail only caller is the format loop; restores frame offset, returns -1 on FILE error bit else char count
+KERN 0x060455ec stdio_FreeNode RENAME reent_FreeChain recursively frees a linked chain (self-call on first field) then frees node; used by reent_FreeAll
+KERN 0x06045a50 stdio_SetLocaleName CONFIRM stdio_SetLocaleName accepts only two strings via strcmp and stores them in struct; called from reent_Call2 wrapper
+KERN 0x06045e08 softfp_IsEqual RENAME softfp_IsInf double-class test: masked high word ORed with low-nonzero flag compared to one constant (exponent-all-ones), only caller is printf loop
+KERN 0x06045e3c softfp_IsLess RENAME softfp_IsNan same masked value but sign of constant minus value, true when above infinity pattern; only caller is printf loop
+KERN 0x06047978 close_r RENAME sbrk_r body calls sbrk with one arg; caller mem_RefillFreeList uses it to grow heap (apply swap of *_r names together)
+KERN 0x060479ac lseek_r RENAME open_r wraps sys_Open (trap 5), no callers; wrapper names are shifted by one against the traps
+KERN 0x060479e4 isatty_r RENAME close_r wraps sys_Close (trap 6); caller is the stdio close callback
+KERN 0x06047a18 read_r RENAME lseek_r wraps sys_Lseek (trap 0x13); callers are seek callback and write callback seeking to end (args 0,2)
+KERN 0x06047a50 write_r RENAME read_r wraps sys_Read (trap 3); caller is the stdio read callback adding returned count
+KERN 0x06047a88 open_r RENAME write_r wraps sys_Write (trap 4); caller is the stdio write callback
+KERN 0x06047ac0 fstat_r CONFIRM fstat_r wraps fstat stub with errno copy; caller stdio_MakeBuffer reads mode bits
+KERN 0x06047af8 sys_Read CONFIRM sys_Read trap 3 with three args is read
+KERN 0x06047b18 sys_Lseek CONFIRM sys_Lseek trap 0x13 three args is lseek
+KERN 0x06047b38 sys_Write CONFIRM sys_Write trap 4 three args is write; sbrk also uses it for heap-collision message
+KERN 0x06047b58 sys_Close CONFIRM sys_Close trap 6 one arg is close
+KERN 0x06047bf0 fstat_Stub CONFIRM fstat_Stub sets one mode field constant, returns 0
+KERN 0x06047c00 sys_Open CONFIRM sys_Open trap 5 two args is open
+KERN 0x06047c20 sys_Creat CONFIRM sys_Creat trap 8 two args is creat; no callers
+KERN 0x06047c58 sys_Exit CONFIRM sys_Exit trap 1 one arg is exit; called from abort loop
+KERN 0x06047c78 sys_ExitConst CONFIRM sys_ExitConst trap 1 with constant arg; called from an errno wrapper
+KERN 0x06047cd4 sys_Call0F RENAME sys_Chmod trap 0xf with path and halfword mode, no callers
+KERN 0x06047cf4 sys_Call10 RENAME sys_Chown trap 0x10 with path and two halfword ids, no callers

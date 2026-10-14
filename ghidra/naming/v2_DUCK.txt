@@ -1,0 +1,46 @@
+DUCK 0x060f325e movie_OpenHandle RENAME movie_AllocFrameDesc finds a free 0x30-byte slot in a table, marks it used, fills buffer pointer, mode and width/height fields; fields match the frame buffer descriptor read by duck_DecodeFrame
+DUCK 0x060f3ca8 pcm_AllocPools CONFIRM pcm_AllocPools allocates two pools (count*0x54 and count*0x20), frees first on failure
+DUCK 0x060f3d0c pcm_FreePools CONFIRM pcm_FreePools frees both pool pointers and clears them
+DUCK 0x060fa4a0 movie_MarkSampleDone CONFIRM movie_MarkSampleDone sets bit 2 in a 12-byte table entry flags by index
+DUCK 0x060faab4 movie_ParseChunkList CONFIRM movie_ParseChunkList walks byte-swapped id/size chunk headers calling movie_ParseChunk per chunk
+DUCK 0x060f375c duck_DecodeFrame CONFIRM duck_DecodeFrame validates stream and buffer, computes destination offset, picks blit/row routines and runs the loop
+DUCK 0x060f3c60 duck_DecodeFrameChecked CONFIRM duck_DecodeFrameChecked calls duck_DecodeFrame then starts strip decode job when mode is 3 and result is 0
+DUCK 0x060f4194 duck_FeedAudio CONFIRM duck_FeedAudio copies to pcm ring buffer or loops ADPCM feed variants by channel layout
+DUCK 0x060f42bc duck_DecodeStrips CONFIRM duck_DecodeStrips loops 8-line strips calling block expand routine in one of two modes
+DUCK 0x060f43d0 duck_StartDecodeJob CONFIRM duck_StartDecodeJob waits on busy flag, builds offset table, runs strip decode, sets flag
+DUCK 0x060f53e8 duck_SetDecodeParam CONFIRM duck_SetDecodeParam stores one value in a global; used by delta table builder
+DUCK 0x060f53f0 duck_SetRowParams CONFIRM duck_SetRowParams stores callback and param globals for the row loop, called by duck_DecodeFrame
+DUCK 0x060f5418 duck_RunRowLoop CONFIRM duck_RunRowLoop stores geometry globals then per row calls one of two callbacks by mask
+DUCK 0x060f56e4 duck_SetBlitParams CONFIRM duck_SetBlitParams stores buffer and callbacks, selects variant from mode bit 1
+DUCK 0x060f5720 duck_RunBlitLoop CONFIRM duck_RunBlitLoop stores geometry, fills row buffer with constant, per row calls one of two callbacks
+DUCK 0x060f58d4 duck_JumpTableDispatch UNSURE duck_JumpTableDispatch no callers, bare indirect jump via r12 table, purpose unknown
+DUCK 0x060f6088 duck_JumpTableDispatchMasked UNSURE duck_JumpTableDispatchMasked no callers, indirect jump via r12 table passing third arg masked, purpose unknown
+DUCK 0x060f6ba8 duck_AdpcmFeedStereo CONFIRM duck_AdpcmFeedStereo refills block headers and calls stereo-split decoder into two outputs; called by duck_FeedAudio
+DUCK 0x060f6ce4 duck_AdpcmFeedMono CONFIRM duck_AdpcmFeedMono block header refill then mono decode with nibble phase toggle; mono branch of duck_FeedAudio
+DUCK 0x060f6e08 duck_AdpcmFeedInterleaved CONFIRM duck_AdpcmFeedInterleaved 16-byte block header then interleaved stereo decode; chosen by duck_FeedAudio
+DUCK 0x060f6fd4 duck_ExpandBlocks8x8 CONFIRM duck_ExpandBlocks8x8 8 rows of 8 bytes through word LUT plus row bias into 64 words; called per strip in duck_DecodeStrips
+DUCK 0x060f7334 duck_ExpandBlocks8x8Alt CONFIRM duck_ExpandBlocks8x8Alt same expansion with different bias stride; duck_DecodeStrips uses it when mode is not 3
+DUCK 0x060f7608 duck_SwapRowGroups CONFIRM duck_SwapRowGroups swaps words between row groups of the table buffer; run after both table builders
+DUCK 0x060f7670 duck_BuildDeltaTables8 CONFIRM duck_BuildDeltaTables8 fills three word LUTs from two 8-byte tables and 16-byte entries, then reorders; called from header parse
+DUCK 0x060f7850 duck_BuildDeltaTables8Alt CONFIRM duck_BuildDeltaTables8Alt two-LUT variant of the table builder, sets decode param first; called from header parse
+DUCK 0x060f7994 duck_SplitTableBits CONFIRM duck_SplitTableBits splits eight halfwords into high bits and odd bytes in two tables; called from header parse
+DUCK 0x060f9ec0 movie_InitPools CONFIRM movie_InitPools allocates stream handle, track, and reader pools and clears track in-use words
+DUCK 0x060f9f54 movie_FreePools CONFIRM movie_FreePools frees the three pool arrays
+DUCK 0x060fa030 movie_OpenStream_2 RENAME movie_OpenFilm finds free handle, opens file, picks type, reads file header and chunk list; has _2 suffix which is not allowed
+DUCK 0x060fa10c movie_CloseStream CONFIRM movie_CloseStream closes file handles for type 2 and clears the handle; used on open failure
+DUCK 0x060fa140 movie_OpenTrack CONFIRM movie_OpenTrack allocates track slot and locates entry by name, index or type, then initializes
+DUCK 0x060fa280 movie_ClearTrack CONFIRM movie_ClearTrack zeroes a 0x5c-byte track struct
+DUCK 0x060fa2a0 movie_AllocReader CONFIRM movie_AllocReader finds free reader slot and stores size and parameter
+DUCK 0x060fa304 movie_FreeReader CONFIRM movie_FreeReader frees reader buffer and zeroes the struct
+DUCK 0x060fa350 movie_NextSampleEntry CONFIRM movie_NextSampleEntry scans 12-byte sample table entries forward or back for this track, returns offset and size
+DUCK 0x060fa518 movie_CalcFrameTicks CONFIRM movie_CalcFrameTicks divides rate field by reciprocal multiply and helper calls to get ticks per frame
+DUCK 0x060fa580 movie_CalcSampleSize CONFIRM movie_CalcSampleSize computes per-track byte size from rate and chunk size with three-quarter default
+DUCK 0x060fa664 movie_ParseChunk CONFIRM movie_ParseChunk dispatches on chunk tag, byte swaps header and track descriptor fields, recurses for list chunks
+DUCK 0x060fab68 movie_ReadChunkHeader CONFIRM movie_ReadChunkHeader reads 8-byte big-endian header, handles container and skip tags, reads payload
+DUCK 0x060facb4 movie_ParseChunkList_2 RENAME movie_ReadChunksFromFile loads sample table then loops read header and parse chunk from the file; distinct from memory-based movie_ParseChunkList, _2 not allowed
+DUCK 0x060fad30 movie_ReadFileHeader CONFIRM movie_ReadFileHeader reads 12-byte header, checks two magic values, parses chunks, returns negative codes
+DUCK 0x060fae6c movie_CountTrackBytes CONFIRM movie_CountTrackBytes sums sample sizes for the track and scales by channels when not mono
+DUCK 0x060fafe4 movie_SeekSampleBuffer CONFIRM movie_SeekSampleBuffer resets per-track buffer state, aligns file position to 2048-byte sectors, sets remainders
+DUCK 0x060fb110 movie_StartPlayback_2 RENAME movie_BeginStreaming sets ring buffer bounds, marks consumed entries for seek target, issues first reads; _2 not allowed
+DUCK 0x060fb814 movie_ReadAhead CONFIRM movie_ReadAhead reads next sector block, keeps rolling average of read sizes, tops up buffer
+DUCK 0x060fb980 movie_LoadSampleTable CONFIRM movie_LoadSampleTable reads 16-byte entries in chunks, byte swaps offset and size, tracks max size; called from chunk list loop

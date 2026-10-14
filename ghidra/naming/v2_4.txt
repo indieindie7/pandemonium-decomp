@@ -1,0 +1,36 @@
+KERN 0x06013128 actor_UpdateFlagsA RENAME actor_StepAnimByFlagDir sets +/-1 direction word from flag test then calls anim_StepTrack; callback in behavior table
+KERN 0x06013178 actor_UpdateFlagsB RENAME actor_StepAnimFromLinked copies anim word from linked actor (+0x68), sets flags, calls anim_StepTrack with it
+KERN 0x060133d0 counter_CompareCapped RENAME counter_TestOrAddCapped mode 0 compares counter byte and sets flag; else sets/adds counter clamped 0..99
+KERN 0x060134cc stub_060134cc RENAME level_InitObjectsAndCallbacks loads object tables, installs callbacks, inits objects; called by menu screen init
+KERN 0x06013518 stub_06013518 RENAME level_TeardownObjects clears object slots then two stubs; called from reset-and-run-callbacks teardown
+KERN 0x06013540 state_FillCallbackTable RENAME actor_InitBehaviorTable clears block, inits object free list, fills actor behavior callback table
+KERN 0x0601359c stub_0601359c RENAME sys_FreeHandleAndClearStubs frees handle if set then two stub calls; teardown partner of level_TeardownObjects
+KERN 0x060135c4 stub_060135c4 RENAME pkg_FinishLoadSteps loops pkg_LoadStateMachineStep until done then sets a status flag bit
+KERN 0x060135ec pad_HandleEdges RENAME pad_FilterSpecialButtons on edge presses adjusts a value by +/-8 or sets a flag and returns 0 to consume input, else passes pad bits through
+KERN 0x06014954 anim_GetBoneYawAlt RENAME anim_RotateVecByBoneKey slerps keys, composes quats, builds rotation matrix and applies it to a 3-vector; no atan2 seen
+KERN 0x06016228 anim_TrackInRange RENAME anim_AdvanceAlongSpline loops advancing frame index along spline while consuming a distance budget; returns true if moved
+KERN 0x06016d20 actor_TransformToParent CONFIRM actor_TransformToParent dots actor position with linked parent matrix rows plus translation; caller uses result as position
+KERN 0x06018c74 player_UpdateGround UNSURE player_UpdateGround no direct callers; uses hit-reaction target and chase-like anim picks, role (player vs creature AI) unclear
+KERN 0x06019284 player_StateHandlerA UNSURE player_StateHandlerA no callers; creature-style attack/idle state logic with 5 radial spawned objects; player vs AI not provable
+KERN 0x06019850 player_StateHandlerB UNSURE player_StateHandlerB set by player_SetStateCallback but body faces a target via atan2 and picks random idle sounds, no pad reads; role unclear
+KERN 0x06019d68 player_StateHandlerC UNSURE player_StateHandlerC no callers; turns toward a target and spawns a projectile-like object via factory pointer, using char-class anim table; player vs AI unclear
+KERN 0x0601a2dc player_StateHandlerD UNSURE player_StateHandlerD no callers; anim-state machine spawning an object at own position on a given frame; role unclear
+KERN 0x0601a670 path_UpdateSpeedRamp RENAME actor_RampMoveSpeed accelerates or decelerates speed field of linked move object toward char-class limits, then calls update callback; not path data
+KERN 0x0601a764 enemy_UpdatePatrolAnimState CONFIRM enemy_UpdatePatrolAnimState enemy state machine picks idle/walk/turn animation from target distance and nearest path frame
+KERN 0x0601ab64 enemy_SpawnProjectileOnRail CONFIRM enemy_SpawnProjectileOnRail at attack frame checks range and facing then spawns object type 0x1a or 0x1c via factory and positions it
+KERN 0x0601af5c path_GetKeyframeOffset CONFIRM path_GetKeyframeOffset scans 0x28-byte records for the one covering current frame, returns scaled offset from table start
+KERN 0x0601aff4 enemy_AdvanceRailKeyframe CONFIRM enemy_AdvanceRailKeyframe on countdown expiry steps to next/prev 0x28-byte keyframe record, recomputes position, switches anim
+KERN 0x0601b3f0 path_SamplePositionAndApply RENAME enemy_SelectSequenceFromTarget calls obj_UpdateHitReaction for target vectors then anim_SelectChildSequence with char-class data; no path sampling
+KERN 0x0601b4cc path_SampleObjectRailPoint CONFIRM path_SampleObjectRailPoint evaluates anim spline at frame (mirrored if flag 0) then applies 3x3 matrix+offset at typedef +0x20; callers are rail eval/placement
+KERN 0x0601b5c0 obj_SampleAnimPoint CONFIRM obj_SampleAnimPoint evaluates object's own spline at +0x28 (mirrored unless flag), transforms by matrix at +0x20; callers sample object point
+KERN 0x0601b6d0 obj_ComputeMovementDeltaSquared RENAME obj_AimAlongMovement computes delta (+0x10 minus +4), sqrt length, atan2 yaw to +0x2a and pitch to +0x28 of global object; not just squared delta; callers then build rotation from those angles
+KERN 0x0601b774 path_ComputeSegmentDeltaLength RENAME path_ComputeSegmentDirection delta of consecutive 0x28-byte keyframes, sqrt then hardware divide and multiply, writes normalized 3-vector to param_2 (zeros if degenerate); not a length
+KERN 0x0601b970 path_SampleFramePosition CONFIRM path_SampleFramePosition evaluates spline at frame (mirrored when flag 0) then applies matrix at +0x20; used by FindNearestFrame and rail callers
+KERN 0x0601ba68 path_FindNearestFrame CONFIRM path_FindNearestFrame loops frames sampling positions and compares squared distance and cross terms to target point; callers use returned frame
+KERN 0x0601c460 player_BuildFacingMatrices UNSURE player_BuildFacingMatrices takes a scale value (>>4), builds cross-product basis vectors with sqrt normalize into short vectors of a global struct; no sin/cos seen, callers pass ramping scale or constant
+KERN 0x0601c9fc player_SetFacingAngle RENAME player_SetCurrentRailPiece param is a rail piece object (path_SwitchRailPiece passes it) stored at player +0x78, matrices rebuilt first if a flag differs; not an angle
+KERN 0x0601ca90 player_ApplyImpulseDecay CONFIRM player_ApplyImpulseDecay counts down per-axis timers at +0x48..0x4a and scales velocity delta by decay table/divide, adds to position; called from player state runner
+KERN 0x0601cc00 player_StartImpulseTimers CONFIRM player_StartImpulseTimers sets per-axis timers +0x48..0x4a to half abs component plus 1 capped 0x2d, consumed by ApplyImpulseDecay
+KERN 0x0601ccac player_ApplyPushDecay CONFIRM player_ApplyPushDecay moves player position toward stored target scaled by decreasing table entry while counter counts down, clears flag at zero
+KERN 0x0601cd90 screen_RunFadeLoop RENAME game_RunFramesUntilInput runs 30 iterations of collision pass, sfx update and pkg step paced 6-7 frames each, returns 1 early on pad input; no fade or palette work
+KERN 0x0601ce4c screen_RunFadeTransition RENAME attract_RunDemoStep seeds RNG, swaps character id and dialog id from 3-entry tables, runs frame loop, drains pkg steps, resets subsystems, cycles counter 0..2; called from title attract loop

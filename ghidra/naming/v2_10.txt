@@ -1,0 +1,36 @@
+KERN 0x06035bc4 movie_PlayLoop CONFIRM movie_PlayLoop main FMV loop: inits player state, decoder, pad reset combo, calls movie_ helpers
+KERN 0x06035ef4 movie_ClearPlayerState CONFIRM movie_ClearPlayerState zeroes player struct and 16-word table; called by movie_PlayLoop
+KERN 0x06035f50 movie_SetDecoderMode RENAME scl_SelectScrollScreen switch on scroll screen id 1,2,4,8,0x10,0x20 into VDP2 shadow regs (SCL library, not movie code)
+KERN 0x06036840 hw_ResetRegisterShadows RENAME scl_InitVdp2 called from vdp2 scroll setup; resets VDP2 shadow state (SCL init)
+KERN 0x060368c4 hw_InitRegisterShadows RENAME scl_InitShadowDefaults loads defaults into shadow block at 0x06067e90 (TVMD, RAMCTL, cycle pattern)
+KERN 0x06036a94 hw_SetFlagAndValue RENAME scl_SetFrameInterval frame interval state at 0x0604e88c..; SCL_SetFrameInterval-like, moderate confidence
+KERN 0x06036ab8 hw_RequestUpdate RENAME scl_RequestUpdate sets dirty/update request to 1 if zero
+KERN 0x06036ad4 hw_SetModeParams RENAME scl_SetModeParams switch on global mode stores three params; SCL prefix
+KERN 0x06036c24 hw_AddModeParams RENAME scl_AddModeParams switch on global mode adds three deltas; SCL prefix
+KERN 0x06036db0 hw_ClampModeParam UNSURE hw_ClampModeParam clamps param per mode; exact register meaning not established
+KERN 0x06036eec hw_FlushShadowToRam RENAME scl_FlushShadowTables copies dirty shadow tables to VDP2 memory via mem_CopyWords16
+KERN 0x06037010 hw_FlushByMode RENAME scl_FlushByMode switch on dirty mode copies two tables then clears; SCL prefix
+KERN 0x060370a4 mem_CopyWords16 CONFIRM mem_CopyWords16 copies halfwords, count from byte size; used by flush routines
+KERN 0x060370cc hw_SetBitfieldMode RENAME scl_SetColRamMode sets color RAM mode 0,1,2 in RAMCTL shadow and raises update flag
+KERN 0x0603712c hw_FlushDirtyBlocks RENAME scl_FlushDirtyBlocks calls timed update then copies shadow blocks per dirty bit in 0x060680c0
+KERN 0x0603721c hw_EnableChannelBits UNSURE hw_EnableChannelBits ORs mask table entry into shadow; register meaning low confidence
+KERN 0x060373bc hw_ResetStatePointer RENAME scl_ResetStatePointer clears halfword, stores default data pointer; SCL prefix
+KERN 0x060373dc hw_SetPriorityConfig RENAME scl_SetPriority decodes config into priority shadows (sprite 0x06068758, NBG 0x06068110)
+KERN 0x060374cc hw_ClearStateBlock RENAME scl_ClearStateBlock clears halfword, sets flag, zeroes six state words; SCL prefix
+KERN 0x0603751c hw_CountFrameOrRun RENAME scl_CountFrameOrRun counts frames while state 1 else calls helper; SCL prefix
+KERN 0x06037560 hw_StateMachineStep RENAME scl_StateMachineStep switch on state halfword updating VDP2 registers; SCL prefix
+KERN 0x060376d8 hw_SetChannelMode RENAME scl_SetChannelMode switch on mode byte writing register constants; SCL prefix (cycle table like)
+KERN 0x060378c4 hw_ClearConfigStruct RENAME scl_InitVramConfigTb zeroes small VRAM config struct (SCL_InitVramConfigTb behaviour)
+KERN 0x060378fc hw_ApplyConfigStruct RENAME scl_SetVramConfig applies config struct to shadow registers bit by bit (SCL_SetVramConfig behaviour)
+KERN 0x06037db8 hw_SetChannelValues RENAME scl_SetChannelValues per selected mask bit writes value into register shadows; SCL prefix
+KERN 0x06037fcc hw_ClearMaskBits RENAME scl_FreeColRam clears mask bits in 8-slot table at 0x060680d0 and global 0x06068108
+KERN 0x06038004 hw_SetTimingMode RENAME scl_SetTimingMode range-checks param and sets timing bits; SCL prefix
+KERN 0x06038104 hw_CopyEightHalfwords RENAME scl_CopyEightHalfwords copies eight halfwords to a global table; SCL prefix
+KERN 0x0603812c hw_ResetAll RENAME scl_ResetAll calls scl_ResetShadowRegs* group resets, clears color RAM table and state byte
+KERN 0x060381a4 hw_ReadStatusBits RENAME scl_ReadStatusBits returns bits 12,13 of status halfword; SCL prefix
+KERN 0x060381c0 hw_ClearByteFlag RENAME scl_ClearByteFlag clears a global byte flag; SCL prefix
+KERN 0x060381d4 hw_SetChannelRegisters RENAME scl_SetChannelRegisters writes channel register bits by mask with limit check; SCL prefix
+KERN 0x06038638 hw_UpdateTimedState RENAME scl_UpdateTimedState 3-state timed fade/scroll update using state byte 0x0606811a, writes color RAM; SCL prefix
+KERN 0x06038b4c hw_AddScrollOffsets RENAME scl_AddScrollOffsets adds three offsets to shadow scroll regs at 0x060680b0 for plane arg; SCL prefix
+KERN 0x06038bcc scl_ResetShadowRegsAll CONFIRM scl_ResetShadowRegsAll clears many shadow register bits, dirty bit 0x80; called by scl reset-all
+KERN 0x06038e08 scl_ResetShadowRegsGroup40 CONFIRM scl_ResetShadowRegsGroup40 masks four sprite priority shadow words at 0x06068758 with dirty bit 0x40

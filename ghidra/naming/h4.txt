@@ -1,0 +1,69 @@
+0x0601a670 func path_UpdateSpeedRamp hand provisional: ramps rail speed field at +0x10 up or down toward limits, then calls update callback
+0x0601a764 func enemy_UpdatePatrolAnimState hand provisional: picks animation among state anim pointers by rail progress and flags, then calls handler
+0x0601ab64 func enemy_SpawnProjectileOnRail hand provisional: checks rail distance, spawns object type 0x1a/0x1c, positions it with fixed-point matrix multiply
+0x0601af5c func path_GetKeyframeOffset hand provisional: finds 0x28-byte keyframe record covering current frame, returns scaled byte offset
+0x0601aff4 func enemy_AdvanceRailKeyframe hand provisional: countdown expiry advances rail keyframe, recomputes position, switches animation state
+0x0601b3f0 func path_SamplePositionAndApply hand provisional: samples rail position into stack vectors then calls apply function with path data
+0x0601b47c func obj_FindChildByTypeBits hand finds child in linked list at +0x28 whose flag bits shifted by 6 equal given type
+0x0601b4a8 func obj_FindChildWithFlag4 hand finds first child in list at +0x28 with flag bit 4 set
+0x0601b4cc func path_SampleObjectRailPoint hand provisional: samples rail point at frame, mirrors frame if flag clear, applies short rotation matrix with 16.16 multiplies
+0x0601b5c0 func obj_SampleAnimPoint hand provisional: samples animation point of object at frame, optionally mirrored, transformed by matrix at +0x20
+0x0601b6d0 func obj_ComputeMovementDeltaSquared hand provisional: squares and sums position delta (+0x10 minus +4) with saturating 16.16 multiply
+0x0601b774 func path_ComputeSegmentDeltaLength hand provisional: computes squared length of delta between consecutive 0x28-byte keyframes
+0x0601b970 func path_SampleFramePosition hand provisional: samples path position at frame (mirrored when flag zero), transformed by short matrix at +0x20
+0x0601ba68 func path_FindNearestFrame hand provisional: searches path frames for closest point to given position using squared distances and cross products
+0x0601c460 func player_BuildFacingMatrices hand provisional: builds rotation matrices from angle using sin/cos and stores short vectors into player struct
+0x0601c9fc func player_SetFacingAngle hand provisional: rebuilds facing matrices if angle changed, stores new value at +0x78
+0x0601ca90 func player_ApplyImpulseDecay hand provisional: scales velocity components by table value while decay counters at +0x48..0x4a count down
+0x0601cc00 func player_StartImpulseTimers hand provisional: sets decay timers at +0x48..0x4a from half absolute vector components capped at 0x2d
+0x0601ccac func player_ApplyPushDecay hand provisional: moves player position toward target scaled by decreasing table entry until counter reaches zero
+0x0601cd90 func screen_RunFadeLoop hand provisional: 30-iteration loop calling per-frame functions and advancing a palette or fade value
+0x0601ce30 func stream_ReadWord hand reads next 32-bit word from global stream pointer and advances it
+0x0601ce4c func screen_RunFadeTransition hand provisional: sets state, runs fade loop 0601cd90, restores state, cycles a three-step counter
+0x0601cf54 func enemy_UpdateIdleBlink hand provisional: toggles idle anim and blink with random timer using rail data
+0x0601d09c func obj_ReleaseSlotObject hand clears type byte of object in slot, marks free flag, nulls slot pointer
+0x0601d0c8 func effect_SpawnAtObject hand provisional: allocates effect object, copies position of parent, offsets by type 0 or 1, links into active list
+0x0601d1b4 func effect_UpdateAnimEndDespawn hand provisional: on last animation frame frees object, otherwise spawns child copy and updates flags
+0x0601d3e0 func list_MoveToFreeList hand unlinks node from singly linked list and pushes it onto a free list
+0x0601d434 func list_RemoveChild hand unlinks child node from list headed at +8 using next pointer at +4
+0x0601d460 func sprite_InitEntry hand sets 0x2c-byte entry defaults, links cleared, id 0xffffffff, fields reset
+0x0601d4c4 func sprite_AllocEntry hand pops entry from free list, pushes on used list, initializes it
+0x0601d4f4 func sprite_FreeEntry hand returns entry to free list via list_MoveToFreeList
+0x0601d510 func pkg_FindEntryIndexById hand searches 16-byte table for type 1 entry with given id, returns index shifted by 8 or -1
+0x0601d554 func level_LoadObjectTables hand provisional: reads offsets from package, copies command table, builds 30 pointers to 12-byte records
+0x0601d644 func mem_InitObjectFreeList hand allocates block and links 100 free nodes of 0x2c bytes
+0x0601d68c func stub_0601d68c hand thin wrapper calling a function with a global argument
+0x0601d6a4 func effect_SpawnSprite hand provisional: allocates sprite entry for type below 0x1e, sets position and scale, links into active list
+0x0601d720 func math_ApproxLength3D hand approximates 3D vector length from sorted absolute components with weighted constants
+0x0601d7c0 func math_FixedSqrt hand bitwise 16.16 fixed-point square root using shift helper
+0x0601d878 func math_IntSqrt hand integer square root by 23-iteration shift and subtract
+0x0601d8a8 func path_SamplePositionAndApply_2 hand provisional: duplicate of path_SamplePositionAndApply, samples rail position then applies it
+0x0601d918 func obj_FindTypeDefById hand searches pointer table for entry whose byte at +1 equals id
+0x0601d948 func pkg_LoadObjectGroup hand provisional: loads four sub-entries of object group from package, relocates pointers and anim data
+0x0601da78 func obj_GetTypeDefField18 hand looks up type definition by object type at +0x70, returns field at +0x18
+0x0601da88 func obj_ResetState hand provisional: unlinks object if flagged, clears frame, state and velocity fields, resets flags
+0x0601db00 func obj_InitFromTemplate hand provisional: copies position, flags and fields from template object into new object, sets type 6, calls sqrt and angle helpers
+0x0601e8c8 func sound_StopObjectVoice hand provisional: stops voice of type-6 object when flagged, then clears voice id to -1
+0x0601e928 func obj_UpdateType6Frame hand provisional: big per-frame update for type-6 object animation, angle, velocity and sound
+0x0601f124 func obj_ForEachSetFlagCallback hand calls function for each set bit index in flag word at object offset
+0x0601f160 func state_SetValue3 hand stores constant 3 into global state
+0x0601f16c func hook_InstallCallbackInit hand installs callback pointer then calls init function with 0, 0xb and 0xc
+0x0601f198 func stub_0601f198 hand clears global pointer target to zero
+0x0601f1a4 func menu_UpdateDialogFrame hand provisional: per-frame screen setup for id values like 0x4c/0x4d, draws, loads, returns done flag
+0x0601f5b4 func menu_RunDialogLoop hand provisional: loop calling menu_UpdateDialogFrame with per-frame draw until done, then cleanup
+0x0601f720 func menu_UpdateDialogFrameNoArgs hand wrapper returning menu_UpdateDialogFrame result as int
+0x0601f72c func game_ResetSubsystems hand provisional: clears flags, calls many reset functions, copies 0x28-byte state block between globals
+0x0601f810 func table_LookupPair hand scans byte pair table for key and returns neighbor byte before or after
+0x0601f83c func state_ClearBlock hand memset of 0x28-byte block to zero then stores allocated pointer at +4
+0x0601f86c func stub_0601f86c hand thin wrapper calling a function with a global argument
+0x0601f884 func collide_TestObjectPair hand provisional: tests two objects using direction bytes, state and type, then calls detail check function
+0x0601f9e4 func collide_RecordHit hand provisional: records best hit objects into three slots by distance, calls detailed test
+0x0601fb10 func obj_ApplyVelocityAngle hand provisional: for type-6 object computes angle from velocity vector and updates facing fields
+0x0601fc0c func obj_MoveAndCollide hand provisional: moves object by velocity, queries platform and wall collision, resolves position and flags
+0x06020218 func hook_InstallCallbacks hand installs two callback function pointers into global tables
+0x06020238 func obj_FindInArrayById hand scans object pointer array for entry whose byte at +0x3d matches id
+0x06020268 func obj_TickStateCountdown hand provisional: decrements counter, on zero sets state 2 and writes angle values, else advances angle
+0x06020304 func sound_ReleaseObjectVoice hand calls release check with voice and id at +0x3e, clears voice slot to -1
+0x06020340 func obj_UpdateDeathCountdown hand provisional: counts down state timer, plays effect or finishes object when expired
+0x060203e8 func obj_UpdateScaleFade hand provisional: ramps scale value up or down by thresholds and writes scaled values into child at +0x24/+0x26
+0x060204fc func obj_UpdateHitReaction hand provisional: processes hit flags, health countdown, knockback and state changes on object
