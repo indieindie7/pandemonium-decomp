@@ -83,7 +83,7 @@
 0x0603c698 func gfs_SetupBufferSize hand bsim 1.00 feat 23 from ManxTT+PowerDrift
 0x0603c700 func scu_DmaStartTransfer hand bsim 1.00 feat 27 from ManxTT
 0x0603c7dc func scu_DmaStartIndirect hand bsim 1.00 feat 39 from ManxTT
-0x0603c8cc func scu_DmaPollAndFinish hand provisional bsim 1.00 feat 12 from ManxTT
+0x0603c8cc func scu_DmaPollAndFinish hand bsim 1.00 (identical body, confirmed) feat 12 from ManxTT
 0x0603c9b8 func mem_CopyWordsStrided hand bsim 1.00 feat 23 from ManxTT+PowerDrift
 0x0603ca04 func gfs_CopyIsReady hand bsim 1.00 feat 27 from ManxTT+PowerDrift
 0x0603ca74 func gfs_CopyBlockStep hand bsim 1.00 feat 54 from ManxTT+PowerDrift
@@ -95,8 +95,8 @@
 0x0603d040 func gfs_CdGetSectorCount hand bsim 1.00 feat 20 from ManxTT+PowerDrift
 0x0603d090 func gfs_CdSeek hand bsim 1.00 feat 76 from ManxTT+PowerDrift
 0x0603d18c func gfs_CdPrepareTransfer hand bsim 1.00 feat 51 from ManxTT+PowerDrift
-0x0603d26c func gfs_CdSetupFilter hand provisional bsim 1.00 feat 16 from ManxTT
-0x0603d2b0 func gfs_CdSeekDefaultLength hand provisional bsim 1.00 feat 12 from ManxTT+PowerDrift
+0x0603d26c func gfs_CdSetupFilter hand bsim 1.00 (identical body, confirmed) feat 16 from ManxTT
+0x0603d2b0 func gfs_CdSeekDefaultLength hand bsim 1.00 (identical body, confirmed) feat 12 from ManxTT+PowerDrift
 0x0603d314 func gfs_CdSetLockOwner hand bsim 1.00 feat 16 from ManxTT
 0x0603d348 func gfs_CdAcquireLock hand bsim 1.00 feat 13 from ManxTT
 0x0603d3a0 func cdc_SetModeFlags hand bsim 1.00 feat 14 from ManxTT+PowerDrift
@@ -136,7 +136,7 @@
 0x0603e8a4 func cdc_StepChangeDirectory hand bsim 1.00 feat 88 from ManxTT
 0x0603eaa0 func cdc_ProcessConnectQueue hand bsim 1.00 feat 66 from ManxTT
 0x0603ec08 func cdc_InitWorkArea hand bsim 1.00 feat 20 from ManxTT+PowerDrift
-0x0603ed10 func cdc_WaitNotBusy hand provisional bsim 1.00 feat 17 from ManxTT
+0x0603ed10 func cdc_WaitNotBusy hand bsim 1.00 (identical body, confirmed) feat 17 from ManxTT
 0x0603ed54 func cdc_WaitStatusReady hand bsim 1.00 feat 19 from ManxTT+PowerDrift
 0x0603ee0c func cdc_CheckDiscStatus hand bsim 1.00 feat 20 from ManxTT+PowerDrift+SonicR
 0x0603ee5c func cd_ReadStatusStable hand bsim 1.00 feat 21 from CyberSpeedway+ManxTT+PowerDrift+SegaRally+SonicR
@@ -150,7 +150,7 @@
 0x0603f5b4 func cdc_SetSectorLength hand bsim 1.00 feat 12 from ManxTT+PowerDrift+SegaRally
 0x0603f824 func cdc_SetFilterSubheader hand bsim 1.00 feat 12 from ManxTT+PowerDrift+SegaRally
 0x0603faa4 func cdc_FormatPosition hand bsim 1.00 feat 28 from ManxTT+PowerDrift
-0x0603fca0 func cdc_ExecIfStatusBit40 hand provisional bsim 1.00 feat 13 from ManxTT+PowerDrift
+0x0603fca0 func cdc_ExecIfStatusBit40 hand bsim 1.00 (identical body, confirmed) feat 13 from ManxTT+PowerDrift
 0x0603fed0 func cdc_StoreResponse hand bsim 1.00 feat 15 from ManxTT+PowerDrift+SonicR
 0x0603ff40 func cdc_CopyStatus12 hand bsim 1.00 feat 16 from ManxTT+PowerDrift+SonicR
 0x060401b0 func snd_SendCmdTwice hand bsim 1.00 feat 39 from ManxTT
@@ -679,7 +679,7 @@
 0x060305b0 func player_ResetActiveObject hand resets active player object anim state, flags and fields to defaults
 0x06030648 func player_ResetObjectForSlot hand resets player slot object flags, fields and animation pointer by slot index
 0x060306b4 func anim_FindNearestFrameToPoint hand loops points, fixed-point squared distance, returns nearest index within radius (was obj_FindNearestAttachPoint)
-0x06030770 func obj_MoveAlongPathWithCollision hand provisional: large movement step on rail path, scans nearby objects for triggers, ground and wall collision
+0x06030770 func obj_MoveAlongPath hand =PC obj_MoveAlongPath (PANDY 0x004356f0): movement step on rail path with wall and floor collision (was obj_MoveAlongPathWithCollision)
 0x06031764 func coll_ClearSlotTileFlag hand computes slot struct address from index and calls helper on it (was obj_CallHelperOnSlot)
 0x06031788 func player_SpawnCharacterObject hand builds character object from level data (anim, model, hitbox) for slot index
 0x060318cc func player_SpawnAllCharacters hand loops six slots, initialising player slots and spawning others by bitmask
