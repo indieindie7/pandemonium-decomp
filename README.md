@@ -1,10 +1,12 @@
 # Pandemonium! (Sega Saturn, 1997) reverse-engineering notes and symbols
 
 Hand-named function map, review records, study notes and tools for the Sega Saturn port of
-**Pandemonium!** (Crystal Dynamics / Toys for Bob, 1996; Saturn port 1997). Two programs are covered:
+**Pandemonium!** (Crystal Dynamics / Toys for Bob, 1996; Saturn port 1997). Four programs are covered:
 
-- `KERN.BIN`, the main program at 0x06004000: 1095 functions, all hand-named (33 still marked provisional);
-- `DUCK.BIN`, the FMV player module at 0x060f0000: 67 functions, all hand-named (2 provisional).
+- `KERN.BIN`, the Saturn main program at 0x06004000: 1095 functions, all hand-named (33 still marked provisional);
+- `DUCK.BIN`, the Saturn FMV player module at 0x060f0000: 67 functions, all hand-named (2 provisional);
+- `PANDY3.EXE`, the Windows 95 3Dfx Glide build (MSVC 4.2): 958 functions, 0 placeholders left (764 hand names, 184 provisional);
+- `PANDY.EXE`, the Windows 95 software/DirectDraw build: 867 functions, 0 placeholders left (710 hand names, 89 provisional).
 
 Same method as [sonicr-decomp](https://github.com/indieindie7/sonicr-decomp),
 [scorcher-decomp](https://github.com/indieindie7/scorcher-decomp) and
@@ -23,7 +25,8 @@ no game text, no Ghidra database. You need your own copy of the game to use any 
 | `study_rail.md` | rail pieces, links, mirror twins, branches, how distance along a piece becomes a 3D position |
 | `study_move.md` | player movement along the rail, jump buffer, knockback, impulse timers, character swap |
 | `study_cam_enemy.md` | enemy state handlers, hitbox slots, swept contacts, triggers |
-| `ghidra/hand_KERN.txt`, `ghidra/hand_DUCK.txt` | hand-named functions (`0x<addr> func <name> hand <comment>`) |
+| `ghidra/hand_KERN.txt`, `ghidra/hand_DUCK.txt` | hand-named Saturn functions (`0x<addr> func <name> hand <comment>`) |
+| `ghidra/pc/hand_PANDY3.txt`, `ghidra/pc/hand_PANDY.txt`, `ghidra/pc/funcinfo_*.tsv`, `ghidra/pc/n1_prompt_pc.txt` | the PC builds: hand names, per-function export (string-derived names replaced by `fn_<addr>`), the naming prompt |
 | `ghidra/funcinfo_*.tsv` | per-function export: `F` address name source size, `C` callees (string rows removed) |
 | `ghidra/naming/` | first-pass batches (`h1-h8`), the provisional list, review prompt and verdicts (`<prog> 0x<addr> <old> CONFIRM/RENAME/UNSURE <new> <reason>`) |
 | `ghidra/scripts/` | `FindSh2FunctionsMem.java` (SH-2 function discovery), `DumpLong.java` |

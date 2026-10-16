@@ -1,0 +1,11 @@
+Windows 95 game Pandemonium! (Crystal Dynamics / Toys for Bob 1996, PC port 1997), 3Dfx Glide build PANDY3.EXE, MSVC 4.2 x86 PE (cdecl/stdcall; Win32 imports named). One program PANDY3.EXE, image base 0x00400000. Research only. Game: 2.5D platformer, the player (Fargus the jester or Nikki) runs along a 3D rail path with branches, jumps, collects treasure, fights enemies, bosses; levels load from JESTERS.PKG and LEVELnn.PKG packages; Glide renderer (grTex*, grDraw* callbacks), DirectSound, DirectDraw window, AVI intros, keyboard/joystick config menu, passwords. Focus names on rail/path movement, player state, enemies, camera, package loading, Glide texture upload, sound, menus.
+
+Task: name functions from the Ghidra decompile. FILE holds the decompile of a slice of the functions of PANDY3.EXE. Name EVERY function in FILE whose name is still FUN_xxxxxxxx, s_xxx or fn_xxx (skip ones that already have a name).
+
+Evidence to use: strings (error messages, file names, menu text), Win32/Glide/DirectX imports called, called functions (names given by earlier slices or xalign s_/fn_ placeholders: treat s_*/fn_* as unnamed and name them too), how the function uses its arguments. A Saturn port of the same engine exists; names that may match it use the same style (player_, path_, obj_, enemy_, pkg_, cam_, level_, menu_).
+
+Naming style: lowercase module prefix + CamelCase verb, e.g. vdp1_ClearCommands, cd_ReadSectors, pad_ReadDigital, car_UpdatePhysics, menu_DrawCursor, math_FixedMul, mem_Copy. C runtime copies: memcpy/memset/strcpy/sprintf etc. with plain names. Tiny stubs that only return: stub_<addr>. When unsure, still give the best descriptive name and add "provisional" at the start of the comment.
+
+Output: write lines to OUT (create it with Write; one line per function, no other text):
+0x<addr> func <name> hand <comment of 5-20 words: what it does, key callees, registers or strings>
+Addresses as 8 lowercase hex digits (e.g. 0x00412a3c). Names must be unique within OUT; append _2, _3 when two functions would share a name. Do not read files other than FILE. Read FILE in pieces (offset/limit, about 600 lines at a time) until the end. Reply at the end with only the line count.
