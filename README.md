@@ -3,7 +3,7 @@
 Hand-named function map, review records, study notes and tools for the Sega Saturn port of
 **Pandemonium!** (Crystal Dynamics / Toys for Bob, 1996; Saturn port 1997). Four programs are covered:
 
-- `KERN.BIN`, the Saturn main program at 0x06004000: 1095 functions, all hand-named (27 still marked provisional after the 10-16 cross-check against the PC builds);
+- `KERN.BIN`, the Saturn main program at 0x06004000: 1094 functions (one Ghidra split merged 10-16), all hand-named (27 still marked provisional after the 10-16 cross-check against the PC builds);
 - `DUCK.BIN`, the Saturn FMV player module at 0x060f0000: 67 functions, all hand-named (2 provisional);
 - `PANDY3.EXE`, the Windows 95 3Dfx Glide build (MSVC 4.2): 958 functions, 0 placeholders left (764 hand names, 184 provisional);
 - `PANDY.EXE`, the Windows 95 software/DirectDraw build: 867 functions, 0 placeholders left (710 hand names, 89 provisional).

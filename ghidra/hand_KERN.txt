@@ -428,8 +428,7 @@
 0x0600f438 func obj_SaveTransformFromCurrent hand copies current 3x3 matrix and position into object, computes velocity delta unless flag set, handles carried-by-platform flag
 0x0600f52c func obj_TransformPosByParentMatrix hand checks flag at +0x1c, follows attached object pointer, derives position and velocity from parent's fields at +0x10..+0x18 (was obj_ResolveAttachedMotion)
 0x0600f814 func obj_InheritParentVelocity hand copies position/velocity vector from parent (+8) into child, copies current player position, then calls state handler indexed by byte +0x78
-0x0600f900 func obj_UpdateObject hand small prologue of per-object state update, preserves registers before dispatch into big update body (was obj_RunStateHandlerPrologue)
-0x0600f964 func obj_UpdateObjectBody hand very large per-object state-machine update with jump tables indexed by byte at +0x79, flags at +0x1c/+0xd (was obj_UpdateStateMachine)
+0x0600f900 func obj_UpdateObject hand per-object state-machine update: register-saving prologue then the big dispatch body (jump tables indexed by byte at +0x79, flags at +0x1c/+0xd); 0x0600f964 was a Ghidra split, merged 10-16 (was obj_RunStateHandlerPrologue + obj_UpdateObjectBody)
 0x06011130 func obj_UpdateEpilogueCheckParent hand split epilogue fragment; calls helper if parent set, tail-calls handler, else pops 0x20 stack counter
 0x06011132 func obj_UpdateEpilogueCheckReg hand split epilogue fragment; calls helper if r1 nonzero, tail-calls handler, else pops 0x20 stack counter
 0x06011148 func obj_UpdateEpilogueTailCall hand split epilogue fragment; tail-calls handler if saved pointer nonzero, else pops 0x20 stack counter
