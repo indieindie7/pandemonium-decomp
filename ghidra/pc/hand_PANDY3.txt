@@ -25,14 +25,14 @@
 0x00403dd0 func obj_ApplyDisplacement hand applies displacement vector to object position
 0x00403fc0 func col_SweepObjectAgainstPoly hand large sweep test of moving object against collision polygons
 0x00404e50 func col_CheckFloorContact hand checks floor polygon contact for object
-0x00404ed0 func hud_ResetSpriteTable hand provisional: zeroes 10 dwords at DAT_00808c40, sets +4 to DAT_00803360+0x2ee000 table base
+0x00404ed0 func obj_ResetHandlerTableState hand zeroes 10 dwords at DAT_00808c40, sets +4 to DAT_00803360+0x2ee000 table base (was hud_ResetSpriteTable)
 0x00404ef0 func stub_00404ef0 hand returns only
 0x00404f00 func obj_ReleaseAttachment hand releases attached child object
 0x00404f30 func obj_SpawnAttachment hand spawns attached child object for parent
 0x00405010 func obj_UpdateAttachmentAnim hand updates animation of attached child object
 0x00405280 func sfx_StopObjectSound hand stops sound channel owned by object
-0x004052c0 func enemy_UpdateMovementAndDist hand provisional; computes positions and distance to player for enemy AI
-0x00405970 func enemy_UpdateSpinState hand provisional; spinning enemy state, plays sound 0x13
+0x004052c0 func enemy_UpdateMovementAndDist hand ; computes positions and distance to player for enemy AI
+0x00405970 func enemy_UpdateSpinState hand ; spinning enemy state, plays sound 0x13
 0x00405a90 func sfx_PlayEnemyVoice hand plays enemy voice sound via fn_401190 lookup
 0x00405ba0 func enemy_UpdateAnimAndSound hand advances enemy animation frame and triggers sounds
 0x00405d70 func enemy_GetDistSqToPlayer hand squared distance from enemy to player object
@@ -46,7 +46,7 @@
 0x00406370 func enemyType_LoadFromMask hand loops bitmasks at +0x7c and +0x80 calling FUN_004063d0
 0x004063d0 func enemyType_LoadOne hand reads enemy type data from package via fn_42f370 and fn_42f2f0
 0x00406530 func enemyType_ResetCount hand sets DAT_00531790 enemy type count to zero
-0x00406540 func game_InstallCallbackTable hand provisional: stores handler pointers FUN_00406af0, FUN_00406e50 and labels into callback globals, clears DAT_00531790
+0x00406540 func enemy_InitHandlerTables hand stores handler pointers FUN_00406af0, FUN_00406e50 and labels into callback globals, clears DAT_00531790 (was game_InstallCallbackTable)
 0x004066aa func enemy_HandleCollisionResponse hand hit-type switch setting flags at +0x2a
 0x00406af0 func enemy_UpdateHitState hand updates enemy being hit state
 0x00406e50 func enemy_UpdateDying hand updates enemy death animation and removal
@@ -58,14 +58,14 @@
 0x00407c10 func pkg_RelocateObjectDef hand relocates object definition pointers
 0x00407d60 func pkg_RelocateAnimTables hand relocates animation table pointers
 0x00407e20 func pkg_BeginLevelLoad hand starts level package load
-0x00407f80 func pkg_RelocateModelBase hand provisional; wrapper over FUN_004074a0
+0x00407f80 func pkg_RelocateModelBase hand ; wrapper over FUN_004074a0
 0x00407fa0 func pkg_LoadModelAndCopyVerts hand loads model and copies vertices
 0x00407ff0 func pkg_RelocateModel hand relocates model data pointers
 0x00408120 func pkg_RelocateModelNode hand recursive relocation of model node tree
 0x004081b0 func pkg_RelocateAnimSet hand wrapper calling animation set relocation body
 0x004081d0 func pkg_RelocateAnimSetBody hand relocates animation set body pointers
-0x00408260 func pkg_RelocateAnimTables_2 hand provisional; wrapper relocating animation tables
-0x00408290 func enemy_UpdateChaseAI hand provisional; chase and attack state machine using anim sets, spawns projectile via DAT_007ff6a8
+0x00408260 func pkg_RelocateAnimTablesSelf hand ; wrapper relocating animation tables (was pkg_RelocateAnimTables_2)
+0x00408290 func enemy_UpdateChaseAI hand ; chase and attack state machine using anim sets, spawns projectile via DAT_007ff6a8
 0x00408920 func gfx_FreeSharedBuffer hand frees buffer DAT_0046a128 via fn_443c20 and clears it
 0x00408940 func bg_DrawScreenImage hand draws 320x240 background DIB DAT_0046a128 via FUN_0040ba90 (Glide) or FUN_0044f170 (software)
 0x00408990 func pkg_LoadLightingData hand copies packages 0x58-0x5a into DAT_00803940 and loads 0x56 data
@@ -85,22 +85,22 @@
 0x0040b460 func glide_AllocBgTexture hand allocates Glide background texture; strings "GlideTexture unsupported" and out of texture memory
 0x0040b670 func glide_DrawBgTexture hand draws textured quad with optional flips via grTexSource and grDrawTriangle
 0x0040b900 func glide_DrawColorKeyRect hand draws constant-color rectangle with chroma key mode
-0x0040ba90 func glide_BlitRowsToLfb hand provisional: writes 16-bit pixels doubled into LFB rows via lock/unlock helpers
-0x0040bb40 func glide_DrawChromakeyedSprite hand provisional: sets chromakey, color combine, grTexSource, draws quad with grDrawTriangle
-0x0040be50 func glide_DrawTexturedPolyList hand provisional: draws textured polygons with chromakey, alpha blend, guDrawTriangleWithClip, grTexSource
-0x0040c890 func glide_GetTexMinAddress hand provisional: returns or caches grTexMinAddress for texture memory
-0x0040c8b0 func glide_GetTexMinAddress_2 hand provisional: wrapper storing grTexMinAddress result into global
+0x0040ba90 func glide_BlitRowsToLfb hand writes 16-bit pixels doubled into LFB rows via lock/unlock helpers
+0x0040bb40 func glide_DrawChromakeyedSprite hand sets chromakey, color combine, grTexSource, draws quad with grDrawTriangle
+0x0040be50 func glide_DrawTexturedQuad_2 hand draws textured polygons with chromakey, alpha blend, guDrawTriangleWithClip, grTexSource (was glide_DrawTexturedPolyList)
+0x0040c890 func glide_InitTexMemPool hand returns or caches grTexMinAddress for texture memory (was glide_GetTexMinAddress)
+0x0040c8b0 func glide_ResetBgTexMemPool hand wrapper storing grTexMinAddress result into global (was glide_GetTexMinAddress_2)
 0x0040c8d0 func glide_Init hand grGlideInit, grSstSelect, grSstOpen, sets clip window, cull, depth, combine, error callback, tex memory range
-0x0040ca40 func glide_DownloadMipMap hand provisional: uploads a texture via grTexDownloadMipMap
+0x0040ca40 func glide_DownloadMipMap hand uploads a texture via grTexDownloadMipMap
 0x0040ca70 func glide_SetPassthruMode hand calls grSstPassthruMode and SendMessageA to window
 0x0040cab0 func glide_LfbLock hand grLfbBegin with bypass and write mode, returns write pointer
 0x0040cae0 func glide_LfbUnlock hand grLfbEnd and disables bypass mode
-0x0040caf0 func glide_DrawFlatQuad hand provisional: constant color alpha-blended rectangle via grDrawTriangle
+0x0040caf0 func glide_DrawDarkenQuad hand constant color alpha-blended rectangle via grDrawTriangle (was glide_DrawFlatQuad)
 0x0040cc80 func glide_SwapBuffers hand calls grBufferSwap, returns status
-0x0040cc90 func glide_AllocTexture hand provisional: computes grTexTextureMemRequired and assigns texture memory address
-0x0040ceb0 func math_RoundUpPow2 hand provisional: computes rounded size or lod value from argument
-0x0040cf00 func math_ToFloat hand provisional: converts integer argument to float10 value
-0x0040cf30 func glide_SetAlphaMode hand provisional: grAlphaBlendFunction and guAlphaSource per mode argument
+0x0040cc90 func glide_AllocTexture hand computes grTexTextureMemRequired and assigns texture memory address
+0x0040ceb0 func gfx_ApplyFadeToColor hand computes rounded size or lod value from argument (was math_RoundUpPow2)
+0x0040cf00 func gfx_ScaleByFade hand converts integer argument to float10 value (was math_ToFloat)
+0x0040cf30 func glide_SetAlphaMode hand grAlphaBlendFunction and guAlphaSource per mode argument
 0x0040cfc0 func dsound_ErrorString hand maps DSERR_* HRESULT code to its name string, else unknown errcode message
 0x0040d140 func dsound_ReportError hand formats message, appends Click OK to continue with no sound, shows OK/cancel box, disables sound
 0x0040d1d0 func dsound_Init hand creates DirectSound object, sets cooperative level, gets device caps, builds 256-entry volume dB table
@@ -109,22 +109,22 @@
 0x0040d420 func dsound_ConvertU8ToS8 hand copies param_3 bytes XOR 0x80 converting unsigned samples to signed
 0x0040d450 func dsound_LockFillUnlockBuffer hand locks buffer, restores if lost, copies samples via dsound_ConvertU8ToS8, unlocks; Mydsound.c errors
 0x0040d590 func sound_CreateBuffer hand creates DirectSound buffer, error Could not create sound buffer, calls set volume/pan/freq
-0x0040d6f0 func sound_GetBufferStatus hand provisional: queries DirectSound buffer status, DSERR_GENERIC on failure
-0x0040d770 func sound_SetBufferPan hand provisional: DirectSound buffer call with DSERR error report
-0x0040d810 func sound_SetBufferFrequency hand provisional: DirectSound buffer call with DSERR error report
-0x0040d880 func sound_SetBufferVolume hand provisional: DirectSound buffer call with DSERR error report
-0x0040d900 func sound_UpdateStreams hand provisional: per-frame update of sound channel list, calls fn_4423b0 and helpers
-0x0040dc00 func sound_StopChannel hand provisional: stops and releases one sound channel entry
+0x0040d6f0 func sound_IsBufferPlaying hand queries DirectSound buffer status, DSERR_GENERIC on failure (was sound_GetBufferStatus)
+0x0040d770 func sound_SetBufferPan hand DirectSound buffer call with DSERR error report
+0x0040d810 func sound_SetBufferVolume hand DirectSound buffer call with DSERR error report (was sound_SetBufferFrequency)
+0x0040d880 func sound_SetBufferFrequency hand DirectSound buffer call with DSERR error report (was sound_SetBufferVolume)
+0x0040d900 func enemy_UpdateAlertTurnAI hand per-frame update of sound channel list, calls fn_4423b0 and helpers (was sound_UpdateStreams)
+0x0040dc00 func enemy_UpdateProximityAI hand stops and releases one sound channel entry (was sound_StopChannel)
 0x0040dcf0 func game_MainLoopFrame hand pause/play MCI strings, UnbatchGraphics error, password, main per-frame driver
-0x0040df50 func game_TestFlagBits hand provisional: small bitmask test calling fn_438980
+0x0040df50 func menu_MoveCursorWrap hand small bitmask test calling fn_438980 (was game_TestFlagBits)
 0x0040df80 func password_EntryScreen hand password entry loop: reads registry password, letter keys, backspace, enter decodes and applies, saves registry
 0x0040e4c0 func gfx_ClearAndDrawBackground hand fn_44abf0 then optional fn_43a920 fill, then bg_DrawScreenImage
 0x0040e4f0 func password_ApplyUnlocks hand decodes 8-letter password by matching table at DAT_0046a8c0, sets unlock flag bits in DAT_007ff110
 0x0040e5f0 func password_MatchEntry hand compares 8 password chars times 100 xor 0xffff against table entry of 8 words
 0x0040e630 func password_DecodeEntryName hand decodes zero-terminated xor/100 encoded table entry into string buffer DAT_0056fa00
-0x0040e670 func menu_DrawScreenItems hand provisional: calls several fn_437fd0 fn_4381e0 fn_438ab0 draw helpers
-0x0040e6d0 func scene_SetupPasswordPreviewObject hand provisional: temp object and camera setup from param_1, runs lights, anim frame and camera setup, restores DAT_007ff114
-0x0040e9d0 func level_RunCompleteScreen hand provisional: CDPath string, level_DrawCompleteScreen, loading helpers
+0x0040e670 func menu_DrawCharacterSelect hand calls several fn_437fd0 fn_4381e0 fn_438ab0 draw helpers (was menu_DrawScreenItems)
+0x0040e6d0 func scene_DrawCharacterPreview hand temp object and camera setup from param_1, runs lights, anim frame and camera setup, restores DAT_007ff114 (was scene_SetupPasswordPreviewObject)
+0x0040e9d0 func level_RunCompleteScreen hand CDPath string, level_DrawCompleteScreen, loading helpers
 0x0040edf0 func menu_PresentFrame hand fn_431ec0, UnbatchGraphics, fn_44bfd0 then updates frame timer DAT_0056f9e8 via fn_44f4a0
 0x0040ee20 func pad_GetNewButtonPresses hand reads input via s_OY4 poll, stores state, returns newly pressed bits ~old and new
 0x0040ee40 func menu_PumpMessagesCheckQuit hand pumps via fn_442f60, if quit flag bit 8 set frees background image
@@ -136,90 +136,90 @@
 0x0040f270 func password_RotateBitsRight hand inverse rotation of param_2-bit field by param_3 positions
 0x0040f2c0 func game_PauseLoop hand PAUSED text, pause wait MCI string, out of memory message, restores graphics
 0x0040f3b0 func menu_DrawPauseScreen hand draws PAUSED text and CURRENT PASSWORD with letters, then menu_PresentFrame
-0x0040f430 func level_Unload hand provisional: CDPath, UnbatchGraphics error, frees level resources
-0x0040f5d0 func level_Load hand provisional: loads package data, initializes objects, returns success bool
-0x0040f910 func level_LoadWrapper hand provisional: thin call to level load function
+0x0040f430 func level_LoadWithProgressScreen hand CDPath, UnbatchGraphics error, frees level resources (was level_Unload)
+0x0040f5d0 func level_Load hand loads package data, initializes objects, returns success bool
+0x0040f910 func level_LoadWrapper hand thin call to level load function
 0x0040f930 func level_Shutdown hand stop MCI string, calls cleanup helpers for sound path and objects
 0x0040f9b0 func level_LookupPairTable hand scans byte-pair table at DAT_0046b0f0 for key, returns previous or next entry byte by param_2
 0x0040f9f0 func cmdline_ParseAccelArg hand checks arg against ACCEL/NOACCEL, else Invalid positional parameter message
-0x0040fa60 func game_ClearStruct hand provisional: tiny initializer of structure fields
-0x0040fa80 func game_RunLevelSequence hand provisional: loops level load, run, unload, calls fn_42f370
-0x0040fb90 func level_Start hand provisional: OY4 string, init player, path, sound start
+0x0040fa60 func demo_ReadNextInput hand tiny initializer of structure fields (was game_ClearStruct)
+0x0040fa80 func game_RunDemoSequence hand loops level load, run, unload, calls fn_42f370 (was game_RunLevelSequence)
+0x0040fb90 func level_RunDemoLoop hand OY4 string, init player, path, sound start (was level_Start)
 0x0040fc30 func stub_0040fc30 hand single-byte function that only returns
-0x0040fc40 func sound_GetEntryPtr hand provisional: indexes byte table by id and returns entry pointer
-0x0040fca0 func sound_GetEntryValue hand provisional: indexes sound table returns int field
-0x0040fd10 func sound_GetEntryWord hand provisional: combines two sound table lookups into 16-bit value
+0x0040fc40 func sound_GetEntryPtr hand indexes byte table by id and returns entry pointer
+0x0040fca0 func sound_GetEntrySize hand indexes sound table returns int field (was sound_GetEntryValue)
+0x0040fd10 func sound_GetEntryRate hand combines two sound table lookups into 16-bit value (was sound_GetEntryWord)
 0x0040fd60 func sfx_BuildBankOffsets hand converts sound bank header sizes into cumulative offsets, registers bank in table DAT_0056fae8
 0x0040fdc0 func sfx_MakeSoundId hand combines bank id with low 16 bits of sound index into one id
 0x0040fde0 func sfx_PlayEx hand plays sound id on voice with defaults for rate 4 and length, via FUN_0040fca0/0040fc40/0040d590
-0x0040fe40 func sound_SetEntryParams hand provisional: stores volume pan pitch into sound entry fields
+0x0040fe40 func sound_QueueRequest hand stores volume pan pitch into sound entry fields (was sound_SetEntryParams)
 0x0040fee0 func sfx_AllocVoiceSlot hand picks free or oldest of 8 voice slots by priority, records id, time and priority
-0x0040ffc0 func sound_IsChannelPlaying hand provisional: checks buffer status via sound_GetBufferStatus
-0x0040fff0 func sound_AllocChannel hand provisional: finds free channel slot, calls fn_4423b0 and helper
-0x00410160 func sound_Play hand provisional: allocates channel, sets pan, volume, frequency, starts buffer
-0x004102e0 func sound_ClearChannels hand provisional: zeroes channel table loop
-0x00410310 func sound_UpdateChannels hand provisional: per-frame channel update using buffer status and volume
+0x0040ffc0 func sound_IsChannelPlaying hand checks buffer status via sound_GetBufferStatus
+0x0040fff0 func sound_CalcDistanceVolumePan hand finds free channel slot, calls fn_4423b0 and helper (was sound_AllocChannel)
+0x00410160 func sound_Play hand allocates channel, sets pan, volume, frequency, starts buffer
+0x004102e0 func sound_ClearChannels hand zeroes channel table loop
+0x00410310 func sound_FlushRequestQueue hand per-frame channel update using buffer status and volume (was sound_UpdateChannels)
 0x00410400 func sfx_SetMenuVolume hand stores 16-bit volume value into DAT_0046b188 and returns it
-0x00410410 func audio_SetMusicVolume hand provisional: stores DAT_0046b18c, calls FUN_0042f2c0 with track minus one and volume
-0x00410440 func obj_CallHandler hand provisional: forwards args to FUN_0042cfb0
-0x00410480 func obj_UpdateMotion hand provisional: moves object along path using FUN_0042e910 and fn_4423b0
-0x00410640 func obj_UpdateAndCollide hand provisional: calls obj_UpdateMotion, collision helper FUN_00410710, FUN_0042a0a0
-0x00410710 func obj_CheckCollision hand provisional: tests object against surroundings using FUN_0042c7e0, FUN_00428250
-0x00410a90 func obj_GetFlagBits hand provisional: combines byte fields into uint result
-0x00410b00 func obj_TestState hand provisional: tests object state, jumps into shared tail with FUN_0042ae40
-0x00410b0a func obj_TestState_Tail hand provisional: continuation block of obj_TestState calling FUN_0042ae40
-0x00410c00 func obj_FindNearest hand provisional: scans object list returns index of match
-0x00410c90 func obj_SetAnim hand provisional: sets animation via FUN_00404f00
-0x00410d10 func enemy_UpdateAI hand provisional: large enemy behavior using fn_4423b0, FUN_00428950, FUN_0042c7e0
-0x004113c0 func enemy_UpdateMovement hand provisional: movement step using obj_UpdateMotion, FUN_004285b0, FUN_0042e910
+0x00410410 func audio_SetMusicVolume hand stores DAT_0046b18c, calls FUN_0042f2c0 with track minus one and volume
+0x00410440 func obj_MoveAlongPathSigned hand forwards args to FUN_0042cfb0 (was obj_CallHandler)
+0x00410480 func obj_ApplyCarrierMotion hand moves object along path using FUN_0042e910 and fn_4423b0 (was obj_UpdateMotion)
+0x00410640 func obj_EnterPathSegment hand calls obj_UpdateMotion, collision helper FUN_00410710, FUN_0042a0a0 (was obj_UpdateAndCollide)
+0x00410710 func path_GetPointOnSegment hand tests object against surroundings using FUN_0042c7e0, FUN_00428250 (was obj_CheckCollision)
+0x00410a90 func obj_IsOnSameCarrier hand combines byte fields into uint result (was obj_GetFlagBits)
+0x00410b00 func obj_TestSphereHitMoving hand tests object state, jumps into shared tail with FUN_0042ae40 (was obj_TestState)
+0x00410b0a func obj_TestSphereHitMovingBody hand continuation block of obj_TestState calling FUN_0042ae40 (was obj_TestState_Tail)
+0x00410c00 func player_GetAttackPower hand scans object list returns index of match (was obj_FindNearest)
+0x00410c90 func col_StoreHitSnapshot hand sets animation via FUN_00404f00 (was obj_SetAnim)
+0x00410d10 func obj_ResolvePathSegment hand large enemy behavior using fn_4423b0, FUN_00428950, FUN_0042c7e0 (was enemy_UpdateAI)
+0x004113c0 func obj_GetPathMoveDirection hand movement step using obj_UpdateMotion, FUN_004285b0, FUN_0042e910 (was enemy_UpdateMovement)
 0x00411700 func stub_00411700 hand tiny function returning a constant
 0x00411710 func settings_LoadFromBytes hand unpacks saved option bytes into globals DAT_008036b8..c0 and DAT_005717d0 honoring unlock flags
 0x004117f0 func settings_SaveToBytes hand packs option globals DAT_008036b8..c0 and flags into 8-byte buffer
-0x00411890 func save_GetSlotData hand provisional: tiny helper taking slot param_1, returns pointer or zero
-0x004118b0 func game_ResetTimers hand provisional: reset helper calling fn_41e8b0
-0x00411940 func game_SetCounter hand provisional: stores clamped value into global counter
-0x004119a0 func player_Update hand provisional: large player state machine, path, jump, collisions, FUN_00412c90, FUN_00410710
-0x004129d0 func player_ApplyDamage hand provisional: damage handling with FUN_00412ae0 and FUN_00451670/FUN_004516d0 sounds
-0x00412ae0 func player_ResetState hand provisional: reinitializes player fields, calls FUN_00402f30
-0x00412b50 func player_UpdateVelocity hand provisional: arithmetic on player velocity and position fields
-0x00412c90 func player_FindRailSegment hand provisional: locates path segment for position using FUN_00428820
-0x00412da0 func player_Respawn hand provisional: reset player via FUN_00402f30
-0x00412dd0 func player_UpdateLives hand provisional: life and death handling calling FUN_00412e70
-0x00412e70 func player_Die hand provisional: death sequence calling fn_42f370, FUN_00407f80
-0x00412fa0 func player_Cleanup hand provisional: cleanup calling player_ResetState and camera helper
-0x00413000 func player_ClearFlags hand provisional: tiny field clear on player
-0x00413020 func math_Clamp16 hand provisional: bounded integer helper returning uint
-0x00413080 func player_GetScoreLevel hand provisional: derives value from counter field
-0x004130d0 func game_InitPlayerTables hand provisional: initializes global tables loop
-0x004131c0 func level_InitCallbacksAndPlayerObjects hand provisional: installs per-frame callbacks, creates objects from package entries, copies DAT_00808c40 block
-0x00413310 func enemy_SpawnFromList hand provisional: spawns objects from list using FUN_00428390, FUN_004135b0
-0x004135b0 func obj_InitFromRecord hand provisional: fills object fields from data record
-0x00413780 func player_HandleInput hand provisional: big input to action mapping, FUN_00414160, FUN_00410c00
-0x00414100 func player_PlaySoundEvent hand provisional: plays sound via FUN_0040fd10 and sound_SetEntryParams
-0x00414160 func player_InputProc_Head hand provisional: head of input/state function, jumps to FUN_00451830
-0x0041416e func player_InputProc_Body hand provisional: body of split input function calling FUN_00451830
-0x00415db0 func enemy_UpdateAndHit hand provisional: updates enemy then FUN_00410640 and FUN_0042a260
-0x00416020 func boss_UpdateMotion hand provisional: movement with FUN_0042e910 and FUN_00433b30/FUN_00433a60
-0x004163e0 func obj_UpdateTimers hand provisional: updates timer/state fields of object
-0x00416540 func boss_UpdateAttack hand provisional: large attack logic with FUN_00433b30, FUN_0042e910, fn_4423b0
-0x00416d50 func boss_Update hand provisional: updates boss, sound via sound_SetEntryParams, calls boss_UpdateAttack
+0x00411890 func player_GetMainObject hand tiny helper taking slot param_1, returns pointer or zero (was save_GetSlotData)
+0x004118b0 func player_InitActiveCharacterObject hand reset helper calling fn_41e8b0 (was game_ResetTimers)
+0x00411940 func player_InitCharacterObject hand stores clamped value into global counter (was game_SetCounter)
+0x004119a0 func player_PlaceOnPathAtLevelStart hand large player state machine, path, jump, collisions, FUN_00412c90, FUN_00410710 (was player_Update)
+0x004129d0 func player_HandleDeath hand damage handling with FUN_00412ae0 and FUN_00451670/FUN_004516d0 sounds (was player_ApplyDamage)
+0x00412ae0 func player_ResetState hand reinitializes player fields, calls FUN_00402f30
+0x00412b50 func player_CopyObjectState hand arithmetic on player velocity and position fields (was player_UpdateVelocity)
+0x00412c90 func player_FindRailSegment hand locates path segment for position using FUN_00428820
+0x00412da0 func player_ClearSlotPolyFlags hand reset player via FUN_00402f30 (was player_Respawn)
+0x00412dd0 func player_LoadSlotsFromMask hand life and death handling calling FUN_00412e70 (was player_UpdateLives)
+0x00412e70 func player_LoadCharacterFromPkg hand death sequence calling fn_42f370, FUN_00407f80 (was player_Die)
+0x00412fa0 func player_Cleanup hand cleanup calling player_ResetState and camera helper
+0x00413000 func player_ClearCharacterSlot hand tiny field clear on player (was player_ClearFlags)
+0x00413020 func game_TestProgressFlag hand bounded integer helper returning uint (was math_Clamp16)
+0x00413080 func player_SwapCharacterSelect hand derives value from counter field (was player_GetScoreLevel)
+0x004130d0 func game_InitPlayerTables hand initializes global tables loop
+0x004131c0 func level_InitCallbacksAndPlayerObjects hand installs per-frame callbacks, creates objects from package entries, copies DAT_00808c40 block
+0x00413310 func player_InterpToObjectPos hand spawns objects from list using FUN_00428390, FUN_004135b0 (was enemy_SpawnFromList)
+0x004135b0 func player_SnapToObjectPos hand fills object fields from data record (was obj_InitFromRecord)
+0x00413780 func player_OnObjectContact hand big input to action mapping, FUN_00414160, FUN_00410c00 (was player_HandleInput)
+0x00414100 func player_PlaySoundEvent hand plays sound via FUN_0040fd10 and sound_SetEntryParams
+0x00414160 func player_CanReactToObject hand head of input/state function, jumps to FUN_00451830 (was player_InputProc_Head)
+0x0041416e func player_CanReactToObjectBody hand body of split input function calling FUN_00451830 (was player_InputProc_Body)
+0x00415db0 func player_FlipPathDirection hand updates enemy then FUN_00410640 and FUN_0042a260 (was enemy_UpdateAndHit)
+0x00416020 func player_UpdateRunSpeed hand movement with FUN_0042e910 and FUN_00433b30/FUN_00433a60 (was boss_UpdateMotion)
+0x004163e0 func player_ApplyInputAccel hand updates timer/state fields of object (was obj_UpdateTimers)
+0x00416540 func player_LaunchTowardTarget hand large attack logic with FUN_00433b30, FUN_0042e910, fn_4423b0 (was boss_UpdateAttack)
+0x00416d50 func player_UpdateTargetPull hand updates boss, sound via sound_SetEntryParams, calls boss_UpdateAttack (was boss_Update)
 0x004171e0 func math_GetRandomByte hand provisional: returns packed byte value via CONCAT31
-0x00417210 func obj_SetTarget hand provisional: copies target fields to object
-0x004172c0 func level_InitObjects hand provisional: OY4 string, FUN_004529f0, game_ClearStruct
-0x00419170 func enemy_UpdateSimple hand provisional: simple enemy update with FUN_00410710, FUN_00428250
-0x00419520 func enemy_UpdateComplex hand provisional: enemy update with FUN_00402f30, FUN_0042a0a0, FUN_0042f480
-0x00419ac0 func enemy_UpdateBossPhase hand provisional: large phase logic using FUN_00410d10, FUN_00410640, FUN_0042a260
+0x00417210 func player_StartSpeedBoost hand copies target fields to object (was obj_SetTarget)
+0x004172c0 func input_PollPadState hand OY4 string, FUN_004529f0, game_ClearStruct (was level_InitObjects)
+0x00419170 func player_UpdatePathPosition hand simple enemy update with FUN_00410710, FUN_00428250 (was enemy_UpdateSimple)
+0x00419520 func player_EnterPathSegment hand enemy update with FUN_00402f30, FUN_0042a0a0, FUN_0042f480 (was enemy_UpdateComplex)
+0x00419ac0 func player_IntegrateMotion hand large phase logic using FUN_00410d10, FUN_00410640, FUN_0042a260 (was enemy_UpdateBossPhase)
 0x0041a730 func obj_ApplyPathTransformAndFacing hand transforms position by path segment matrix then normalizes a direction vector for object facing
-0x0041a9a0 func player_FindMatchingStateSlot hand provisional loops three slots comparing state and plays sound via FUN_004516d0
-0x0041aa00 func player_SwapCharacterOnInput hand provisional Fargus Nikki character swap on button press using character table
-0x0041ae20 func player_UpdateFollowerCompanion hand provisional follower tracks leader position then calls obj_MoveAlongPath and anim update
+0x0041a9a0 func level_QueueMatchingExit hand loops three slots comparing state and plays sound via FUN_004516d0 (was player_FindMatchingStateSlot)
+0x0041aa00 func player_SwapCharacterOnInput hand Fargus Nikki character swap on button press using character table
+0x0041ae20 func player_UpdateFollowerCompanion hand follower tracks leader position then calls obj_MoveAlongPath and anim update
 0x0041b190 func player_ResetCharacters hand loops over two characters calling per-character reset FUN_00413000
 0x0041b1b0 func player_SetCharacterAnimSet hand copies 0xf words of animation set data into the player struct
 0x0041b310 func gfx_DrawTexturedPolySpans8 hand 8bpp software textured polygon span rasterizer with jump table using math_FixedMul30
 0x00420ce0 func math_FixedMul30 hand multiplies two ints in 64 bits and shifts right by 30 bits
 0x00420cf0 func gfx_DrawTexturedPolySpans16 hand 16bpp software textured polygon span rasterizer using edge span globals
 0x00427010 func gfx_DrawFlatPolySpans hand software flat-shaded polygon span fill loop
-0x00427410 func obj_ConvertColor555ToRGB hand provisional converts 15-bit 555 color to separate RGB components
+0x00427410 func obj_ConvertColor555ToRGB hand converts 15-bit 555 color to separate RGB components
 0x00427480 func win_SetWindowMode hand sets window style fullscreen/windowed via SetWindowLong, AdjustWindowRect, MoveWindow
 0x00427570 func cd_CheckGameDiscPresent hand splits path, GetDriveTypeA CD-ROM check, SearchPathA for game file, sets missing flag
 0x00427610 func ddraw_ErrorString hand maps DirectDraw HRESULT to error name string, No error for zero
@@ -239,23 +239,23 @@
 0x004281c0 func time_WaitUntilMs hand busy-waits until millisecond timer reaches the target
 0x004281e0 func mem_GetAvailablePhysical hand returns available physical memory via GlobalMemoryStatus
 0x00428200 func path_FindSegmentByLinkId hand searches segment list for entry whose id matches the given link id
-0x00428230 func path_FindFlaggedSegment hand provisional searches segment list for first entry having the given flag bits
+0x00428230 func path_FindFlaggedSegment hand searches segment list for first entry having the given flag bits
 0x00428250 func path_GetPointWorldFlipped hand reads rail path point by index, transforms by segment matrix, with reversed direction
-0x00428390 func path_GetPointWorldFlipped_2 hand provisional variant of flipped path point world transform with different argument handling
+0x00428390 func path_GetAltPointWorld hand variant of flipped path point world transform with different argument handling (was path_GetPointWorldFlipped_2)
 0x004284e0 func cam_UpdateAnglesFromPosition hand computes yaw via atan2 and pitch from camera to target delta, stores at camera +0x2a and +0x28
 0x004285b0 func path_GetSegmentDirection hand computes normalized tangent between path points rotated by segment transform
 0x00428820 func path_GetPointWorld hand reads rail path point by index and transforms into world space with segment matrix
 0x00428950 func path_FindNearestPoint hand searches along rail segment points for nearest point to a given position
-0x00429710 func cam_SetupViewVolumePlanes hand provisional: builds four frustum plane normals from fov param using fixed-point sqrt, stores at camera +0x138..0x164
+0x00429710 func cam_SetupViewVolumePlanes hand builds four frustum plane normals from fov param using fixed-point sqrt, stores at camera +0x138..0x164
 0x0042a0a0 func cam_SetTarget hand sets camera target object and initial offsets
-0x0042a0e0 func cam_UpdateOffsetDecay hand provisional moves camera offset toward goal with fixed-point decay each frame
-0x0042a260 func cam_StartShakeDecay hand provisional starts camera shake and sets decay counters
-0x0042a300 func cam_UpdateTargetDecay hand provisional eases camera target position toward destination each frame
+0x0042a0e0 func cam_UpdateOffsetDecay hand moves camera offset toward goal with fixed-point decay each frame
+0x0042a260 func cam_StartShakeDecay hand starts camera shake and sets decay counters
+0x0042a300 func cam_UpdateTargetDecay hand eases camera target position toward destination each frame
 0x0042a3d0 func coll_TestMovingSphereAgainstFaces hand tests moving sphere against world faces, computing contact time and normal
-0x0042ae40 func coll_TestSphereVsEdge hand provisional sphere versus edge intersection helper for face collision
+0x0042ae40 func coll_SweepSphereVsObjectBounds hand sphere versus edge intersection helper for face collision (was coll_TestSphereVsEdge)
 0x0042b800 func coll_UpdateObjectCollisions hand iterates object lists dispatching pair collisions via class handler table
 0x0042b9c0 func coll_ResolveObjectPair hand resolves collision between two objects using handler table indexed by class byte
-0x0042bd20 func coll_SphereReachTest hand provisional tests whether sphere can reach target without hitting faces
+0x0042bd20 func coll_SphereReachTest hand tests whether sphere can reach target without hitting faces
 0x0042bf00 func coll_TestWorldFaces hand tests object bounding sphere against world faces and records hits
 0x0042c230 func coll_TestObjectLists hand tests object against the lists hanging off the object manager
 0x0042c4d0 func coll_TestEnemyHit hand tests player attack volume against enemy objects
@@ -271,7 +271,7 @@
 0x0042ea00 func enemy_PlayAnimSlot hand starts animation on enemy from slot table and resets frame
 0x0042eb10 func enemy_UpdateAIChase hand enemy AI chasing player along path with turn and speed logic
 0x0042ef60 func enemy_UpdateAIIdle hand enemy idle and patrol AI update with timers
-0x0042f060 func menu_FindStringIndex hand provisional searches 5-byte entry table for matching 4-char key, returns index
+0x0042f060 func pkg_FindKeyTableIndex hand searches 5-byte entry table for matching 4-char key, returns index (was menu_FindStringIndex)
 0x0042f0f0 func cd_ResumeOrStartTrack hand if CD audio enabled and not paused, picks track DAT_0080392c and calls cd_OpenAndPlayTrack
 0x0042f130 func cd_OpenAndPlayTrack hand MCI: sysinfo cdaudio name, open, set time format tmsf, play from track to next with notify
 0x0042f270 func cd_PauseTrack hand MCI pause wait, increments pause count, stops on failure
@@ -280,10 +280,10 @@
 0x0042f3c0 func snd_RestartCdTrack hand stops current CD track, increments track counter, opens next via MCI string
 0x0042f3e0 func cd_ResumeTrack hand decrements pause count, when zero MCI play from current track with notify
 0x0042f480 func path_GetPointFromArray hand evaluates cubic Hermite interpolated position at frame index from key array
-0x0042faa0 func path_ComputeTangentWeight hand provisional computes eased time factor for path key interpolation with neighbor tangents
+0x0042faa0 func path_ComputeTangentWeight hand computes eased time factor for path key interpolation with neighbor tangents
 0x0042fcd0 func path_GetSegmentYaw hand gets path rotation quaternion, applies segment rotation, returns yaw angle via atan helper
 0x00430270 func path_GetQuatFromArray hand evaluates interpolated quaternion at frame index from rotation key array, slerp and normalize
-0x00430850 func path_ComputeQuatTangentWeight hand provisional eased time factor for quaternion key interpolation with neighbor tangents
+0x00430850 func path_ComputeQuatTangentWeight hand eased time factor for quaternion key interpolation with neighbor tangents
 0x00430aa0 func math_MatrixToQuaternion hand converts 3x3 rotation matrix to quaternion with fixed-point sqrt
 0x00430cc0 func path_GetSegmentPitch hand gets path rotation quaternion and returns pitch angle via atan helper
 0x00431340 func math_QuatFromYaw hand builds yaw quaternion from angle and optionally multiplies by another quaternion
@@ -373,12 +373,12 @@
 0x00438510 func gfx_SetBlitCallbacks_B hand stores four function pointers (0x438f90, 0x439790, 0x438540, FUN_00438560) into renderer globals
 0x00438560 func obj_CheckHitResponse hand Checks hit between objects and computes response
 0x00438840 func obj_ComputeBounceImpulse hand Computes bounce impulse velocity after collision
-0x0043884e func obj_ComputeBounceImpulseTail hand provisional Ghidra function fragment continuing bounce impulse computation
+0x0043884e func obj_ComputeBounceImpulseTail hand Ghidra function fragment continuing bounce impulse computation
 0x00439590 func path_ReverseDirection hand Reverses travel direction along path or rail node
 0x004395f0 func obj_StartSlide hand Starts slide movement state for object
 0x0043ae20 func obj_SetRotatingChildren hand Recursively sets rotation state on child objects
 0x0043aee0 func player_ApplyTileTriggers hand Applies tile trigger effects to player at current position
-0x0043b0d0 func obj_UpdateBoundObject hand provisional Updates object bound to another using field +0x9c, large function
+0x0043b0d0 func obj_UpdateGroundShadow hand Updates object bound to another using field +0x9c, large function (was obj_UpdateBoundObject)
 0x0043b8c0 func pkg_SelectActiveBank hand Selects active package bank
 0x0043b8e0 func mem_CopyToTableDest hand copies param_4 bytes from source to destination pointer in table at index param_2 if set
 0x0043b910 func pkg_ResolveSpritePtr hand Resolves sprite pointer from package bank and index
@@ -554,7 +554,7 @@
 0x0044c6c0 func level_LoadEnemyDefsFromMask hand iterates set bits of mask at +0x88 and loads each enemy type via level_LoadEnemyDef
 0x0044c700 func level_LoadEnemyDef hand reads enemy def from package at DAT_00808764, registers in table DAT_0071e154, loads 4 model entries and flags
 0x0044c860 func level_ResetEnemyDefCount hand sets DAT_0071e150 enemy def count to 3
-0x0044c870 func obj_InstallTypeHandlers_2 hand provisional: sets handler pointer DAT_007ff6a8 and installs handler slots 0, 0xb, 0xc
+0x0044c870 func level_LoadDefaultEnemyDefs hand sets handler pointer DAT_007ff6a8 and installs handler slots 0, 0xb, 0xc (was obj_InstallTypeHandlers_2)
 0x0044d140 func obj_InitSpawnedEntity hand clones model if not template, resets state fields at +0x7c/+0x82/+0xac and clears flags, sets 0x20000
 0x0044d1b0 func obj_InitProjectileFromParent hand large initializer: sets type 6 projectile, copies parent pos/flags, transforms by parent matrix, normalizes velocity with FUN_0042e910
 0x0044e2c0 func level_ClearEnemyDefCount hand sets DAT_0071e150 enemy def count to zero
@@ -581,97 +581,97 @@
 0x0044f940 func ddraw_CreatePalette hand converts 256 RGB triples to RGBA entries and creates DirectDraw palette
 0x0044f9f0 func gfx_SetBackBufferSize hand records logical render width height and recomputes back buffer origin pointer
 0x0044fa70 func ddraw_FlipLoop hand calls Flip or Blt on primary until surface no longer busy
-0x0044faf0 func ddraw_QueryModeSupported hand provisional: enumerates display modes with filter, tests whether 8 or 16 bpp supported
+0x0044faf0 func ddraw_QueryModeSupported hand enumerates display modes with filter, tests whether 8 or 16 bpp supported
 0x0044fbf0 func ddraw_HandleSurfaceLost hand restores surfaces if flagged else runs fallback and refreshes display
 0x0044fc10 func ddraw_IsSurfaceLost hand true if primary or back surface IsLost reports DDERR_SURFACELOST; false in Glide mode
 0x0044fc70 func input_PushKeyEvent hand appends packed key code to ring list in PTR_DAT_0046ccb8 up to 40 entries
 0x0044fcb0 func password_EncodeCharPair hand maps two chars (0-9,a-z,A-Z) to index 62*a+1+b, 0 if underscore, -1 if invalid
-0x0044fd40 func sfx_ResolveTriggerIds hand provisional: maps sound ids (low 12 bits) to entries in sound table PTR_DAT_0046ccb8+0x8c
-0x0044fe00 func sfx_StartObjectSound hand provisional: looks up sound via fn_401190, calls FUN_0040fd10/FUN_00410160 and stores channel in object
-0x0044fe90 func sfx_StopObjectSound_fe90 hand provisional: looks up sound via fn_401190, stops channel FUN_0040fc30, marks object channel 0xff
-0x0044fee0 func sfx_UpdateFrame hand provisional: per-frame sound update over object lists, calls FUN_00450280, FUN_0042b800, FUN_0044ffe0
-0x0044ffe0 func sfx_SortAndAssignChannels hand provisional: priority-sorts sound emitters from list, limits channels, calls FUN_00450150 per emitter
-0x00450150 func sfx_UpdateEmitterState hand provisional: starts/stops emitter via FUN_004061f0/FUN_00405fe0 using trigger flags
-0x00450280 func sfx_TickObjectTimers hand provisional: ticks object sound timers, random volume, plays via FUN_0040fe40
-0x00450720 func tex_BlitRowsToBuffer hand provisional: converts and copies texture rows via function pointers DAT_007ff230/DAT_007ff234 with palette and gradient
+0x0044fd40 func sfx_ResolveTriggerIds hand maps sound ids (low 12 bits) to entries in sound table PTR_DAT_0046ccb8+0x8c
+0x0044fe00 func sfx_StartObjectSound hand looks up sound via fn_401190, calls FUN_0040fd10/FUN_00410160 and stores channel in object
+0x0044fe90 func sfx_StopTriggerObjectSound hand looks up sound via fn_401190, stops channel FUN_0040fc30, marks object channel 0xff (was sfx_StopObjectSound_fe90)
+0x0044fee0 func level_UpdateFrame hand per-frame sound update over object lists, calls FUN_00450280, FUN_0042b800, FUN_0044ffe0 (was sfx_UpdateFrame)
+0x0044ffe0 func enemy_SortAndAssignAnimSlots hand priority-sorts sound emitters from list, limits channels, calls FUN_00450150 per emitter (was sfx_SortAndAssignChannels)
+0x00450150 func enemy_UpdateSpawnTriggers hand starts/stops emitter via FUN_004061f0/FUN_00405fe0 using trigger flags (was sfx_UpdateEmitterState)
+0x00450280 func sfx_TickObjectTimers hand ticks object sound timers, random volume, plays via FUN_0040fe40
+0x00450720 func tex_BlitRowsToBuffer hand converts and copies texture rows via function pointers DAT_007ff230/DAT_007ff234 with palette and gradient
 0x00450ae0 func texmgr_Init hand validates cache sizes, zeroes tables, allocates texture cache, links slots; TexMgrInit error strings
 0x00450d50 func texmgr_LinkSlot hand inserts slot into circular doubly-linked list headed per size class
-0x00450dd0 func tex_FreeScratchBuffer hand provisional: frees DAT_007f5f90 via fn_455680
-0x00450de0 func texmgr_GetTexture hand provisional: hashes texture header, finds cached slot or allocates and uploads (TexMgr cache)
-0x00451030 func texmgr_HashInsert hand provisional: inserts texture slot into circular hash bucket list DAT_007f4f78
-0x004510b0 func texmgr_HashRemove hand provisional: removes texture slot from circular hash bucket list
-0x00451120 func texmgr_LruRemove hand provisional: removes texture slot from size-class lru list DAT_007f4ef8
-0x004511a0 func texmgr_HashFind hand provisional: scans hash bucket comparing 0xC0-byte texture header, returns slot or 0
-0x004511f0 func texmgr_AllocSlot hand provisional: finds free slot by size class, on failure flips LRU lists, string TexMgr Textures not unlocked
-0x004512b0 func texmgr_FlipAllLru hand provisional: loops 16 lists calling FUN_004512d0
-0x004512d0 func texmgr_FlipLruList hand provisional: reverses direction of one circular LRU list
-0x00451320 func texmgr_ClearHash hand provisional: zeroes 0x400-entry hash table DAT_007f4f78
+0x00450dd0 func tex_FreeScratchBuffer hand frees DAT_007f5f90 via fn_455680
+0x00450de0 func texmgr_GetTexture hand hashes texture header, finds cached slot or allocates and uploads (TexMgr cache)
+0x00451030 func texmgr_HashInsert hand inserts texture slot into circular hash bucket list DAT_007f4f78
+0x004510b0 func texmgr_HashRemove hand removes texture slot from circular hash bucket list
+0x00451120 func texmgr_LruRemove hand removes texture slot from size-class lru list DAT_007f4ef8
+0x004511a0 func texmgr_HashFind hand scans hash bucket comparing 0xC0-byte texture header, returns slot or 0
+0x004511f0 func texmgr_AllocSlot hand finds free slot by size class, on failure flips LRU lists, string TexMgr Textures not unlocked
+0x004512b0 func texmgr_FlipAllLru hand loops 16 lists calling FUN_004512d0
+0x004512d0 func texmgr_FlipLruList hand reverses direction of one circular LRU list
+0x00451320 func texmgr_ClearHash hand zeroes 0x400-entry hash table DAT_007f4f78
 0x00451340 func texmgr_UnlockAll hand warns Textures not unlocked, merges pending lists for each of 4 size classes
 0x00451390 func texmgr_MergeClassList hand splices class pending list into free list for size class and resets heads
 0x00451440 func texmgr_MergePendingAll hand splices each pending list into master list for all 4 classes
-0x004514d0 func sfx_PickTierSample hand provisional: picks sample by score tier with random pitch modifier, strings GetFart and Really OK to stop
-0x00451670 func level_GetSlotInfoByte hand provisional: returns signed byte from DAT_00808760 level table entry (index*0xc+1)
-0x00451690 func level_GetSlotsLoadedSize hand provisional: sums size fields (+0x5c) of the two loaded level slot buffers
-0x004516d0 func level_QueueSwitch hand provisional: fills pending level slot request (buffer pointers, entry point, sets DAT_00472694 bit)
-0x004517e0 func level_InitObjectFromSlot hand provisional: copies level index and info from table DAT_00808760 into slot object fields
-0x00451830 func level_HasPendingSlot hand provisional: returns whether second slot buffer or level flag +0x8d is set
-0x00451860 func level_SwapSlotPointers hand provisional: swaps DAT_007f6008 and DAT_007f600c slot buffers, calls fn_404d80
-0x00451890 func level_GetPendingSlotData hand provisional: returns data pointer at +0x14 of pending slot buffer
-0x004518b0 func level_SetTransitionTimer hand provisional: sets DAT_0080353e to 0xf
-0x004518c0 func level_RestartCurrentSlot hand provisional: swaps slots, reinitialises pending slot from level table, resets pointers and flags
-0x004519a0 func level_RequestLoadIndex hand provisional: validates level index, increments loaded count, calls FUN_00451a90 or FUN_00406f90
-0x00451a90 func level_LoadNextSlot hand provisional: allocates package memory for next level slot via fn_42f2f0, calls FUN_00441e70 and FUN_00407e20
-0x00451c50 func obj_Destroy hand provisional: releases object by type, frees via FUN_004061f0 or FUN_00452330, flags 0x80 destroyed
-0x00451cb0 func level_StopAllObjectSfx hand provisional: iterates object lists stopping sounds and FUN_0044c650, FUN_00437f20, FUN_00405280
-0x00451d60 func level_FreeObjects hand provisional: frees all live objects and lists through obj_Destroy FUN_00451c50 then FUN_00451cb0
-0x00451e40 func level_Enter hand provisional: activates a level slot, resets object flags, FUN_00459140, FUN_004119a0, music open command
-0x00452160 func level_SwapMusicTracks hand provisional: swaps music/scenery pointers between slots, stop command string s_stop_s_443f50
-0x00452250 func level_InitSlotBuffers hand provisional: zeroes slot table DAT_007f6008 and initialises two buffer headers from DAT_00803360
+0x004514d0 func sfx_PickAltSample hand picks sample by score tier with random pitch modifier, strings GetFart and Really OK to stop (was sfx_PickTierSample)
+0x00451670 func level_GetSlotInfoByte hand returns signed byte from DAT_00808760 level table entry (index*0xc+1)
+0x00451690 func level_GetSlotsCollectedCount hand sums size fields (+0x5c) of the two loaded level slot buffers (was level_GetSlotsLoadedSize)
+0x004516d0 func level_QueueSwitch hand fills pending level slot request (buffer pointers, entry point, sets DAT_00472694 bit)
+0x004517e0 func level_InitObjectFromSlot hand copies level index and info from table DAT_00808760 into slot object fields
+0x00451830 func level_HasPendingSlot hand returns whether second slot buffer or level flag +0x8d is set
+0x00451860 func level_SwapSlotPointers hand swaps DAT_007f6008 and DAT_007f600c slot buffers, calls fn_404d80
+0x00451890 func level_GetPendingSlotData hand returns data pointer at +0x14 of pending slot buffer
+0x004518b0 func level_SetTransitionTimer hand sets DAT_0080353e to 0xf
+0x004518c0 func level_RestartCurrentSlot hand swaps slots, reinitialises pending slot from level table, resets pointers and flags
+0x004519a0 func level_RequestLoadIndex hand validates level index, increments loaded count, calls FUN_00451a90 or FUN_00406f90
+0x00451a90 func level_LoadNextSlot hand allocates package memory for next level slot via fn_42f2f0, calls FUN_00441e70 and FUN_00407e20
+0x00451c50 func obj_Destroy hand releases object by type, frees via FUN_004061f0 or FUN_00452330, flags 0x80 destroyed
+0x00451cb0 func level_StopAllObjectSfx hand iterates object lists stopping sounds and FUN_0044c650, FUN_00437f20, FUN_00405280
+0x00451d60 func level_FreeObjects hand frees all live objects and lists through obj_Destroy FUN_00451c50 then FUN_00451cb0
+0x00451e40 func level_Enter hand activates a level slot, resets object flags, FUN_00459140, FUN_004119a0, music open command
+0x00452160 func level_SwapMusicTracks hand swaps music/scenery pointers between slots, stop command string s_stop_s_443f50
+0x00452250 func level_InitSlotBuffers hand zeroes slot table DAT_007f6008 and initialises two buffer headers from DAT_00803360
 0x004522d0 func stub_004522d0 hand tiny stub that only returns
 0x004522e0 func mem_AllocBlockDefault hand calls mem_AllocBlock with default pool flag 100
 0x004522f0 func mem_AllocBlock hand allocates size+4 via mem_allocate, stores handle in 2-byte header, returns pointer past header
-0x00452330 func mem_FreeObjectBlock hand provisional: calls FUN_00433a50 then mem release attempt string function
-0x00452350 func game_PresentFrame hand provisional: per-frame fade, UnbatchGraphics string, calls fn_44abf0, FUN_0043c0a0, fn_44bfd0
-0x00452530 func game_InitLevelSystems hand provisional: sets flag, calls several init routines, computes level value from table
-0x00452580 func game_ResetSystems hand provisional: calls FUN_0041b190, FUN_00406f80, FUN_0044e2c0
+0x00452330 func mem_FreeObjectBlock hand calls FUN_00433a50 then mem release attempt string function
+0x00452350 func game_PresentFrame hand per-frame fade, UnbatchGraphics string, calls fn_44abf0, FUN_0043c0a0, fn_44bfd0
+0x00452530 func game_InitLevelSystems hand sets flag, calls several init routines, computes level value from table
+0x00452580 func game_ResetSystems hand calls FUN_0041b190, FUN_00406f80, FUN_0044e2c0
 0x00452590 func obj_InitUpdateHandlerTables hand installs object update and draw handler function pointers in tables; returns 1
-0x00452600 func obj_ApplySwitchDirection hand provisional: sets +0x88 to 1 or -1 by flag bits and calls FUN_00432f40
-0x004528a0 func obj_UpdateSwitchCondition hand provisional: compares counter in DAT_007ff120 to threshold, toggles object visibility flags
-0x004529b0 func level_ClearState hand provisional: calls FUN_004522d0, FUN_00440060, FUN_00404ef0 with 0
-0x004529d0 func level_DrainQueue hand provisional: loops FUN_00406fb0 until zero then sets DAT_00472694 bit 0x2000
-0x004529f0 func pad_FilterDebugCombos hand provisional: detects pad button combos for debug level skip and camera angle changes
-0x00452b00 func math_BuildYawMatrix hand provisional: builds yaw rotation matrix with FUN_00433a60 sine table, multiplies via FUN_00452b60
+0x00452600 func obj_ApplySwitchDirection hand sets +0x88 to 1 or -1 by flag bits and calls FUN_00432f40
+0x004528a0 func obj_UpdateSwitchCondition hand compares counter in DAT_007ff120 to threshold, toggles object visibility flags
+0x004529b0 func level_ClearState hand calls FUN_004522d0, FUN_00440060, FUN_00404ef0 with 0
+0x004529d0 func level_DrainQueue hand loops FUN_00406fb0 until zero then sets DAT_00472694 bit 0x2000
+0x004529f0 func pad_FilterDebugCombos hand detects pad button combos for debug level skip and camera angle changes
+0x00452b00 func math_BuildYawMatrix hand builds yaw rotation matrix with FUN_00433a60 sine table, multiplies via FUN_00452b60
 0x00452b60 func math_MatMul3x3 hand fixed-point 12-bit 3x3 matrix multiply of two matrices
 0x00452de0 func obj_UpdateAll hand walks object list, calls per-type handlers, builds rotation matrices, culls, runs animation per object
-0x004536a0 func math_BuildYawPitchMatrix hand provisional: builds two axis rotation matrices with sine table and multiplies
-0x00453760 func cam_SphereInFrustum hand provisional: tests point/radius against frustum planes in DAT_00472ac8..DAT_00472b14
-0x004538f0 func render_DrawSubObject hand provisional: pushes matrix stack PTR_DAT_00472998, transforms, dispatches to quad projection variants
-0x00453c10 func render_ProjectQuadsClipped hand provisional: projects 4-vertex polygons, culls backface, inserts into depth buckets DAT_007fe110, FUN_0040a940
-0x004546c0 func render_ProjectQuadsSubmit hand provisional: variant projecting quads and submitting via FUN_0040a940 with backface flags
-0x00455180 func render_ProjectQuadsBatch hand provisional: variant projecting quads, batch state via FUN_0040a090 once then FUN_0040a940
-0x00455c30 func render_ProjectQuadsLit hand provisional: variant projecting quads with depth bucket insert and vertex color DAT_00472ab8
-0x004566e0 func obj_UpdateAttachPoints hand provisional: updates object attach positions from matrix stack, shifts four attach points
+0x004536a0 func math_BuildYawPitchMatrix hand builds two axis rotation matrices with sine table and multiplies
+0x00453760 func cam_SphereInFrustum hand tests point/radius against frustum planes in DAT_00472ac8..DAT_00472b14
+0x004538f0 func render_DrawSubObject hand pushes matrix stack PTR_DAT_00472998, transforms, dispatches to quad projection variants
+0x00453c10 func render_ProjectQuadsClipped hand projects 4-vertex polygons, culls backface, inserts into depth buckets DAT_007fe110, FUN_0040a940
+0x004546c0 func render_ProjectQuadsSubmit hand variant projecting quads and submitting via FUN_0040a940 with backface flags
+0x00455180 func render_ProjectQuadsFlatColor hand variant projecting quads, batch state via FUN_0040a090 once then FUN_0040a940 (was render_ProjectQuadsBatch)
+0x00455c30 func render_ProjectQuadsLit hand variant projecting quads with depth bucket insert and vertex color DAT_00472ab8
+0x004566e0 func obj_UpdateAttachPoints hand updates object attach positions from matrix stack, shifts four attach points
 0x004567e0 func obj_SplitMomentum hand provisional: averages position/velocity halves and recomputes magnitude via FUN_0042e820
-0x00456850 func render_WalkChildNodes hand provisional: walks child node list, per-type transforms, calls FUN_004570c0, FUN_00457300, FUN_00431680
-0x004570c0 func math_QuatToMatrix hand provisional: builds rotation matrix from fixed-point quaternion-like values or copies identity when 0x8000
-0x004571d0 func math_BuildEulerMatrix3 hand provisional: builds up to three axis rotations with sine table and multiplies via FUN_00452b60
-0x00457300 func render_DrawObjectNode hand provisional: pushes matrix, applies object rotation, calls FUN_004589e0, FUN_00458010, FUN_004575c0, FUN_00457680
-0x004575c0 func math_BuildPitchYawMatrix hand provisional: builds pitch and yaw matrices and multiplies into output matrix
-0x00457680 func render_DrawBillboardQuad hand provisional: projects billboard quad into depth buckets, uses DAT_007fe104 polygon pool
-0x00458010 func render_DrawBillboardQuad_2 hand provisional: second billboard quad projection variant, same pool DAT_007fe104
-0x004589e0 func render_DrawSpriteQuad hand provisional: builds screen-aligned quad from object size and depth, inserts in bucket list DAT_007fe110
+0x00456850 func render_WalkChildNodes hand walks child node list, per-type transforms, calls FUN_004570c0, FUN_00457300, FUN_00431680
+0x004570c0 func math_QuatToMatrix hand builds rotation matrix from fixed-point quaternion-like values or copies identity when 0x8000
+0x004571d0 func math_BuildEulerMatrix3 hand builds up to three axis rotations with sine table and multiplies via FUN_00452b60
+0x00457300 func render_DrawObjectNode hand pushes matrix, applies object rotation, calls FUN_004589e0, FUN_00458010, FUN_004575c0, FUN_00457680
+0x004575c0 func math_BuildPitchYawMatrix hand builds pitch and yaw matrices and multiplies into output matrix
+0x00457680 func render_DrawBillboardQuad hand projects billboard quad into depth buckets, uses DAT_007fe104 polygon pool
+0x00458010 func render_DrawYawBillboardQuad hand second billboard quad projection variant, same pool DAT_007fe104 (was render_DrawBillboardQuad_2)
+0x004589e0 func render_DrawSpriteQuad hand builds screen-aligned quad from object size and depth, inserts in bucket list DAT_007fe110
 0x00458dc0 func cam_BuildViewMatrix hand builds inverse camera rotation matrix and translation from camera object, copies matrix, transforms light vectors
-0x00459090 func render_InitPolyPool hand provisional: initialises 0x6c-byte polygon pool entries starting DAT_007f6038
-0x00459140 func render_DrawFrame hand provisional: per-frame draw, resets matrix stack, FUN_00459670, FUN_004593a0, FUN_00452350, handles pending objects
-0x004593a0 func render_DrawVisibleObjects hand provisional: frustum culls object list via FUN_00453760 and draws visible with FUN_004546c0 or FUN_00453c10
-0x00459670 func render_DrawScene hand provisional: large scene traversal rendering objects, transforms, FUN_0045b4f0, FUN_00457300, FUN_0045b260
-0x0045b260 func obj_ResetAfterRender hand provisional: per object type flag reset after render, FUN_00437f60, FUN_00432f40, FUN_0044aab0
-0x0045b4f0 func obj_StoreRenderMatrix hand provisional: copies current matrix and position from stack into object, tracks delta position
-0x0045b650 func path_UpdateFollower hand provisional: updates path-following object, random direction change, FUN_004052c0, FUN_00406260, FUN_00405ba0
+0x00459090 func render_InitPolyPool hand initialises 0x6c-byte polygon pool entries starting DAT_007f6038
+0x00459140 func render_DrawFrame hand per-frame draw, resets matrix stack, FUN_00459670, FUN_004593a0, FUN_00452350, handles pending objects
+0x004593a0 func render_DrawVisibleObjects hand frustum culls object list via FUN_00453760 and draws visible with FUN_004546c0 or FUN_00453c10
+0x00459670 func render_DrawScene hand large scene traversal rendering objects, transforms, FUN_0045b4f0, FUN_00457300, FUN_0045b260
+0x0045b260 func obj_ResetAfterRender hand per object type flag reset after render, FUN_00437f60, FUN_00432f40, FUN_0044aab0
+0x0045b4f0 func obj_StoreRenderMatrix hand copies current matrix and position from stack into object, tracks delta position
+0x0045b650 func enemy_UpdatePatrol hand updates path-following object, random direction change, FUN_004052c0, FUN_00406260, FUN_00405ba0 (was path_UpdateFollower)
 0x0045b856 func thunk_DirectSoundCreate hand import thunk jumping to DirectSoundCreate
 0x0045b85c func thunk_DirectDrawCreate hand import thunk jumping to DirectDrawCreate
 0x0045b870 func rand_Next hand Park-Miller minimal-standard LCG (16807 mod 2^31-1) on global seed
-0x0045b8f0 func rand_SetSeed hand provisional: sets RNG state DAT_00472b18 nonzero, returns old value
+0x0045b8f0 func rand_SetSeed hand sets RNG state DAT_00472b18 nonzero, returns old value
 0x0045b9f0 func crt_RunExitHandlers hand calls pre-exit hook then runs atexit terminator tables
 0x0045ba20 func exit hand C exit: calls crt_DoExit with code
 0x0045ba40 func _exit hand quick exit calls crt_DoExit with quick flag
@@ -680,7 +680,7 @@
 0x0045bb60 func printf hand locks stdout, formats via _output, unlocks
 0x0045bbc0 func free hand locks heap, small block free or HeapFree
 0x0045bc30 func crt_InitFloat hand CRT floating point init: calls setup, sets default precision
-0x0045bc60 func math_InitFuncPtrs hand provisional: assigns six function pointers in table PTR_fn_45c750 to code labels
+0x0045bc60 func crt_InitFloatFuncPtrs hand assigns six function pointers in table PTR_fn_45c750 to code labels (was math_InitFuncPtrs)
 0x0045bc98 func ftol hand converts ST0 to 64-bit integer with rounding
 0x0045bf80 func vsprintf hand formats into buffer via string FILE and _output
 0x0045bff0 func sprintf hand varargs sprintf using string FILE and _output

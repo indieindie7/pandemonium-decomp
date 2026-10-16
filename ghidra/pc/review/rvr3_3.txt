@@ -1,0 +1,60 @@
+PANDY3 0x00451120 texmgr_LruRemove CONFIRM texmgr_LruRemove unlinks slot from circular LRU list, fixes list head
+PANDY3 0x004511a0 texmgr_HashFind CONFIRM texmgr_HashFind bucket scan comparing 0xC0-byte header, returns slot or 0
+PANDY3 0x004511f0 texmgr_AllocSlot CONFIRM texmgr_AllocSlot picks slot by size class, flips LRU on exhaustion
+PANDY3 0x004512b0 texmgr_FlipAllLru CONFIRM texmgr_FlipAllLru loops 16 lists calling flip
+PANDY3 0x004512d0 texmgr_FlipLruList CONFIRM texmgr_FlipLruList swaps prev/next pointers of circular list
+PANDY3 0x00451320 texmgr_ClearHash CONFIRM texmgr_ClearHash zeroes 0x400 hash entries, called from level unload
+PANDY3 0x004514d0 sfx_PickTierSample RENAME sfx_PickAltSample tier is by sample length param not score; swaps in alternate sample with random pitch, called from sound_CreateBuffer under a mode flag
+PANDY3 0x00451670 level_GetSlotInfoByte CONFIRM level_GetSlotInfoByte byte at +1 of level table entry, used by player damage to pick respawn info
+PANDY3 0x00451690 level_GetSlotsLoadedSize RENAME level_GetSlotsCollectedCount caller adds result to collected counter and divides by total for percent on complete screen
+PANDY3 0x004516d0 level_QueueSwitch CONFIRM level_QueueSwitch fills pending slot request and sets pending bit, called on damage/state slot match
+PANDY3 0x004517e0 level_InitObjectFromSlot CONFIRM level_InitObjectFromSlot copies level index and table info into slot header, called from pkg load state machine
+PANDY3 0x00451830 level_HasPendingSlot CONFIRM level_HasPendingSlot true if second slot buffer present or flag +0x8d set
+PANDY3 0x00451860 level_SwapSlotPointers CONFIRM level_SwapSlotPointers swaps the two slot buffer pointers
+PANDY3 0x00451890 level_GetPendingSlotData CONFIRM level_GetPendingSlotData returns +0x14 data pointer of second slot buffer
+PANDY3 0x004518b0 level_SetTransitionTimer CONFIRM level_SetTransitionTimer stores 0xf into a short timer, called on restart and main loop
+PANDY3 0x004518c0 level_RestartCurrentSlot CONFIRM level_RestartCurrentSlot swaps slot buffers, requeues the previous slot as pending entry, sets timer
+PANDY3 0x004519a0 level_RequestLoadIndex CONFIRM level_RequestLoadIndex validates index vs level count, bumps loaded count, starts slot load
+PANDY3 0x00451a90 level_LoadNextSlot CONFIRM level_LoadNextSlot picks buffer region for next slot and begins level package load
+PANDY3 0x00451c50 obj_Destroy CONFIRM obj_Destroy unlinks or frees object by type, or flags it for deferred removal
+PANDY3 0x00451cb0 level_StopAllObjectSfx CONFIRM level_StopAllObjectSfx walks object lists stopping sounds, also releases anim handles; called by pause and free
+PANDY3 0x00451d60 level_FreeObjects CONFIRM level_FreeObjects destroys object lists, respawns player object, stops sfx; called by Shutdown and Enter
+PANDY3 0x00451e40 level_Enter CONFIRM level_Enter activates a queued slot, resets object flags, draws first frame, opens music, called from sfx_UpdateFrame on pending bit
+PANDY3 0x00452160 level_SwapMusicTracks CONFIRM level_SwapMusicTracks stops old track and swaps music/scenery pointers between slots on level entry
+PANDY3 0x00452250 level_InitSlotBuffers CONFIRM level_InitSlotBuffers zeroes slot table, sets up two buffer headers, called before load
+PANDY3 0x00452330 mem_FreeObjectBlock CONFIRM mem_FreeObjectBlock releases block via header word before pointer, used by obj_Destroy and buffer free
+PANDY3 0x00452350 game_PresentFrame CONFIRM game_PresentFrame fade, background/letterbox, flush batched gfx and texture frame; called at end of draw frame
+PANDY3 0x00452530 game_InitLevelSystems CONFIRM game_InitLevelSystems resets package read index, runs init routines, called from game init resources
+PANDY3 0x00452580 game_ResetSystems CONFIRM game_ResetSystems resets characters, enemy def count; called by main loop and shutdown
+PANDY3 0x00452600 obj_ApplySwitchDirection CONFIRM obj_ApplySwitchDirection sets direction +1/-1 from flags and advances anim tracks
+PANDY3 0x004528a0 obj_UpdateSwitchCondition CONFIRM obj_UpdateSwitchCondition compares global counter with threshold or trigger ids, toggles state/flags, drives switch anim
+PANDY3 0x004529b0 level_ClearState CONFIRM level_ClearState clears package entry table and stubs, called from shutdown paths
+PANDY3 0x004529d0 level_DrainQueue CONFIRM level_DrainQueue steps load state machine until idle then sets flag, called on unpause
+PANDY3 0x004529f0 pad_FilterDebugCombos CONFIRM pad_FilterDebugCombos debug-gated pad combos adjust camera angle or level skip, masks input when consumed
+PANDY3 0x00452b00 math_BuildYawMatrix CONFIRM math_BuildYawMatrix builds Y-axis rotation from sin/cos and multiplies into out matrix
+PANDY3 0x004536a0 math_BuildYawPitchMatrix CONFIRM math_BuildYawPitchMatrix builds Y then X rotation and composes them
+PANDY3 0x00453760 cam_SphereInFrustum CONFIRM cam_SphereInFrustum tests center and radius against five frustum planes, returns bool
+PANDY3 0x004538f0 render_DrawSubObject CONFIRM render_DrawSubObject pushes matrix, composes sub-object transform, dispatches to quad projection variants by flags
+PANDY3 0x00453c10 render_ProjectQuadsClipped CONFIRM render_ProjectQuadsClipped projects quad verts, screen-bounds test, backface flag, bucket insert; used when object clip flag set
+PANDY3 0x004546c0 render_ProjectQuadsSubmit CONFIRM render_ProjectQuadsSubmit projects quad verts, backface flag, bucket insert, lazily builds frame lights then applies them
+PANDY3 0x00455180 render_ProjectQuadsBatch RENAME render_ProjectQuadsFlatColor same projection and bucket insert but stamps constant DAT_00472ab8 into all four vertex colors, no light apply
+PANDY3 0x00455c30 render_ProjectQuadsLit CONFIRM render_ProjectQuadsLit projects quads, buckets them, applies model lights each quad (lights prebuilt by caller)
+PANDY3 0x004566e0 obj_UpdateAttachPoints CONFIRM obj_UpdateAttachPoints sets object pos from matrix stack and shifts up to four attach points by delta
+PANDY3 0x004567e0 obj_SplitMomentum UNSURE obj_SplitMomentum halves two vec3 fields and stores distance into one; semantics of fields unclear from caller
+PANDY3 0x00456850 render_WalkChildNodes CONFIRM render_WalkChildNodes walks child node list, per node type builds transform and draws sub-object or object node recursively
+PANDY3 0x004570c0 math_QuatToMatrix CONFIRM math_QuatToMatrix builds 3x3 from quaternion terms, identity copy when w==0x8000, multiplies into parent
+PANDY3 0x004571d0 math_BuildEulerMatrix3 CONFIRM math_BuildEulerMatrix3 builds up to three axis rotations from sin/cos table and chains matmuls
+PANDY3 0x00457300 render_DrawObjectNode CONFIRM render_DrawObjectNode pushes matrix, applies offset, picks sprite quad or billboard variant by flags
+PANDY3 0x004575c0 math_BuildPitchYawMatrix CONFIRM math_BuildPitchYawMatrix builds two axis rotations and multiplies into out matrix
+PANDY3 0x00457680 render_DrawBillboardQuad CONFIRM render_DrawBillboardQuad projects four corners of a quad rotated by view matrix into pool and bucket
+PANDY3 0x00458010 render_DrawBillboardQuad_2 RENAME render_DrawYawBillboardQuad suffix not allowed; caller first builds yaw-toward-camera matrix, quad offset vertical bias, pool entry in bucket
+PANDY3 0x004589e0 render_DrawSpriteQuad CONFIRM render_DrawSpriteQuad builds screen-aligned axis quad from size and depth, projects and buckets it
+PANDY3 0x00459090 render_InitPolyPool CONFIRM render_InitPolyPool links 0x6c-byte pool entries to vertex slots and default color, resets pool cursor
+PANDY3 0x00459140 render_DrawFrame CONFIRM render_DrawFrame per-frame: camera update, resets matrix stack, DrawScene, objects, present, flushes pending list
+PANDY3 0x004593a0 render_DrawVisibleObjects CONFIRM render_DrawVisibleObjects frustum culls object list with sphere test, builds per-object matrix, draws visible ones
+PANDY3 0x00459670 render_DrawScene CONFIRM render_DrawScene large recursive scene traversal over node tree, transforms, draws nodes, stores matrices, resets after render
+PANDY3 0x0045b260 obj_ResetAfterRender CONFIRM obj_ResetAfterRender per object type clears render flags and animation state after drawing, returns whether to continue
+PANDY3 0x0045b4f0 obj_StoreRenderMatrix CONFIRM obj_StoreRenderMatrix copies matrix stack top and position into object, tracks per-frame position delta
+PANDY3 0x0045b650 path_UpdateFollower RENAME enemy_UpdatePatrol calls enemy_UpdateMovementAndDist and enemy_GetTurnDirection, random timer picks direction along path ends; enemy behaviour not path module
+PANDY3 0x0045b8f0 rand_SetSeed CONFIRM rand_SetSeed stores nonzero seed in RNG state and returns old; caller saves and restores around level preload
+PANDY3 0x0045bc60 math_InitFuncPtrs RENAME crt_InitFloatFuncPtrs only caller is crt_InitFloat; fills six float helper pointers then sets default precision

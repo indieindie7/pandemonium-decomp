@@ -39,3 +39,5 @@ no game text, no Ghidra database. You need your own copy of the game to use any 
 
 Notes, names and tools: MIT (see `LICENSE`). Pandemonium! belongs to its rights holders; nothing from the
 game is distributed here. Takedown requests will be honoured.
+
+`ghidra/pc/review/` holds the second-round Sonnet verdicts (CONFIRM / RENAME / UNSURE per provisional name) for the two PC builds; after them PANDY3 keeps 6 and PANDY 7 provisional names.

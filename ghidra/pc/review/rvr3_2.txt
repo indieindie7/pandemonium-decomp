@@ -1,0 +1,61 @@
+PANDY3 0x004129d0 player_ApplyDamage RENAME player_HandleDeath resets state then queues level switch for mode 1, sets lives state for mode 2; no damage math
+PANDY3 0x00412ae0 player_ResetState CONFIRM player_ResetState clears poly flags and motion/state fields on player
+PANDY3 0x00412b50 player_UpdateVelocity RENAME player_CopyObjectState bulk field copy from one object to another, no arithmetic
+PANDY3 0x00412c90 player_FindRailSegment CONFIRM player_FindRailSegment finds nearest path point index to position
+PANDY3 0x00412da0 player_Respawn RENAME player_ClearSlotPolyFlags only clears poly flags of indexed player slot
+PANDY3 0x00412dd0 player_UpdateLives RENAME player_LoadSlotsFromMask loops player slots, loads those in level mask via player_Die; called from level_Load
+PANDY3 0x00412e70 player_Die RENAME player_LoadCharacterFromPkg reads model/anim set from package into slot; no death behavior
+PANDY3 0x00412fa0 player_Cleanup CONFIRM player_Cleanup shutdown resets player and character slots
+PANDY3 0x00413000 player_ClearFlags RENAME player_ClearCharacterSlot zeroes one character slot pointer
+PANDY3 0x00413020 math_Clamp16 RENAME game_TestProgressFlag maps ids to bits of progress flag word, no clamping
+PANDY3 0x00413080 player_GetScoreLevel RENAME player_SwapCharacterSelect sets selected-character bits and returns previous; used to save/restore
+PANDY3 0x004130d0 game_InitPlayerTables CONFIRM game_InitPlayerTables initializes per-player slot defaults
+PANDY3 0x004131c0 level_InitCallbacksAndPlayerObjects CONFIRM level_InitCallbacksAndPlayerObjects installs callbacks and loads player objects
+PANDY3 0x00413310 enemy_SpawnFromList RENAME player_InterpToObjectPos acts on player state, eases player position toward an object's world point over counter frames; no spawning
+PANDY3 0x004135b0 obj_InitFromRecord RENAME player_SnapToObjectPos writes player position from object world pos, zeroes velocity
+PANDY3 0x00413780 player_HandleInput RENAME player_OnObjectContact switch on object kind setting player contact-state bits; not input mapping
+PANDY3 0x00414100 player_PlaySoundEvent CONFIRM player_PlaySoundEvent looks up sound entry and plays it
+PANDY3 0x00414160 player_InputProc_Head RENAME player_CanReactToObject returns whether player reacts to a contact object, tests button bits per kind
+PANDY3 0x0041416e player_InputProc_Body RENAME player_CanReactToObjectBody split body of same predicate as head
+PANDY3 0x00415db0 enemy_UpdateAndHit RENAME player_FlipPathDirection toggles player facing bit, negates velocity, reverses path index, camera shake; player not enemy
+PANDY3 0x00416020 boss_UpdateMotion RENAME player_UpdateRunSpeed computes player horizontal speed from accel/limit fields; player struct not boss
+PANDY3 0x004163e0 obj_UpdateTimers RENAME player_ApplyInputAccel applies pad bit input to player speed fields and clamps
+PANDY3 0x00416540 boss_UpdateAttack RENAME player_LaunchTowardTarget computes vector to target and sets player velocity capped by speed
+PANDY3 0x00416d50 boss_Update RENAME player_UpdateTargetPull picks target from attached object and calls launch routine; player state
+PANDY3 0x004171e0 math_GetRandomByte UNSURE math_GetRandomByte no randomness, increments a saved counter toward zero and returns flag; role unclear
+PANDY3 0x00417210 obj_SetTarget RENAME player_StartSpeedBoost sets state byte, saves speed fields then scales by 1.25
+PANDY3 0x004172c0 level_InitObjects RENAME input_PollPadState latches previous pad bits and reads new ones each frame
+PANDY3 0x00419170 enemy_UpdateSimple RENAME player_UpdatePathPosition places player on path, derives direction, facing update
+PANDY3 0x00419520 enemy_UpdateComplex RENAME player_EnterPathSegment sets player onto a path segment with camera target and optional blend frames
+PANDY3 0x00419ac0 enemy_UpdateBossPhase RENAME player_IntegrateMotion damps and applies velocity to player position, spawns effect, path/collision follow-up
+PANDY3 0x0041a9a0 player_FindMatchingStateSlot RENAME level_QueueMatchingExit finds matching slot among three and queues level switch
+PANDY3 0x0041aa00 player_SwapCharacterOnInput CONFIRM player_SwapCharacterOnInput swaps active character on button press
+PANDY3 0x0041ae20 player_UpdateFollowerCompanion CONFIRM player_UpdateFollowerCompanion follower tracks leader along path
+PANDY3 0x00427410 obj_ConvertColor555ToRGB CONFIRM obj_ConvertColor555ToRGB 555 colour to bytes, used in relocation
+PANDY3 0x00428230 path_FindFlaggedSegment CONFIRM path_FindFlaggedSegment first list entry with flag bit 4
+PANDY3 0x00428390 path_GetPointWorldFlipped_2 RENAME path_GetAltPointWorld transforms second point array by segment matrix into world pos; no numeric suffix
+PANDY3 0x00429710 cam_SetupViewVolumePlanes CONFIRM cam_SetupViewVolumePlanes builds four normalized frustum plane normals from fov param
+PANDY3 0x0042a0e0 cam_UpdateOffsetDecay CONFIRM cam_UpdateOffsetDecay per-axis shake counters scale offset by decay table each frame
+PANDY3 0x0042a260 cam_StartShakeDecay CONFIRM cam_StartShakeDecay sets per-axis decay counters from vector magnitude capped at 0x2d
+PANDY3 0x0042a300 cam_UpdateTargetDecay CONFIRM cam_UpdateTargetDecay eases camera target toward destination using decay table
+PANDY3 0x0042ae40 coll_TestSphereVsEdge RENAME coll_SweepSphereVsObjectBounds swept sphere vs object bounds (sphere or oriented box by kind), returns hit time; callers are object/enemy/pickup hits
+PANDY3 0x0042bd20 coll_SphereReachTest CONFIRM coll_SphereReachTest quadratic closest-approach test of moving sphere against a sphere
+PANDY3 0x0042f060 menu_FindStringIndex RENAME pkg_FindKeyTableIndex searches 5-byte key table for 4-char key; callers are pkg load and level enter, not menus
+PANDY3 0x0042faa0 path_ComputeTangentWeight CONFIRM path_ComputeTangentWeight eased interpolation weight from neighbor key tangents; used by path point lookup and mesh keyframe blend
+PANDY3 0x00430850 path_ComputeQuatTangentWeight CONFIRM path_ComputeQuatTangentWeight same easing for quaternion keys; sole caller is quaternion array lookup
+PANDY3 0x0043884e obj_ComputeBounceImpulseTail CONFIRM obj_ComputeBounceImpulseTail split tail computing contact normal and reflected impulse into bound object velocity fields
+PANDY3 0x0043b0d0 obj_UpdateBoundObject RENAME obj_UpdateGroundShadow finds surface under object via path and sphere tests, sets height offset and tilt/yaw angles of attached record at +0x9c
+PANDY3 0x0044c870 obj_InstallTypeHandlers_2 RENAME level_LoadDefaultEnemyDefs sets a handler pointer then loads enemy defs 0, 0xb, 0xc; called from level systems init
+PANDY3 0x0044faf0 ddraw_QueryModeSupported CONFIRM ddraw_QueryModeSupported EnumDisplayModes with width/height filter, tests 8 or 16 bpp
+PANDY3 0x0044fd40 sfx_ResolveTriggerIds CONFIRM sfx_ResolveTriggerIds maps low-12-bit sound ids to entries in object sound table
+PANDY3 0x0044fe00 sfx_StartObjectSound CONFIRM sfx_StartObjectSound looks up sound entry, plays it, stores channel byte in object
+PANDY3 0x0044fe90 sfx_StopObjectSound_fe90 RENAME sfx_StopTriggerObjectSound stops channel if playing, marks object channel 0xff; sfx_StopObjectSound exists, drop suffix
+PANDY3 0x0044fee0 sfx_UpdateFrame RENAME level_UpdateFrame per-frame level tick: enter pending level, timers, collisions, assign slots, render frame; not just sound
+PANDY3 0x0044ffe0 sfx_SortAndAssignChannels RENAME enemy_SortAndAssignAnimSlots flushes queued key events, sorts enemy list by distance, grants limited slots from a size budget
+PANDY3 0x00450150 sfx_UpdateEmitterState RENAME enemy_UpdateSpawnTriggers acts on enemy records: trigger kinds hide/release or respawn linked object; no sound calls
+PANDY3 0x00450280 sfx_TickObjectTimers CONFIRM sfx_TickObjectTimers counts down trigger/sound object timers, random volume, starts sounds or key events
+PANDY3 0x00450720 tex_BlitRowsToBuffer CONFIRM tex_BlitRowsToBuffer converts rows into texture buffer through row converters with palette or gradient
+PANDY3 0x00450dd0 tex_FreeScratchBuffer CONFIRM tex_FreeScratchBuffer frees scratch buffer at shutdown
+PANDY3 0x00450de0 texmgr_GetTexture CONFIRM texmgr_GetTexture hashes header, finds cached slot or allocates and blits
+PANDY3 0x00451030 texmgr_HashInsert CONFIRM texmgr_HashInsert links slot into circular hash bucket
+PANDY3 0x004510b0 texmgr_HashRemove CONFIRM texmgr_HashRemove unlinks slot from circular hash bucket

@@ -318,11 +318,11 @@ C 004521d0
 F 00415020 render_ProjectQuadsSubmit USER_DEFINED 2751
 C 00451920
 C 004521d0
-F 00415ae0 render_ProjectQuadsBatch USER_DEFINED 2730
+F 00415ae0 render_ProjectQuadsFlatTint USER_DEFINED 2730
 F 00416590 render_ProjectQuadsLit USER_DEFINED 2746
 C 004521d0
 F 00417050 obj_UpdateAttachPoints USER_DEFINED 255
-F 00417150 obj_SplitMomentum USER_DEFINED 98
+F 00417150 obj_BoundsToCenterExtent USER_DEFINED 98
 C 00442190
 F 004171c0 render_WalkChildNodes USER_DEFINED 2157
 C 0042a530
@@ -366,7 +366,7 @@ C 00442370
 C 004134c0
 C 004134c0
 F 00417ff0 render_DrawBillboardQuad USER_DEFINED 2439
-F 00418980 render_DrawBillboardQuad_2 USER_DEFINED 2506
+F 00418980 render_DrawYawBillboardQuad USER_DEFINED 2506
 F 00419350 render_DrawSpriteQuad USER_DEFINED 990
 F 00419730 cam_BuildViewMatrix USER_DEFINED 715
 C 00417b40
@@ -495,7 +495,7 @@ C 0041d3d0
 C 0041d320
 F 0041d320 texmgr_MergeClassList USER_DEFINED 162
 F 0041d3d0 texmgr_MergePendingAll USER_DEFINED 138
-F 0041d460 obj_ApplyHitFlagged USER_DEFINED 59
+F 0041d460 obj_PushAlongPath USER_DEFINED 59
 C 004356f0
 F 0041d4a0 obj_UpdateMotion USER_DEFINED 433
 C 00442280
@@ -537,10 +537,10 @@ C 00442280
 F 0041e720 stub_0041e720 USER_DEFINED 6
 F 0041e730 settings_LoadFromBytes USER_DEFINED 217
 F 0041e810 settings_SaveToBytes USER_DEFINED 155
-F 0041e8b0 save_GetSlotData USER_DEFINED 17
-F 0041e8d0 game_ResetTimers USER_DEFINED 133
+F 0041e8b0 obj_GetPlayer USER_DEFINED 17
+F 0041e8d0 game_ResetMenuObjectState USER_DEFINED 133
 C 0041e8b0
-F 0041e960 game_SetCounter USER_DEFINED 88
+F 0041e960 game_ResetMenuObjectByIndex USER_DEFINED 88
 F 0041e9c0 player_Update USER_DEFINED 4139
 C 0041fcb0
 C 0042cb60
@@ -649,9 +649,9 @@ C 00401210
 C 004322a0
 C 004423b0
 C 00423560
-F 00424200 math_GetRandomByte USER_DEFINED 42
+F 00424200 timer_TickCountdownExpired USER_DEFINED 42
 F 00424230 obj_SetTarget USER_DEFINED 161
-F 004242e0 level_InitObjects USER_DEFINED 92
+F 004242e0 input_PollActionMask USER_DEFINED 92
 C 004375a0
 C 004375a0
 C 0044f0f0
@@ -976,7 +976,7 @@ C EXTERNAL:00000052
 C 004300d0
 C 00444360
 C EXTERNAL:00000055
-F 004300d0 win_PlayLogosAvi USER_DEFINED 36
+F 004300d0 win_RunGameMainAndDestroy USER_DEFINED 36
 C 0044f500
 C EXTERNAL:00000053
 F 00430100 game_RequestQuit USER_DEFINED 30
@@ -1009,6 +1009,7 @@ C 00445f10
 C 00446240
 C 00446270
 C 004462a0
+In other words, you can do it from the map or title screen.
 C 00442e70
 C 004462b0
 C 00455a80
@@ -1174,8 +1175,8 @@ F 00431c30 pkg_ResolveSpritePtr USER_DEFINED 90
 C 00431be0
 F 00431c90 pkg_ResolveSpritePtr2 USER_DEFINED 94
 C 00431be0
-F 00431cf0 game_ClearStruct USER_DEFINED 25
-F 00431d10 game_RunLevelSequence USER_DEFINED 271
+F 00431cf0 demo_ReadRecordedInput USER_DEFINED 25
+F 00431d10 game_RunAttractDemo USER_DEFINED 271
 C 0042f370
 C 0042f370
 C 004554e0
@@ -1187,7 +1188,7 @@ C 0044cca0
 C 00453080
 C 004200a0
 C 004554e0
-F 00431e20 level_Start USER_DEFINED 154
+F 00431e20 demo_RunPlaybackFrames USER_DEFINED 154
 C 00406a00
 C 004375a0
 C 00438950
@@ -1227,7 +1228,7 @@ C 00406a40
 F 00432b10 coll_TestMovingSphereAgainstFaces USER_DEFINED 2664
 C 00442490
 C 00442370
-F 00433580 coll_TestSphereVsEdge USER_DEFINED 2492
+F 00433580 coll_SweepSphereVsObjectBounds USER_DEFINED 2492
 F 00433f40 coll_UpdateObjectCollisions USER_DEFINED 433
 C 00434640
 C 00434970
@@ -1239,7 +1240,7 @@ C 00433580
 C 00433580
 C 00433580
 C 00433580
-F 00434460 coll_SphereReachTest USER_DEFINED 469
+F 00434460 coll_SweptSphereOverlapTest USER_DEFINED 469
 F 00434640 coll_TestWorldFaces USER_DEFINED 807
 C 00448590
 C 00434460
@@ -1349,7 +1350,7 @@ C 00438980
 C 00437a90
 C 004200f0
 C 0044f330
-F 00437a60 game_TestFlagBits USER_DEFINED 44
+F 00437a60 menu_StepSelectionWrap USER_DEFINED 44
 C 00438980
 F 00437a90 password_EntryScreen USER_DEFINED 1156
 C 00443000
@@ -1401,14 +1402,14 @@ C 00453100
 C 00438140
 F 00438100 password_MatchEntry USER_DEFINED 60
 F 00438140 password_DecodeEntryName USER_DEFINED 57
-F 00438180 menu_DrawScreenItems USER_DEFINED 86
+F 00438180 menu_DrawCharacterSelect USER_DEFINED 86
 C 00437fd0
 C 00439dd0
 C 004381e0
 C 004381e0
 C 00438ab0
 C 00438900
-F 004381e0 scene_SetupPasswordPreviewObject USER_DEFINED 756
+F 004381e0 scene_DrawPreviewObject USER_DEFINED 756
 C 00441e20
 C 004423b0
 C 0042b9e0
@@ -1517,7 +1518,7 @@ C 0041e8b0
 C 00442280
 C 00454120
 C 00453a60
-F 004395c0 obj_UpdateBoundObject USER_DEFINED 2027
+F 004395c0 obj_UpdateGroundShadow USER_DEFINED 2027
 C 0042d2b0
 C 00434f20
 C 00433580
@@ -1591,16 +1592,16 @@ F 0043e1e0 sw_SpanGouraud8 USER_DEFINED 539
 F 0043e400 sw_SpanTextured565 USER_DEFINED 709
 F 0043e6d0 sw_SpanTextured555 USER_DEFINED 695
 F 0043e990 sw_SpanTextured8 USER_DEFINED 563
-F 0043ebd0 sw_SpanTexturedTransD555 USER_DEFINED 570
-F 0043ee10 sw_SpanTexturedTrans8 USER_DEFINED 628
-F 0043f090 sw_SpanTexturedTrans8_2 USER_DEFINED 624
+F 0043ebd0 sw_SpanTexturedAverage555 USER_DEFINED 570
+F 0043ee10 sw_SpanTexturedAdd555 USER_DEFINED 628
+F 0043f090 sw_SpanTexturedSub555 USER_DEFINED 624
 F 0043f590 sw_SpanTexturedTransA555 USER_DEFINED 570
-F 0043f7d0 sw_SpanTexturedTransB555 USER_DEFINED 619
-F 0043fa40 sw_SpanTexturedTransC555 USER_DEFINED 615
-F 0043fcb0 sw_SpanTexturedTrans8_3 USER_DEFINED 637
+F 0043f7d0 sw_SpanTexturedAdd565 USER_DEFINED 619
+F 0043fa40 sw_SpanTexturedSub565 USER_DEFINED 615
+F 0043fcb0 sw_SpanTexturedAddQuarter565 USER_DEFINED 637
 F 0043ff30 sw_SpanTexturedTransA565 USER_DEFINED 392
-F 004400c0 sw_SpanTexturedTransC565 USER_DEFINED 430
-F 00440270 sw_SpanTexturedTransB565 USER_DEFINED 437
+F 004400c0 sw_SpanTexturedAddPal8 USER_DEFINED 430
+F 00440270 sw_SpanTexturedSubPal8 USER_DEFINED 437
 F 00440430 sw_SpanTexturedTransD565 USER_DEFINED 439
 F 004405f0 obj_ClearHandleTable USER_DEFINED 68
 C 00440640
@@ -1662,6 +1663,8 @@ C 0044bfd0
 F 00441ba0 cmdline_ParseAccelArg USER_DEFINED 100
 C 00461160
 C 00461160
+accelerate? = "%s".
+Assuming "ACCEL".
 C 00442e70
 F 00441c10 list_RemoveAndInsertAfter USER_DEFINED 63
 F 00441c50 list_RemoveChild USER_DEFINED 68
@@ -1774,9 +1777,13 @@ F 004436d0 pixel_Bgr32ToRgb16 USER_DEFINED 49
 F 00443710 pixel_Rgb555ToRgb565 USER_DEFINED 43
 F 00443740 tga_ConvertToDIB USER_DEFINED 1108
 C 00443ba0
+This program cannot read it correctly.
 C 00443ba0
+This program cannot read it correctly.
 C 00443ba0
+This program cannot read it correctly.
 C 00443ba0
+This program cannot read it correctly.
 C 00443ba0
 C 00443690
 C 004436d0
@@ -1784,8 +1791,10 @@ C 00443710
 C 00443380
 C 00443690
 C 00443690
+This program cannot read it correctly.
 C 00443ba0
 C 00455680
+This program cannot read it correctly.
 C 00443ba0
 F 00443ba0 sys_ErrorMessage USER_DEFINED 116
 C EXTERNAL:0000006d
@@ -1829,40 +1838,60 @@ C EXTERNAL:0000006c
 C EXTERNAL:00000005
 F 00444050 dsound_ErrorString USER_DEFINED 187
 F 004441d0 dsound_ReportError USER_DEFINED 132
+Click OK to continue with no sound or CANCEL to exit Pandy
 C 004561f0
+Click OK to continue with no sound or CANCEL to exit Pandy
+Click OK to continue with no sound or CANCEL to exit Pandy
+Click OK to continue with no sound or CANCEL to exit Pandy
 C 00442ee0
 C 00455830
 C 004017d0
 F 00444260 dsound_Init USER_DEFINED 242
 C 00455454
 C 00444050
+Direct sound error: %s
 C 004441d0
 C 00444050
+Direct sound error: %s
 C 004441d0
 C 00444050
+Direct sound error: %s
 C 004441d0
 C 00455db4
 F 00444360 sound_ReportDSError USER_DEFINED 70
 C 00444050
+Could release directsound.
+Direct sound error: %s
 C 004441d0
 F 004443b0 dsound_CreateSoundBuffer USER_DEFINED 256
 C 00444050
+channels = %i, rate = %i size = %i
+Direct sound error: %s
 C 004441d0
 F 004444b0 dsound_ConvertU8ToS8 USER_DEFINED 38
 F 004444e0 dsound_LockFillUnlockBuffer USER_DEFINED 309
 C 00444050
+Could restore sound buffer.
+Direct sound error: %s
 C 004441d0
 C 00444050
+Direct sound error: %s
 C 004441d0
 C 004444b0
 C 004444b0
 C 00444050
+Could unlock sound buffer.
+Direct sound error: %s
 C 004441d0
 F 00444620 sound_CreateBuffer USER_DEFINED 350
 C 00405180
 C 00444050
+Could not stop sound buffer.
+Direct sound error: %s
 C 004441d0
 C 00444050
+Could not release sound buffer.
+Direct sound error: %s
 C 004441d0
 C 004443b0
 C 004444e0
@@ -1870,18 +1899,28 @@ C 00444910
 C 00444800
 C 004448a0
 C 00444050
+Could play sound buffer.
+Direct sound error: %s
 C 004441d0
 F 00444780 sound_GetBufferStatus USER_DEFINED 113
 C 00444050
+Could get status of sound buffer.
+Direct sound error: %s
 C 004441d0
 F 00444800 sound_SetBufferPan USER_DEFINED 149
 C 00444050
+Couldn't setpan (%d -> %d) sound buffer.
+Direct sound error: %s
 C 004441d0
 F 004448a0 sound_SetBufferVolume USER_DEFINED 97
 C 00444050
+Could setvol sound buffer.
+Direct sound error: %s
 C 004441d0
 F 00444910 sound_SetBufferFrequency USER_DEFINED 69
 C 00444050
+Could setfreq sound buffer.
+Direct sound error: %s
 C 004441d0
 F 00444960 cfg_LoadSoundVolumes USER_DEFINED 109
 C 00443130
@@ -2134,7 +2173,7 @@ C 0042f2f0
 C 0042f370
 C 0044df50
 F 00446550 level_ResetEnemyDefCount USER_DEFINED 11
-F 00446560 obj_InstallTypeHandlers_2 USER_DEFINED 41
+F 00446560 level_LoadCoreEnemyDefs USER_DEFINED 41
 C 004463f0
 C 004463f0
 C 004463f0
@@ -2153,7 +2192,7 @@ C 00429b70
 C 00428b80
 F 00447fb0 level_ClearEnemyDefCount USER_DEFINED 11
 F 004484b0 enemy_FindAnimKeyEntry USER_DEFINED 138
-F 00448540 obj_UpdateCollisionPose USER_DEFINED 66
+F 00448540 enemy_UpdateMovementAndAnim USER_DEFINED 66
 C 00453180
 C 00453a60
 F 00448590 col_BuildSphereBounds USER_DEFINED 1558
@@ -2656,7 +2695,7 @@ F 004521d0 light_ApplyToModel USER_DEFINED 2448
 C 00452040
 F 00452b60 hud_ResetSpriteTable USER_DEFINED 32
 F 00452b80 stub_00452b80 USER_DEFINED 1
-F 00452b90 level_Unload USER_DEFINED 389
+F 00452b90 level_LoadWithLoadingScreen USER_DEFINED 389
 C 00404d80
 C 0042ed30
 C 0041e8d0
@@ -3347,8 +3386,17 @@ C 0045aa40
 F 0045aa40 crt_NmsgWrite USER_DEFINED 502
 C EXTERNAL:0000001f
 C 00455e50
+Program: 
+Program: 
+- not enough space for environment
+- not enough space for environment
+- not enough space for environment
+- not enough space for environment
 C 0045d1e0
 C EXTERNAL:00000029
+- not enough space for environment
+- not enough space for environment
+- not enough space for environment
 C EXTERNAL:0000004d
 F 0045ac40 __open ANALYSIS 26
 C 0045ac60

@@ -1,0 +1,61 @@
+PANDY3 0x00401330 texMgr_CallHook UNSURE texMgr_CallHook shutdown alternative to scratch-buffer free; fn_455680 target unknown
+PANDY3 0x00404ed0 hud_ResetSpriteTable RENAME obj_ResetHandlerTableState zeroes 10-dword block, called by obj_InitUpdateHandlerTables; no hud evidence
+PANDY3 0x004052c0 enemy_UpdateMovementAndDist CONFIRM enemy_UpdateMovementAndDist applies path movement, outputs pose and squared player distance; used by all enemy AI
+PANDY3 0x00405970 enemy_UpdateSpinState CONFIRM enemy_UpdateSpinState spin angle ramp plus sound 0x13, called from movement update
+PANDY3 0x00406540 game_InstallCallbackTable RENAME enemy_InitHandlerTables installs enemy hit/dying handlers and clears enemy-type count used by enemyType_LoadOne
+PANDY3 0x00407f80 pkg_RelocateModelBase CONFIRM pkg_RelocateModelBase thin wrapper of model header relocation, used by all model loaders
+PANDY3 0x00408260 pkg_RelocateAnimTables_2 RENAME pkg_RelocateAnimTablesSelf wrapper passing same pointer twice; avoid numeric suffix
+PANDY3 0x00408290 enemy_UpdateChaseAI CONFIRM enemy_UpdateChaseAI range-band chase/turn with ranged spawn at an anim frame; moves via movement helper then animates
+PANDY3 0x00408c30 enemy_UpdateHopAI UNSURE enemy_UpdateHopAI no hop evidence; timer 0xf0 anim-set switching with nearest path point checks, no callers shown
+PANDY3 0x0040ba90 glide_BlitRowsToLfb CONFIRM glide_BlitRowsToLfb doubles 320x240 pixels into 640x480 LFB; used by bg_DrawScreenImage
+PANDY3 0x0040bb40 glide_DrawChromakeyedSprite CONFIRM glide_DrawChromakeyedSprite chromakey on, textured two-triangle quad scaled 2x; called by sprite blit in Glide mode
+PANDY3 0x0040be50 glide_DrawTexturedPolyList RENAME glide_DrawTexturedQuad draws one 4-vertex gouraud/alpha textured polygon as two triangles; called per node by gfx_DrawPolyNode
+PANDY3 0x0040c890 glide_GetTexMinAddress RENAME glide_InitTexMemPool caches min tex address plus 0x4b200 offset and slot count; called from texMgr_ClearHash
+PANDY3 0x0040c8b0 glide_GetTexMinAddress_2 RENAME glide_ResetBgTexMemPool sets bg texture pool cursor to min address and zeroes bg count; called from tex_FlushBlitCache
+PANDY3 0x0040ca40 glide_DownloadMipMap CONFIRM glide_DownloadMipMap grTexDownloadMipMap for slot; callers texMgr_GetTexture and glide_AllocBgTexture
+PANDY3 0x0040caf0 glide_DrawFlatQuad RENAME glide_DrawDarkenQuad near-black constant color with blend func, called from gfx_DarkenRect in Glide mode
+PANDY3 0x0040cc90 glide_AllocTexture CONFIRM glide_AllocTexture grTexTextureMemRequired then assigns slot and tex memory address; called by texMgr_Init
+PANDY3 0x0040ceb0 math_RoundUpPow2 RENAME gfx_ApplyFadeToColor scales packed RGB channels by (0x1000 - fade global); result fed to grConstantColorValue; no pow2 logic
+PANDY3 0x0040cf00 math_ToFloat RENAME gfx_ScaleByFade multiplies value by (0x1000 - fade) >> 12 then float; used for per-vertex colors
+PANDY3 0x0040cf30 glide_SetAlphaMode CONFIRM glide_SetAlphaMode switch of grAlphaBlendFunction presets plus guAlphaSource
+PANDY3 0x0040d6f0 sound_GetBufferStatus RENAME sound_IsBufferPlaying returns DSBSTATUS playing bit (and 0 on error); callers use it as playing test for slot alloc/play
+PANDY3 0x0040d770 sound_SetBufferPan CONFIRM sound_SetBufferPan DirectSound vtable +0x40 SetPan with pan table; error string says setpan
+PANDY3 0x0040d810 sound_SetBufferFrequency RENAME sound_SetBufferVolume vtable +0x3c SetVolume via volume table; error says setvol; sound_Play passes channel volume here (name swapped with 0x0040d880)
+PANDY3 0x0040d880 sound_SetBufferVolume RENAME sound_SetBufferFrequency vtable +0x44 SetFrequency; error says setfreq; sound_Play passes pitch here (name swapped with 0x0040d810)
+PANDY3 0x0040d900 sound_UpdateStreams RENAME enemy_UpdateAlertTurnAI no sound code; calls enemy_UpdateMovementAndDist/AnimAndSound, alert timer, turns toward player; callers 0
+PANDY3 0x0040dc00 sound_StopChannel RENAME enemy_UpdateProximityAI no sound code; enemy movement update then switches idle/alert anim set by distance; callers 0
+PANDY3 0x0040df50 game_TestFlagBits RENAME menu_MoveCursorWrap plays menu sound 0x16, steps selection up or down with wraparound by input bits; called from main loop frame
+PANDY3 0x0040e670 menu_DrawScreenItems RENAME menu_DrawCharacterSelect draws bg image, two character preview objects, and highlight frame; only caller is the two-character select loop
+PANDY3 0x0040e6d0 scene_SetupPasswordPreviewObject RENAME scene_DrawCharacterPreview sets temp camera/lights and renders one character model; used by select screen, loading screen and complete screen, not passwords
+PANDY3 0x0040e9d0 level_RunCompleteScreen CONFIRM level_RunCompleteScreen computes treasure percent, shows complete screen and waits for enter while loading next level
+PANDY3 0x0040f430 level_Unload RENAME level_LoadWithProgressScreen loops level_Load while drawing loading screen with spinning character; game_MainLoop calls it to load, then restarts slot
+PANDY3 0x0040f5d0 level_Load CONFIRM level_Load stepwise state machine loading slot data from package, returns true when done; callers poll it
+PANDY3 0x0040f910 level_LoadWrapper CONFIRM level_LoadWrapper thin forwarder to level_Load used by complete screen
+PANDY3 0x0040fa60 game_ClearStruct RENAME demo_ReadNextInput pops next dword from a recorded buffer into the pad word; caller level_InitObjects uses it for pad state
+PANDY3 0x0040fa80 game_RunLevelSequence RENAME game_RunDemoSequence seeds rng, sets demo flag, points input buffer at recorded data, loads one of 3 levels, plays it, cycles to next
+PANDY3 0x0040fb90 level_Start RENAME level_RunDemoLoop frame loop capped at fixed frame count, exits on any pad input or quit flag; runs sfx and load steps, waits per frame
+PANDY3 0x0040fc40 sound_GetEntryPtr CONFIRM sound_GetEntryPtr bank index in high word, entry in low; offset table lookup returns pointer to entry data
+PANDY3 0x0040fca0 sound_GetEntryValue RENAME sound_GetEntrySize returns next offset minus this offset in bank table, i.e. entry byte length; callers pass it as buffer size
+PANDY3 0x0040fd10 sound_GetEntryWord RENAME sound_GetEntryRate reads 16-bit value stored at end of entry; callers use it as base playback frequency or repeat period
+PANDY3 0x0040fe40 sound_SetEntryParams RENAME sound_QueueRequest stores sound id, key, pitch, volume, pan into one of 8 pending slots (20-byte stride), dedupes by key; callers fire sounds through it
+PANDY3 0x0040ffc0 sound_IsChannelPlaying CONFIRM sound_IsChannelPlaying checks slot owns the sound id and buffer status is playing
+PANDY3 0x0040fff0 sound_AllocChannel RENAME sound_CalcDistanceVolumePan computes listener distance falloff and pan angle for a source position; allocates no channel, sound_Play uses outputs as volume scale and pan
+PANDY3 0x00410160 sound_Play CONFIRM sound_Play distance-scales, then retunes an existing playing slot or creates a new buffer and returns slot id
+PANDY3 0x004102e0 sound_ClearChannels CONFIRM sound_ClearChannels zeroes 8-slot table and request count, resets LRU order bytes; called from level_Shutdown
+PANDY3 0x00410310 sound_UpdateChannels RENAME sound_FlushRequestQueue walks queued requests from the 8-entry table, skips ones still playing, allocates and starts the rest; called each frame
+PANDY3 0x00410410 audio_SetMusicVolume CONFIRM audio_SetMusicVolume stores music volume and passes it to the CD volume call; callers are the volume config load and options dialog
+PANDY3 0x00410440 obj_CallHandler RENAME obj_MoveAlongPathSigned takes signed step, flags forward case, calls path move with abs step and param block, clears flag; caller col_PushOutOfPoly
+PANDY3 0x00410480 obj_UpdateMotion RENAME obj_ApplyCarrierMotion adds the moving carrier object's translation (minus the new one) to velocity at +0x5c, accumulates path offsets for the player case; called on segment change
+PANDY3 0x00410640 obj_UpdateAndCollide RENAME obj_EnterPathSegment on segment change computes entry positions on the new segment, applies carrier motion, retargets camera, stores segment point index
+PANDY3 0x00410710 obj_CheckCollision RENAME path_GetPointOnSegment finds nearest path point index, then interpolates a world position between neighbouring points into output; no collision test
+PANDY3 0x00410a90 obj_GetFlagBits RENAME obj_IsOnSameCarrier returns bool: true if target shares the same path segment or carrier as the object, gated by flag bits; used as hit eligibility in collision lists
+PANDY3 0x00410b00 obj_TestState RENAME obj_TestSphereHitMoving builds relative velocity vs target, runs sphere-vs-edge test, returns hit bool; only caller is player input handling
+PANDY3 0x00410b0a obj_TestState_Tail RENAME obj_TestSphereHitMovingBody decompiler split body of same relative-velocity sphere test (entry shifted into the function after the first bytes); no direct callers
+PANDY3 0x00410c00 obj_FindNearest RENAME player_GetAttackPower returns 0..3 from flag bits and a frame counter (stepped thresholds); callers only test it positive, no object scan
+PANDY3 0x00410c90 obj_SetAnim RENAME col_StoreHitSnapshot clears a flag, copies four saved global dwords into the hit record, releases attachment slot 7; no animation work, only caller is poly sweep collision
+PANDY3 0x00410d10 enemy_UpdateAI RENAME obj_ResolvePathSegment projects position onto path segments, hops to neighbour segments when out of range, stores new segment and index with local coords; used by velocity step and boss phase, not AI
+PANDY3 0x004113c0 enemy_UpdateMovement RENAME obj_GetPathMoveDirection applies carrier motion, computes normalized segment direction (flipped by facing) into output; only caller is path move
+PANDY3 0x00411890 save_GetSlotData RENAME player_GetMainObject returns the global player object pointer when param is 0 else 0; 11 callers use it to fetch the player, not save data
+PANDY3 0x004118b0 game_ResetTimers RENAME player_InitActiveCharacterObject fetches player object, sets type/class bytes and -1 fields, anim set, resets frame, returns object; used by complete and loading screen previews
+PANDY3 0x00411940 game_SetCounter RENAME player_InitCharacterObject same init for a character index param, returns object; main loop calls it for both select previews
+PANDY3 0x004119a0 player_Update RENAME player_PlaceOnPathAtLevelStart finds path segment and point, sets anim set/flags/camera target, copies start point, resets hit slots; only caller level_Enter, not a per-frame update

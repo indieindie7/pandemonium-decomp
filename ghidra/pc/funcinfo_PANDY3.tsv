@@ -91,7 +91,7 @@ C 00403dd0
 F 00404e50 col_CheckFloorContact USER_DEFINED 123
 C 00402e90
 C 0042a3d0
-F 00404ed0 hud_ResetSpriteTable USER_DEFINED 32
+F 00404ed0 obj_ResetHandlerTableState USER_DEFINED 32
 F 00404ef0 stub_00404ef0 USER_DEFINED 1
 F 00404f00 obj_ReleaseAttachment USER_DEFINED 41
 F 00404f30 obj_SpawnAttachment USER_DEFINED 211
@@ -162,7 +162,7 @@ C 00407fa0
 C 004361a0
 C 004081b0
 F 00406530 enemyType_ResetCount USER_DEFINED 8
-F 00406540 game_InstallCallbackTable USER_DEFINED 58
+F 00406540 enemy_InitHandlerTables USER_DEFINED 58
 F 004066aa enemy_HandleCollisionResponse USER_DEFINED 1090
 C 00433aa0
 C 00410c00
@@ -244,7 +244,7 @@ F 004081b0 pkg_RelocateAnimSet USER_DEFINED 19
 C 004081d0
 F 004081d0 pkg_RelocateAnimSetBody USER_DEFINED 134
 C 00407d60
-F 00408260 pkg_RelocateAnimTables_2 USER_DEFINED 15
+F 00408260 pkg_RelocateAnimTablesSelf USER_DEFINED 15
 C 00407d60
 F 00408290 enemy_UpdateChaseAI USER_DEFINED 1669
 C 004052c0
@@ -369,7 +369,7 @@ C 00401340
 C 0045b956
 C 0045b938
 C 0045b938
-F 0040be50 glide_DrawTexturedPolyList USER_DEFINED 2615
+F 0040be50 glide_DrawTexturedQuad_2 USER_DEFINED 2615
 C 00442e80
 C 0045b95c
 C 0045b962
@@ -406,9 +406,9 @@ C 0045b956
 C 0045b968
 C 0045b968
 C 0045b932
-F 0040c890 glide_GetTexMinAddress USER_DEFINED 28
+F 0040c890 glide_InitTexMemPool USER_DEFINED 28
 C 0045b96e
-F 0040c8b0 glide_GetTexMinAddress_2 USER_DEFINED 23
+F 0040c8b0 glide_ResetBgTexMemPool USER_DEFINED 23
 C 0045b96e
 F 0040c8d0 glide_Init USER_DEFINED 315
 C 0045b9b0
@@ -443,7 +443,7 @@ C 0045b9c8
 F 0040cae0 glide_LfbUnlock USER_DEFINED 12
 C 0045b9da
 C 0045b9e0
-F 0040caf0 glide_DrawFlatQuad USER_DEFINED 389
+F 0040caf0 glide_DrawDarkenQuad USER_DEFINED 389
 C 0045b94a
 C 0045b944
 C 0045b932
@@ -458,8 +458,8 @@ C 0045bb60
 C 00433860
 C 0045b950
 C 0045bb60
-F 0040ceb0 math_RoundUpPow2 USER_DEFINED 74
-F 0040cf00 math_ToFloat USER_DEFINED 34
+F 0040ceb0 gfx_ApplyFadeToColor USER_DEFINED 74
+F 0040cf00 gfx_ScaleByFade USER_DEFINED 34
 F 0040cf30 glide_SetAlphaMode USER_DEFINED 122
 C 0045b932
 C 0045b93e
@@ -473,40 +473,60 @@ C 0045b932
 C 0045b93e
 F 0040cfc0 dsound_ErrorString USER_DEFINED 187
 F 0040d140 dsound_ReportError USER_DEFINED 132
+Click OK to continue with no sound or CANCEL to exit Pandy
 C 0045bf80
+Click OK to continue with no sound or CANCEL to exit Pandy
+Click OK to continue with no sound or CANCEL to exit Pandy
+Click OK to continue with no sound or CANCEL to exit Pandy
 C 00427d60
 C 0045ba20
 C 00410400
 F 0040d1d0 dsound_Init USER_DEFINED 242
 C 0045b856
 C 0040cfc0
+Direct sound error: %s
 C 0040d140
 C 0040cfc0
+Direct sound error: %s
 C 0040d140
 C 0040cfc0
+Direct sound error: %s
 C 0040d140
 C 0045bc98
 F 0040d2d0 sound_ReportDSError USER_DEFINED 70
 C 0040cfc0
+Could release directsound.
+Direct sound error: %s
 C 0040d140
 F 0040d320 dsound_CreateSoundBuffer USER_DEFINED 256
 C 0040cfc0
+channels = %i, rate = %i size = %i
+Direct sound error: %s
 C 0040d140
 F 0040d420 dsound_ConvertU8ToS8 USER_DEFINED 38
 F 0040d450 dsound_LockFillUnlockBuffer USER_DEFINED 309
 C 0040cfc0
+Could restore sound buffer.
+Direct sound error: %s
 C 0040d140
 C 0040cfc0
+Direct sound error: %s
 C 0040d140
 C 0040d420
 C 0040d420
 C 0040cfc0
+Could unlock sound buffer.
+Direct sound error: %s
 C 0040d140
 F 0040d590 sound_CreateBuffer USER_DEFINED 350
 C 004514d0
 C 0040cfc0
+Could not stop sound buffer.
+Direct sound error: %s
 C 0040d140
 C 0040cfc0
+Could not release sound buffer.
+Direct sound error: %s
 C 0040d140
 C 0040d320
 C 0040d450
@@ -514,26 +534,36 @@ C 0040d880
 C 0040d770
 C 0040d810
 C 0040cfc0
+Could play sound buffer.
+Direct sound error: %s
 C 0040d140
-F 0040d6f0 sound_GetBufferStatus USER_DEFINED 113
+F 0040d6f0 sound_IsBufferPlaying USER_DEFINED 113
 C 0040cfc0
+Could get status of sound buffer.
+Direct sound error: %s
 C 0040d140
 F 0040d770 sound_SetBufferPan USER_DEFINED 149
 C 0040cfc0
+Couldn't setpan (%d -> %d) sound buffer.
+Direct sound error: %s
 C 0040d140
-F 0040d810 sound_SetBufferFrequency USER_DEFINED 97
+F 0040d810 sound_SetBufferVolume USER_DEFINED 97
 C 0040cfc0
+Could setvol sound buffer.
+Direct sound error: %s
 C 0040d140
-F 0040d880 sound_SetBufferVolume USER_DEFINED 69
+F 0040d880 sound_SetBufferFrequency USER_DEFINED 69
 C 0040cfc0
+Could setfreq sound buffer.
+Direct sound error: %s
 C 0040d140
-F 0040d900 sound_UpdateStreams USER_DEFINED 729
+F 0040d900 enemy_UpdateAlertTurnAI USER_DEFINED 729
 C 004052c0
 C 00405ba0
 C 00433aa0
 C 00406260
 C 00405ba0
-F 0040dc00 sound_StopChannel USER_DEFINED 235
+F 0040dc00 enemy_UpdateProximityAI USER_DEFINED 235
 C 004052c0
 C 00428950
 C 00405ba0
@@ -564,7 +594,7 @@ C 0040ee70
 C 0040df80
 C 004130d0
 C 00440d20
-F 0040df50 game_TestFlagBits USER_DEFINED 44
+F 0040df50 menu_MoveCursorWrap USER_DEFINED 44
 C 0040ee70
 F 0040df80 password_EntryScreen USER_DEFINED 1156
 C 00427e80
@@ -616,14 +646,14 @@ C 0040f9b0
 C 0040e630
 F 0040e5f0 password_MatchEntry USER_DEFINED 60
 F 0040e630 password_DecodeEntryName USER_DEFINED 57
-F 0040e670 menu_DrawScreenItems USER_DEFINED 86
+F 0040e670 menu_DrawCharacterSelect USER_DEFINED 86
 C 0040e4c0
 C 00408940
 C 0040e6d0
 C 0040e6d0
 C 0040efa0
 C 0040edf0
-F 0040e6d0 scene_SetupPasswordPreviewObject USER_DEFINED 756
+F 0040e6d0 scene_DrawCharacterPreview USER_DEFINED 756
 C 00440280
 C 00433aa0
 C 00432b30
@@ -728,7 +758,7 @@ C 00449070
 C 00449070
 C 0040eec0
 C 0040edf0
-F 0040f430 level_Unload USER_DEFINED 412
+F 0040f430 level_LoadWithProgressScreen USER_DEFINED 412
 C 0043be40
 C 00435b60
 C 004118b0
@@ -788,9 +818,11 @@ F 0040f9b0 level_LookupPairTable USER_DEFINED 57
 F 0040f9f0 cmdline_ParseAccelArg USER_DEFINED 100
 C 00467020
 C 00467020
+accelerate? = "%s".
+Assuming "ACCEL".
 C 00427cf0
-F 0040fa60 game_ClearStruct USER_DEFINED 25
-F 0040fa80 game_RunLevelSequence USER_DEFINED 271
+F 0040fa60 demo_ReadNextInput USER_DEFINED 25
+F 0040fa80 game_RunDemoSequence USER_DEFINED 271
 C 004361a0
 C 004361a0
 C 0045b8f0
@@ -802,7 +834,7 @@ C 00406fb0
 C 0040f930
 C 00413080
 C 0045b8f0
-F 0040fb90 level_Start USER_DEFINED 154
+F 0040fb90 level_RunDemoLoop USER_DEFINED 154
 C 00441d60
 C 004371b0
 C 0040ee40
@@ -813,8 +845,8 @@ C 00440c30
 C 004281c0
 F 0040fc30 stub_0040fc30 USER_DEFINED 1
 F 0040fc40 sound_GetEntryPtr USER_DEFINED 92
-F 0040fca0 sound_GetEntryValue USER_DEFINED 103
-F 0040fd10 sound_GetEntryWord USER_DEFINED 79
+F 0040fca0 sound_GetEntrySize USER_DEFINED 103
+F 0040fd10 sound_GetEntryRate USER_DEFINED 79
 C 0040fc40
 C 0040fca0
 F 0040fd60 sfx_BuildBankOffsets USER_DEFINED 94
@@ -824,13 +856,13 @@ C 0040fd10
 C 0040fca0
 C 0040fc40
 C 0040d590
-F 0040fe40 sound_SetEntryParams USER_DEFINED 159
+F 0040fe40 sound_QueueRequest USER_DEFINED 159
 F 0040fee0 sfx_AllocVoiceSlot USER_DEFINED 210
 C 0040d6f0
 C 0045c060
 F 0040ffc0 sound_IsChannelPlaying USER_DEFINED 47
 C 0040d6f0
-F 0040fff0 sound_AllocChannel USER_DEFINED 362
+F 0040fff0 sound_CalcDistanceVolumePan USER_DEFINED 362
 C 0042e820
 C 00433aa0
 F 00410160 sound_Play USER_DEFINED 371
@@ -844,7 +876,7 @@ C 0040fee0
 C 0040fde0
 C 0040fc30
 F 004102e0 sound_ClearChannels USER_DEFINED 37
-F 00410310 sound_UpdateChannels USER_DEFINED 237
+F 00410310 sound_FlushRequestQueue USER_DEFINED 237
 C 0040fca0
 C 0040d6f0
 C 0040fee0
@@ -852,17 +884,17 @@ C 0040fde0
 F 00410400 sfx_SetMenuVolume USER_DEFINED 15
 F 00410410 audio_SetMusicVolume USER_DEFINED 37
 C 0042f2c0
-F 00410440 obj_CallHandler USER_DEFINED 59
+F 00410440 obj_MoveAlongPathSigned USER_DEFINED 59
 C 0042cfb0
-F 00410480 obj_UpdateMotion USER_DEFINED 433
+F 00410480 obj_ApplyCarrierMotion USER_DEFINED 433
 C 0042e910
 C 00433aa0
-F 00410640 obj_UpdateAndCollide USER_DEFINED 202
+F 00410640 obj_EnterPathSegment USER_DEFINED 202
 C 00410710
 C 00410480
 C 00410710
 C 0042a0a0
-F 00410710 obj_CheckCollision USER_DEFINED 894
+F 00410710 path_GetPointOnSegment USER_DEFINED 894
 C 0042c7e0
 C 00428250
 C 00428390
@@ -874,31 +906,31 @@ C 00428250
 C 00428390
 C 00428390
 C 0042e910
-F 00410a90 obj_GetFlagBits USER_DEFINED 106
-F 00410b00 obj_TestState USER_DEFINED 10
-F 00410b0a obj_TestState_Tail USER_DEFINED 240
+F 00410a90 obj_IsOnSameCarrier USER_DEFINED 106
+F 00410b00 obj_TestSphereHitMoving USER_DEFINED 10
+F 00410b0a obj_TestSphereHitMovingBody USER_DEFINED 240
 C 0042ae40
-F 00410c00 obj_FindNearest USER_DEFINED 137
-F 00410c90 obj_SetAnim USER_DEFINED 117
+F 00410c00 player_GetAttackPower USER_DEFINED 137
+F 00410c90 col_StoreHitSnapshot USER_DEFINED 117
 C 00404f00
-F 00410d10 enemy_UpdateAI USER_DEFINED 1697
+F 00410d10 obj_ResolvePathSegment USER_DEFINED 1697
 C 00433aa0
 C 00428950
 C 0042c7e0
 C 0042c770
 C 0042c7e0
-F 004113c0 enemy_UpdateMovement USER_DEFINED 828
+F 004113c0 obj_GetPathMoveDirection USER_DEFINED 828
 C 00410480
 C 004285b0
 C 0042e910
 F 00411700 stub_00411700 USER_DEFINED 6
 F 00411710 settings_LoadFromBytes USER_DEFINED 217
 F 004117f0 settings_SaveToBytes USER_DEFINED 155
-F 00411890 save_GetSlotData USER_DEFINED 17
-F 004118b0 game_ResetTimers USER_DEFINED 133
+F 00411890 player_GetMainObject USER_DEFINED 17
+F 004118b0 player_InitActiveCharacterObject USER_DEFINED 133
 C 00411890
-F 00411940 game_SetCounter USER_DEFINED 88
-F 004119a0 player_Update USER_DEFINED 4139
+F 00411940 player_InitCharacterObject USER_DEFINED 88
+F 004119a0 player_PlaceOnPathAtLevelStart USER_DEFINED 4139
 C 00412c90
 C 00428200
 C 00428230
@@ -921,20 +953,20 @@ C 00404f30
 C 00404f30
 C 00404f30
 C 004285b0
-F 004129d0 player_ApplyDamage USER_DEFINED 257
+F 004129d0 player_HandleDeath USER_DEFINED 257
 C 00412ae0
 C 00451670
 C 004516d0
 F 00412ae0 player_ResetState USER_DEFINED 104
 C 00402f30
-F 00412b50 player_UpdateVelocity USER_DEFINED 315
+F 00412b50 player_CopyObjectState USER_DEFINED 315
 F 00412c90 player_FindRailSegment USER_DEFINED 269
 C 00428820
-F 00412da0 player_Respawn USER_DEFINED 34
+F 00412da0 player_ClearSlotPolyFlags USER_DEFINED 34
 C 00402f30
-F 00412dd0 player_UpdateLives USER_DEFINED 158
+F 00412dd0 player_LoadSlotsFromMask USER_DEFINED 158
 C 00412e70
-F 00412e70 player_Die USER_DEFINED 292
+F 00412e70 player_LoadCharacterFromPkg USER_DEFINED 292
 C 004361a0
 C 00436120
 C 004361a0
@@ -949,9 +981,9 @@ F 00412fa0 player_Cleanup USER_DEFINED 95
 C 00412ae0
 C 00413000
 C 0041b1b0
-F 00413000 player_ClearFlags USER_DEFINED 27
-F 00413020 math_Clamp16 USER_DEFINED 81
-F 00413080 player_GetScoreLevel USER_DEFINED 80
+F 00413000 player_ClearCharacterSlot USER_DEFINED 27
+F 00413020 game_TestProgressFlag USER_DEFINED 81
+F 00413080 player_SwapCharacterSelect USER_DEFINED 80
 F 004130d0 game_InitPlayerTables USER_DEFINED 229
 F 004131c0 level_InitCallbacksAndPlayerObjects USER_DEFINED 324
 C 00412e70
@@ -964,11 +996,11 @@ C 00407f80
 C 00407fa0
 C 004361a0
 C 00408260
-F 00413310 enemy_SpawnFromList USER_DEFINED 657
+F 00413310 player_InterpToObjectPos USER_DEFINED 657
 C 00428390
 C 004135b0
-F 004135b0 obj_InitFromRecord USER_DEFINED 456
-F 00413780 player_HandleInput USER_DEFINED 2299
+F 004135b0 player_SnapToObjectPos USER_DEFINED 456
+F 00413780 player_OnObjectContact USER_DEFINED 2299
 C 00414160
 C 00410c00
 C 00414100
@@ -980,24 +1012,24 @@ F 00414100 player_PlaySoundEvent USER_DEFINED 88
 C 0040fdc0
 C 0040fd10
 C 0040fe40
-F 00414160 player_InputProc_Head USER_DEFINED 14
-F 0041416e player_InputProc_Body USER_DEFINED 1040
+F 00414160 player_CanReactToObject USER_DEFINED 14
+F 0041416e player_CanReactToObjectBody USER_DEFINED 1040
 C 00451830
-F 00415db0 enemy_UpdateAndHit USER_DEFINED 619
+F 00415db0 player_FlipPathDirection USER_DEFINED 619
 C 00410640
 C 0042a260
-F 00416020 boss_UpdateMotion USER_DEFINED 959
+F 00416020 player_UpdateRunSpeed USER_DEFINED 959
 C 0042e910
 C 00433b30
 C 00433a60
-F 004163e0 obj_UpdateTimers USER_DEFINED 337
-F 00416540 boss_UpdateAttack USER_DEFINED 2063
+F 004163e0 player_ApplyInputAccel USER_DEFINED 337
+F 00416540 player_LaunchTowardTarget USER_DEFINED 2063
 C 00433b30
 C 0042e910
 C 0042e910
 C 00433aa0
 C 0042e910
-F 00416d50 boss_Update USER_DEFINED 1166
+F 00416d50 player_UpdateTargetPull USER_DEFINED 1166
 C 0040fdc0
 C 0040fe40
 C 00433aa0
@@ -1007,25 +1039,25 @@ C 00404f30
 C 00433aa0
 C 00416540
 F 004171e0 math_GetRandomByte USER_DEFINED 42
-F 00417210 obj_SetTarget USER_DEFINED 161
-F 004172c0 level_InitObjects USER_DEFINED 92
+F 00417210 player_StartSpeedBoost USER_DEFINED 161
+F 004172c0 input_PollPadState USER_DEFINED 92
 C 004371b0
 C 004371b0
 C 004529f0
 C 0040fa60
-F 00419170 enemy_UpdateSimple USER_DEFINED 936
+F 00419170 player_UpdatePathPosition USER_DEFINED 936
 C 00410710
 C 00428250
 C 00428250
 C 004403f0
-F 00419520 enemy_UpdateComplex USER_DEFINED 1428
+F 00419520 player_EnterPathSegment USER_DEFINED 1428
 C 00402f30
 C 0042a0a0
 C 00428390
 C 0042f480
 C 004135b0
 C 004285b0
-F 00419ac0 enemy_UpdateBossPhase USER_DEFINED 3178
+F 00419ac0 player_IntegrateMotion USER_DEFINED 3178
 C 004400e0
 C 00410d10
 C 0041a730
@@ -1036,7 +1068,7 @@ C 0042a260
 C 0042a260
 F 0041a730 obj_ApplyPathTransformAndFacing USER_DEFINED 622
 C 0042e910
-F 0041a9a0 player_FindMatchingStateSlot USER_DEFINED 81
+F 0041a9a0 level_QueueMatchingExit USER_DEFINED 81
 C 004516d0
 F 0041aa00 player_SwapCharacterOnInput USER_DEFINED 1013
 C 00402f30
@@ -1157,7 +1189,7 @@ F 00428230 path_FindFlaggedSegment USER_DEFINED 31
 F 00428250 path_GetPointWorldFlipped USER_DEFINED 305
 C 0042f480
 C 0042f480
-F 00428390 path_GetPointWorldFlipped_2 USER_DEFINED 326
+F 00428390 path_GetAltPointWorld USER_DEFINED 326
 C 0042f480
 C 0042f480
 F 004284e0 cam_UpdateAnglesFromPosition USER_DEFINED 195
@@ -1189,7 +1221,7 @@ F 0042a300 cam_UpdateTargetDecay USER_DEFINED 205
 F 0042a3d0 coll_TestMovingSphereAgainstFaces USER_DEFINED 2664
 C 00433b80
 C 00433a60
-F 0042ae40 coll_TestSphereVsEdge USER_DEFINED 2492
+F 0042ae40 coll_SweepSphereVsObjectBounds USER_DEFINED 2492
 F 0042b800 coll_UpdateObjectCollisions USER_DEFINED 433
 C 0042bf00
 C 0042c230
@@ -1279,7 +1311,7 @@ F 0042ef60 enemy_UpdateAIIdle USER_DEFINED 253
 C 004052c0
 C 0045b870
 C 00405ba0
-F 0042f060 menu_FindStringIndex USER_DEFINED 144
+F 0042f060 pkg_FindKeyTableIndex USER_DEFINED 144
 F 0042f0f0 cd_ResumeOrStartTrack USER_DEFINED 61
 C 0042f130
 F 0042f130 cd_OpenAndPlayTrack USER_DEFINED 317
@@ -1516,6 +1548,7 @@ C 0044c220
 C 0044c550
 C 0044c580
 C 0044c5b0
+In other words, you can do it from the map or title screen.
 C 00427cf0
 C 0044c5c0
 C 0045bff0
@@ -1860,7 +1893,7 @@ C 0043ae20
 F 0043aee0 player_ApplyTileTriggers USER_DEFINED 454
 C 004381e0
 C 004395f0
-F 0043b0d0 obj_UpdateBoundObject USER_DEFINED 2027
+F 0043b0d0 obj_UpdateGroundShadow USER_DEFINED 2027
 C 00428950
 C 0042c7e0
 C 0042ae40
@@ -1964,14 +1997,17 @@ F 0043df90 d3d_GetTextureHandle USER_DEFINED 59
 C 0045bb60
 F 0043dfd0 d3d_CreateTextureFromSurface USER_DEFINED 611
 C 0043e270
+%s
 C 0045bb60
 C 0043e270
 C 0045bb60
 C 0043e270
+%s
 C 0045bb60
 C 0043e270
 C 0045bb60
 C 0043e270
+%s
 C 0045bb60
 C 0043e270
 C 0045bb60
@@ -1979,10 +2015,12 @@ C 0043e270
 C 0045bb60
 F 0043e240 d3d_LoadTexture USER_DEFINED 45
 C 0043e270
+%s
 C 0045bb60
 F 0043e270 d3d_ErrorString USER_DEFINED 1799
 F 0043eac0 d3d_EnumDrivers USER_DEFINED 82
 C 0043e270
+%s
 C 0045bb60
 F 0043ecf0 d3d_FindDeviceForDepth USER_DEFINED 232
 F 0043ede0 d3d_FindDisplayMode640x480x16 USER_DEFINED 179
@@ -2009,6 +2047,7 @@ C 0043eea0
 F 0043f160 d3d_BitDepthToMask USER_DEFINED 73
 F 0043f1f0 d3d_EnumTextureFormats USER_DEFINED 130
 C 0043e270
+%s
 C 0045bb60
 F 0043f400 d3d_CreateDevice USER_DEFINED 210
 C 0043e270
@@ -2414,9 +2453,13 @@ F 0044a370 pixel_Bgr32ToRgb16 USER_DEFINED 49
 F 0044a3b0 pixel_Rgb555ToRgb565 USER_DEFINED 43
 F 0044a3e0 tga_ConvertToDIB USER_DEFINED 1108
 C 0044a840
+This program cannot read it correctly.
 C 0044a840
+This program cannot read it correctly.
 C 0044a840
+This program cannot read it correctly.
 C 0044a840
+This program cannot read it correctly.
 C 0044a840
 C 0044a330
 C 0044a370
@@ -2424,8 +2467,10 @@ C 0044a3b0
 C 0044a020
 C 0044a330
 C 0044a330
+This program cannot read it correctly.
 C 0044a840
 C 0045bbc0
+This program cannot read it correctly.
 C 0044a840
 F 0044a840 sys_ErrorMessage USER_DEFINED 116
 C EXTERNAL:0000006b
@@ -2698,7 +2743,7 @@ C 00436120
 C 004361a0
 C 00408260
 F 0044c860 level_ResetEnemyDefCount USER_DEFINED 11
-F 0044c870 obj_InstallTypeHandlers_2 USER_DEFINED 41
+F 0044c870 level_LoadDefaultEnemyDefs USER_DEFINED 41
 C 0044c700
 C 0044c700
 C 0044c700
@@ -2854,11 +2899,11 @@ C 004337c0
 C 0040fdc0
 C 0040fd10
 C 00410160
-F 0044fe90 sfx_StopObjectSound_fe90 USER_DEFINED 76
+F 0044fe90 sfx_StopTriggerObjectSound USER_DEFINED 76
 C 0040fdc0
 C 0040ffc0
 C 0040fc30
-F 0044fee0 sfx_UpdateFrame USER_DEFINED 241
+F 0044fee0 level_UpdateFrame USER_DEFINED 241
 C 00451e40
 C 00450280
 C 00450280
@@ -2866,12 +2911,12 @@ C 0042b800
 C 0042b800
 C 0044ffe0
 C 00459140
-F 0044ffe0 sfx_SortAndAssignChannels USER_DEFINED 353
+F 0044ffe0 enemy_SortAndAssignAnimSlots USER_DEFINED 353
 C 0044fc70
 C 00450150
 C 00405d70
 C 00450150
-F 00450150 sfx_UpdateEmitterState USER_DEFINED 283
+F 00450150 enemy_UpdateSpawnTriggers USER_DEFINED 283
 C 004061f0
 C 00405fe0
 C 0044fd40
@@ -2928,13 +2973,13 @@ C 00451440
 C 00451390
 F 00451390 texmgr_MergeClassList USER_DEFINED 162
 F 00451440 texmgr_MergePendingAll USER_DEFINED 138
-F 004514d0 sfx_PickTierSample USER_DEFINED 390
+F 004514d0 sfx_PickAltSample USER_DEFINED 390
 C 00436120
 C 00433860
 C 00436010
 C 00436120
 F 00451670 level_GetSlotInfoByte USER_DEFINED 25
-F 00451690 level_GetSlotsLoadedSize USER_DEFINED 58
+F 00451690 level_GetSlotsCollectedCount USER_DEFINED 58
 F 004516d0 level_QueueSwitch USER_DEFINED 267
 F 004517e0 level_InitObjectFromSlot USER_DEFINED 78
 F 00451830 level_HasPendingSlot USER_DEFINED 39
@@ -3082,7 +3127,7 @@ C 0040a940
 F 004546c0 render_ProjectQuadsSubmit USER_DEFINED 2751
 C 0040a090
 C 0040a940
-F 00455180 render_ProjectQuadsBatch USER_DEFINED 2730
+F 00455180 render_ProjectQuadsFlatColor USER_DEFINED 2730
 F 00455c30 render_ProjectQuadsLit USER_DEFINED 2726
 C 0040a940
 F 004566e0 obj_UpdateAttachPoints USER_DEFINED 255
@@ -3130,7 +3175,7 @@ C 00433a60
 C 00452b60
 C 00452b60
 F 00457680 render_DrawBillboardQuad USER_DEFINED 2439
-F 00458010 render_DrawBillboardQuad_2 USER_DEFINED 2506
+F 00458010 render_DrawYawBillboardQuad USER_DEFINED 2506
 F 004589e0 render_DrawSpriteQuad USER_DEFINED 990
 F 00458dc0 cam_BuildViewMatrix USER_DEFINED 715
 C 004571d0
@@ -3197,7 +3242,7 @@ C 0044aab0
 C 00413020
 C 004337c0
 F 0045b4f0 obj_StoreRenderMatrix USER_DEFINED 281
-F 0045b650 path_UpdateFollower USER_DEFINED 518
+F 0045b650 enemy_UpdatePatrol USER_DEFINED 518
 C 004052c0
 C 0045b870
 C 0045b870
@@ -3277,7 +3322,7 @@ F 0045bc30 crt_InitFloat USER_DEFINED 23
 C 0045bc60
 C 0045e4e0
 C 0045e470
-F 0045bc60 math_InitFuncPtrs USER_DEFINED 56
+F 0045bc60 crt_InitFloatFuncPtrs USER_DEFINED 56
 F 0045bc98 ftol USER_DEFINED 39
 F 0045bcc0 _fflush ANALYSIS 57
 C 0045bdc0
@@ -3767,8 +3812,17 @@ C 00460ff0
 F 00460ff0 crt_NmsgWrite USER_DEFINED 502
 C EXTERNAL:00000022
 C 0045c7f0
+Program: 
+Program: 
+- not enough space for environment
+- not enough space for environment
+- not enough space for environment
+- not enough space for environment
 C 004636e0
 C EXTERNAL:0000004f
+- not enough space for environment
+- not enough space for environment
+- not enough space for environment
 C EXTERNAL:0000000c
 F 004611f0 crt_Isatty USER_DEFINED 48
 F 00461220 crt_Wctomb USER_DEFINED 86

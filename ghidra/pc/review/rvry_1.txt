@@ -1,0 +1,44 @@
+PANDY 0x004017e0 audio_SetMusicVolume CONFIRM audio_SetMusicVolume stores volume global and sets CD volume; callers load and apply saved music volume
+PANDY 0x00401ad0 enemyType_Find CONFIRM enemyType_Find linear search of type table by type byte; callers pass object type field
+PANDY 0x00402130 obj_ComputeBounceImpulse CONFIRM obj_ComputeBounceImpulse reflects relative velocity about contact normal and writes impulse; called from hit response
+PANDY 0x00404bb0 gfx_BlitClippedRect CONFIRM gfx_BlitClippedRect clips rect to bounds and copies rows to back buffer from cached texture
+PANDY 0x00405320 sfx_PlayEnemyEvent CONFIRM sfx_PlayEnemyEvent builds sound id from enemy type and event, allocs voice and plays; callers are enemy AI and dying
+PANDY 0x00406720 enemy_UpdateTurnAI CONFIRM enemy_UpdateTurnAI per-frame enemy update choosing idle/walk/turn anim by distance and heading; no direct callers (fn pointer)
+PANDY 0x00406a50 level_SetMusicParamsForLevel UNSURE level_SetMusicParamsForLevel sets three globals by level id and sub-index; music purpose not proven from body
+PANDY 0x00406c00 enemy_UpdateSimpleAI CONFIRM enemy_UpdateSimpleAI short enemy update toggling two anims by distance and path direction flip; fn pointer use
+PANDY 0x00413460 math_BuildYawMatrix CONFIRM math_BuildYawMatrix fills sin/cos rotation about one axis and multiplies into output; used by object update and render
+PANDY 0x00414000 math_BuildYawPitchMatrix CONFIRM math_BuildYawPitchMatrix builds two sin/cos rotations multiplied into output matrix; caller obj_UpdateAll uses it for object orientation
+PANDY 0x004140c0 cam_SphereInFrustum CONFIRM cam_SphereInFrustum dots centre with plane normals against radius, returns bool; callers cull objects
+PANDY 0x00414250 render_DrawSubObject CONFIRM render_DrawSubObject pushes matrix, builds view vector, dispatches by flags to the four quad projectors; callers draw parts
+PANDY 0x00414570 render_ProjectQuadsClipped UNSURE render_ProjectQuadsClipped no true clipping seen (screen bounds test only); differs from Submit by eager light build when object flag bit0 set
+PANDY 0x00415020 render_ProjectQuadsSubmit UNSURE render_ProjectQuadsSubmit projects quads, backface flag, depth bucket insert, lazy per-frame light build; default path, name not distinguishing
+PANDY 0x00415ae0 render_ProjectQuadsBatch RENAME render_ProjectQuadsFlatTint no lighting; writes DAT_00463518 flash colour into all four vertex colours; used when global tint flag 0x20 set by obj_UpdateAll
+PANDY 0x00416590 render_ProjectQuadsLit CONFIRM render_ProjectQuadsLit frame lights built by caller for lit-flag objects, projects quads and applies light to model
+PANDY 0x00417050 obj_UpdateAttachPoints CONFIRM obj_UpdateAttachPoints sets object position from matrix translation plus offset or shifts four attach points by delta; caller obj_UpdateAll
+PANDY 0x00417150 obj_SplitMomentum RENAME obj_BoundsToCenterExtent converts min/max bounds at 0x34/0x40 into centre and half-extent, then approx length; no momentum involved
+PANDY 0x004171c0 render_WalkChildNodes CONFIRM render_WalkChildNodes recurses child nodes, per-type transform (types 5,6,7), draws sub-objects and node objects
+PANDY 0x00417a30 math_QuatToMatrix CONFIRM math_QuatToMatrix quaternion to 3x3 (w==0x8000 copies parent) then multiplies with parent matrix; callers walk nodes and scene
+PANDY 0x00417b40 math_BuildEulerMatrix3 CONFIRM math_BuildEulerMatrix3 builds up to three axis sin/cos rotations and multiplies; callers node walk and cam_BuildViewMatrix
+PANDY 0x00417c70 render_DrawObjectNode CONFIRM render_DrawObjectNode pushes matrix, transforms position to view space, then draws sprite quad or billboard variants
+PANDY 0x00417f30 math_BuildPitchYawMatrix CONFIRM math_BuildPitchYawMatrix two sin/cos rotations multiplied then into parent; used for billboard orientation
+PANDY 0x00417ff0 render_DrawBillboardQuad CONFIRM render_DrawBillboardQuad projects four corners from matrix axes, perspective divide, inserts into depth bucket of poly pool
+PANDY 0x00418980 render_DrawBillboardQuad_2 RENAME render_DrawYawBillboardQuad same pool/bucket insert but corners from yaw-only matrix with bottom offset and rotate flags; called after yaw matrix built
+PANDY 0x00419350 render_DrawSpriteQuad CONFIRM render_DrawSpriteQuad screen-aligned quad from object size at view depth, uv rotation by flags, inserted into bucket list
+PANDY 0x00419a00 render_InitPolyPool CONFIRM render_InitPolyPool links 0x6c-byte poly entries with vertex pointers and default colour 0x808080; caller cam_BuildViewMatrix
+PANDY 0x00419ab0 render_DrawFrame CONFIRM render_DrawFrame per-frame: lights, camera update, view matrix, DrawScene, obj_UpdateAll, visible objects, present; frees pending list
+PANDY 0x00419d10 render_DrawVisibleObjects CONFIRM render_DrawVisibleObjects frustum culls object list with cam_SphereInFrustum then submits quads of visible ones
+PANDY 0x00419fe0 render_DrawScene CONFIRM render_DrawScene large node-list traversal with transforms, flags and sub-draws; called from render_DrawFrame
+PANDY 0x0041bbd0 obj_ResetAfterRender CONFIRM obj_ResetAfterRender per-object-type flag reset/anim advance after node processed, called per node from render_DrawScene
+PANDY 0x0041be50 obj_StoreRenderMatrix CONFIRM obj_StoreRenderMatrix copies current matrix and position into object, computes frame position delta
+PANDY 0x0041c6b0 tex_BlitRowsToBuffer CONFIRM tex_BlitRowsToBuffer copies texture rows through row-converter function pointers with palette and optional colour gradient; called by texmgr_GetTexture
+PANDY 0x0041cd70 texmgr_GetTexture CONFIRM texmgr_GetTexture hashes header, finds cached slot or allocates, uploads rows via tex_BlitRowsToBuffer, updates LRU; caller sw_DrawPolyDispatch
+PANDY 0x0041cfc0 texmgr_HashInsert CONFIRM texmgr_HashInsert inserts slot into circular hash bucket list
+PANDY 0x0041d040 texmgr_HashRemove CONFIRM texmgr_HashRemove unlinks slot from circular hash bucket list, clears head if alone
+PANDY 0x0041d0b0 texmgr_LruRemove CONFIRM texmgr_LruRemove unlinks slot from per-size LRU list heads and neighbours
+PANDY 0x0041d130 texmgr_HashFind CONFIRM texmgr_HashFind walks bucket comparing 0xc0-byte header, returns slot or 0
+PANDY 0x0041d180 texmgr_AllocSlot CONFIRM texmgr_AllocSlot picks size class, takes LRU slot; on failure unlocks all and flips LRU then retries
+PANDY 0x0041d240 texmgr_FlipAllLru CONFIRM texmgr_FlipAllLru loops 16 lists calling texmgr_FlipLruList
+PANDY 0x0041d260 texmgr_FlipLruList CONFIRM texmgr_FlipLruList reverses direction of one circular LRU list
+PANDY 0x0041d2b0 texmgr_ClearHash CONFIRM texmgr_ClearHash zeroes 0x400-entry hash heads; caller level_Unload
+PANDY 0x0041d460 obj_ApplyHitFlagged RENAME obj_PushAlongPath moves object along rail path by signed distance (flag 0x40 set only for positive), then clears flag; caller col_PushOutOfPoly
+PANDY 0x0041e8b0 save_GetSlotData RENAME obj_GetPlayer returns global object pointer for index 0 else 0; callers run its handler and read object fields, not save data

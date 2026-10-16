@@ -13,24 +13,24 @@
 0x004016b0 func sfx_ResetState hand clears 0x18 dwords of sound state and voice slot map
 0x004016e0 func sfx_FlushQueuedPlays hand drains delayed play queue and starts each queued sound
 0x004017d0 func sfx_SetMenuVolume hand stores 16-bit volume value into DAT_0046b188 and returns it [=PANDY3 0x00410400]
-0x004017e0 func audio_SetMusicVolume hand provisional: stores DAT_0046b18c, calls FUN_0042f2c0 with track minus one and volume [=PANDY3 0x00410410]
+0x004017e0 func audio_SetMusicVolume hand stores DAT_0046b18c, calls FUN_0042f2c0 with track minus one and volume [=PANDY3 0x00410410]
 0x00401810 func sfx_StopObjectSound hand =PANDY3 0x00405280 stops sound channel owned by object
 0x00401850 func obj_InitHitReaction hand =PANDY3 0x00437f60 initializes death hurt or knockback reaction then facing update
-0x00401ad0 func enemyType_Find hand provisional: =PANDY3 0x00405fb0 searches loaded enemy type list DAT_0046ef08 by type byte
+0x00401ad0 func enemyType_Find hand =PANDY3 0x00405fb0 searches loaded enemy type list DAT_0046ef08 by type byte
 0x00401b10 func obj_UpdateFacingAndPitch hand =PANDY3 0x00438220 updates facing yaw and pitch toward target with Atan2Table
 0x00401d00 func enemyType_LoadFromMask hand =PANDY3 0x00406370 loops bitmask calling enemyType_LoadOne for each set bit
 0x00401d30 func enemyType_LoadOne hand =PANDY3 0x004063d0 reads enemy type from package chunks, sfx_BuildBankOffsets, registers in list
 0x00401df0 func enemyType_ResetCount hand =PANDY3 0x00406530 sets enemy type count DAT_0046ef18 to zero
 0x00401e00 func gfx_SetBlitCallbacks_B hand stores four function pointers (0x438f90, 0x439790, 0x438540, FUN_00438560) into renderer globals [=PANDY3 0x00438510]
 0x00401e50 func obj_CheckHitResponse hand =PANDY3 0x00438560 checks hit between objects and computes response using side bitmask
-0x00402130 func obj_ComputeBounceImpulse hand provisional: =PANDY3 0x00438840 14-byte head of bounce impulse split function
+0x00402130 func obj_ComputeBounceImpulse hand =PANDY3 0x00438840 14-byte head of bounce impulse split function
 0x0040213e func obj_ComputeBounceImpulseTail hand =PANDY3 0x0043884e bounce impulse computation continuation fragment
 0x00402e80 func path_ReverseDirection hand =PANDY3 0x00439590 reverses travel direction by toggling flag 0x10
 0x00402ee0 func obj_StartSlide hand =PANDY3 0x004395f0 starts slide movement state for object
 0x00404710 func obj_SetRotatingChildren hand =PANDY3 0x0043ae20 recursively sets rotation state on type-6 child objects
 0x004047d0 func player_ApplyTileTriggers hand =PANDY3 0x0043aee0 applies tile trigger effects to player at current position
 0x004049c0 func tex_AddToBlitCache hand allocates cache entry and texture copy with optional H/V flip, doubling lines; Glide path uploads [=PANDY3 0x0043b9d0]
-0x00404bb0 func gfx_BlitClippedRect hand provisional: clipped rectangle copy to back buffer, compare PANDY3 sw_BlitRectToScreen 0x0044f040
+0x00404bb0 func gfx_BlitClippedRect hand clipped rectangle copy to back buffer, compare PANDY3 sw_BlitRectToScreen 0x0044f040
 0x00404d80 func tex_FlushBlitCache hand frees all cached blit textures and resets cache entries [=PANDY3 0x0043be40]
 0x00404dd0 func gfx_FindCachedTexture hand =PANDY3 0x0043bea0 hash lookup of cached blit texture by key compare
 0x00404e90 func obj_PopFreeListNode hand =PANDY3 0x0043fe10 pops node from free list and initializes it
@@ -43,7 +43,7 @@
 0x004050f0 func obj_SpawnEffectAtPos hand =PANDY3 0x00440070 allocates object copies xyz position and scale, links into object list
 0x00405160 func obj_SpawnEffectAtPosFlagged hand =PANDY3 0x004400e0 calls obj_SpawnEffectAtPos then sets flag bit 8
 0x00405180 func sfx_PickTierSample hand =PANDY3 0x004514d0 picks sample by score tier with random pitch, GetFart string
-0x00405320 func sfx_PlayEnemyEvent hand provisional: =PANDY3 0x00408ff0 builds sound id with sfx_MakeSoundId, sfx_PlayEx and queues play
+0x00405320 func sfx_PlayEnemyEvent hand =PANDY3 0x00408ff0 builds sound id with sfx_MakeSoundId, sfx_PlayEx and queues play
 0x00405430 func enemy_UpdateAIChase hand =PANDY3 0x0042eb10 enemy AI chasing player along path with turn and speed logic
 0x00405850 func level_GetSlotInfoByte hand =PANDY3 0x00451670 returns signed byte from level table entry index*0xc+1
 0x00405870 func level_GetSlotsLoadedSize hand =PANDY3 0x00451690 sums size fields +0x5c of the two loaded level slot buffers
@@ -67,7 +67,7 @@
 0x004065e0 func file_CloseMemFile hand =PANDY3 0x00441c50 frees memory-backed FILE and its handle
 0x00406610 func mem_ReadFromBuffer hand reads count items from memory stream struct into dest, advances position, clamps to end [=PANDY3 0x00441c80]
 0x00406680 func file_SeekMemFile hand =PANDY3 0x00441cf0 fseek for memory FILE from start, current or end
-0x00406720 func enemy_UpdateTurnAI hand provisional: enemy AI update using FUN_00453180, FUN_00453a60, FUN_00454120 and math_Atan2Table turning
+0x00406720 func enemy_UpdateTurnAI hand enemy AI update using FUN_00453180, FUN_00453a60, FUN_00454120 and math_Atan2Table turning
 0x00406a00 func time_GetElapsed hand returns clock() minus start time, resetting start on first call [=PANDY3 0x00441d60]
 0x00406a30 func stub_00441d90 hand stub returning 1 [=PANDY3 0x00441d90]
 0x00406a40 func stub_00441da0 hand stub returning 1 [=PANDY3 0x00441da0]
@@ -78,7 +78,7 @@
 0x00406bb0 func stub_00406bb0 hand tiny stub that only returns
 0x00406bc0 func stub_00406bc0 hand tiny stub that only returns
 0x00406bd0 func stub_00406bd0 hand tiny stub that only returns
-0x00406c00 func enemy_UpdateSimpleAI hand provisional: small enemy update using FUN_0042d2b0 path move and FUN_00453180, FUN_00453a60
+0x00406c00 func enemy_UpdateSimpleAI hand small enemy update using FUN_0042d2b0 path move and FUN_00453180, FUN_00453a60
 0x00406d30 func enemy_UpdateFlyerShooter hand =PANDY3 0x00433c00 flying shooter AI using rand_Next and path move
 0x00407160 func enemy_UpdateStatic hand =PANDY3 0x004346c0 static enemy with minimal behavior, only FUN_00453180 and FUN_00453a60
 0x004071f0 func enemy_UpdateTimedSpawner hand =PANDY3 0x00434040 enemy spawning objects on a timer via spawn callback DAT_0070dea8
@@ -87,53 +87,53 @@
 0x0040ccd0 func gfx_DrawTexturedPolySpans16 hand =PANDY3 0x00420cf0 16bpp software textured polygon span rasterizer using edge span globals
 0x00412ff0 func gfx_DrawFlatPolySpans hand =PANDY3 0x00427010 software flat-shaded polygon span fill loop
 0x004133f0 func obj_ConvertColor555ToRGB hand =PANDY3 0x00427410 converts 15-bit 555 color to separate RGB components
-0x00413460 func math_BuildYawMatrix hand provisional: =PANDY3 0x00452b00 builds yaw rotation matrix via FUN_00442370 and math_MatMul3x3
+0x00413460 func math_BuildYawMatrix hand =PANDY3 0x00452b00 builds yaw rotation matrix via FUN_00442370 and math_MatMul3x3
 0x004134c0 func math_MatMul3x3 hand =PANDY3 0x00452b60 fixed-point 12-bit 3x3 matrix multiply
 0x00413740 func obj_UpdateAll hand walks object list, calls per-type handlers, builds rotation matrices, culls, runs animation per object [=PANDY3 0x00452de0]
-0x00414000 func math_BuildYawPitchMatrix hand provisional: =PANDY3 0x004536a0 builds two axis rotation matrices with sine table and multiplies
-0x004140c0 func cam_SphereInFrustum hand provisional: =PANDY3 0x00453760 tests sphere against frustum planes in DAT_00463498..DAT_00463574
-0x00414250 func render_DrawSubObject hand provisional: =PANDY3 0x004538f0 pushes matrix stack, transforms and dispatches to quad projection variants
+0x00414000 func math_BuildYawPitchMatrix hand =PANDY3 0x004536a0 builds two axis rotation matrices with sine table and multiplies
+0x004140c0 func cam_SphereInFrustum hand =PANDY3 0x00453760 tests sphere against frustum planes in DAT_00463498..DAT_00463574
+0x00414250 func render_DrawSubObject hand =PANDY3 0x004538f0 pushes matrix stack, transforms and dispatches to quad projection variants
 0x00414570 func render_ProjectQuadsClipped hand provisional: =PANDY3 0x00453c10 projects 4-vertex polygons, culls backface, depth buckets
 0x00415020 func render_ProjectQuadsSubmit hand provisional: =PANDY3 0x004546c0 quad projection variant submitting polygons with backface flags
-0x00415ae0 func render_ProjectQuadsBatch hand provisional: =PANDY3 0x00455180 quad projection variant with batch state setup
-0x00416590 func render_ProjectQuadsLit hand provisional: =PANDY3 0x00455c30 quad projection variant with depth bucket insert and vertex color
-0x00417050 func obj_UpdateAttachPoints hand provisional: =PANDY3 0x004566e0 updates object attach positions from matrix stack, shifts four attach points
-0x00417150 func obj_SplitMomentum hand provisional: =PANDY3 0x004567e0 averages position and velocity halves, recomputes magnitude via FUN_00442190
-0x004171c0 func render_WalkChildNodes hand provisional: =PANDY3 0x00456850 walks child node list with per-type transforms and sub-object draws
-0x00417a30 func math_QuatToMatrix hand provisional: =PANDY3 0x004570c0 builds rotation matrix from fixed-point quaternion using math_MatMul3x3
-0x00417b40 func math_BuildEulerMatrix3 hand provisional: =PANDY3 0x004571d0 builds up to three axis rotations and multiplies them
-0x00417c70 func render_DrawObjectNode hand provisional: =PANDY3 0x00457300 pushes matrix, applies object rotation, draws billboard and sprite quads
-0x00417f30 func math_BuildPitchYawMatrix hand provisional: =PANDY3 0x004575c0 builds pitch and yaw matrices and multiplies into output
-0x00417ff0 func render_DrawBillboardQuad hand provisional: =PANDY3 0x00457680 projects billboard quad into depth buckets using polygon pool DAT_00714c0c
-0x00418980 func render_DrawBillboardQuad_2 hand provisional: =PANDY3 0x00458010 second billboard quad projection variant, same polygon pool
-0x00419350 func render_DrawSpriteQuad hand provisional: =PANDY3 0x004589e0 builds screen-aligned quad from object size and depth into bucket list
+0x00415ae0 func render_ProjectQuadsFlatTint hand =PANDY3 0x00455180 quad projection variant with batch state setup (was render_ProjectQuadsBatch)
+0x00416590 func render_ProjectQuadsLit hand =PANDY3 0x00455c30 quad projection variant with depth bucket insert and vertex color
+0x00417050 func obj_UpdateAttachPoints hand =PANDY3 0x004566e0 updates object attach positions from matrix stack, shifts four attach points
+0x00417150 func obj_BoundsToCenterExtent hand =PANDY3 0x004567e0 averages position and velocity halves, recomputes magnitude via FUN_00442190 (was obj_SplitMomentum)
+0x004171c0 func render_WalkChildNodes hand =PANDY3 0x00456850 walks child node list with per-type transforms and sub-object draws
+0x00417a30 func math_QuatToMatrix hand =PANDY3 0x004570c0 builds rotation matrix from fixed-point quaternion using math_MatMul3x3
+0x00417b40 func math_BuildEulerMatrix3 hand =PANDY3 0x004571d0 builds up to three axis rotations and multiplies them
+0x00417c70 func render_DrawObjectNode hand =PANDY3 0x00457300 pushes matrix, applies object rotation, draws billboard and sprite quads
+0x00417f30 func math_BuildPitchYawMatrix hand =PANDY3 0x004575c0 builds pitch and yaw matrices and multiplies into output
+0x00417ff0 func render_DrawBillboardQuad hand =PANDY3 0x00457680 projects billboard quad into depth buckets using polygon pool DAT_00714c0c
+0x00418980 func render_DrawYawBillboardQuad hand =PANDY3 0x00458010 second billboard quad projection variant, same polygon pool (was render_DrawBillboardQuad_2)
+0x00419350 func render_DrawSpriteQuad hand =PANDY3 0x004589e0 builds screen-aligned quad from object size and depth into bucket list
 0x00419730 func cam_BuildViewMatrix hand builds inverse camera rotation matrix and translation from camera object, copies matrix, transforms light vectors [=PANDY3 0x00458dc0]
-0x00419a00 func render_InitPolyPool hand provisional: =PANDY3 0x00459090 initialises 0x6c-byte polygon pool entries from DAT_004883c0
-0x00419ab0 func render_DrawFrame hand provisional: =PANDY3 0x00459140 per-frame draw, light_UpdateDirectionalLights, cam_BuildViewMatrix, render_DrawScene, save_GetSlotData
-0x00419d10 func render_DrawVisibleObjects hand provisional: =PANDY3 0x004593a0 frustum culls object list via cam_SphereInFrustum and draws visible ones
-0x00419fe0 func render_DrawScene hand provisional: =PANDY3 0x00459670 large scene traversal rendering objects, transforms and sub-draws
-0x0041bbd0 func obj_ResetAfterRender hand provisional: =PANDY3 0x0045b260 per object type flag reset after render, calls obj_InitHitReaction
-0x0041be50 func obj_StoreRenderMatrix hand provisional: =PANDY3 0x0045b4f0 copies current matrix and position into object, tracks delta position
+0x00419a00 func render_InitPolyPool hand =PANDY3 0x00459090 initialises 0x6c-byte polygon pool entries from DAT_004883c0
+0x00419ab0 func render_DrawFrame hand =PANDY3 0x00459140 per-frame draw, light_UpdateDirectionalLights, cam_BuildViewMatrix, render_DrawScene, save_GetSlotData
+0x00419d10 func render_DrawVisibleObjects hand =PANDY3 0x004593a0 frustum culls object list via cam_SphereInFrustum and draws visible ones
+0x00419fe0 func render_DrawScene hand =PANDY3 0x00459670 large scene traversal rendering objects, transforms and sub-draws
+0x0041bbd0 func obj_ResetAfterRender hand =PANDY3 0x0045b260 per object type flag reset after render, calls obj_InitHitReaction
+0x0041be50 func obj_StoreRenderMatrix hand =PANDY3 0x0045b4f0 copies current matrix and position into object, tracks delta position
 0x0041bf90 func enemy_UpdateAnimSwitch hand =PANDY3 0x0043bf80 switches enemy anim by distance and heading with math_Atan2Table
 0x0041c0b0 func sfx_PlayObjectEventQueued hand builds sound id with sfx_MakeSoundId and queues via sfx_QueueDelayedPlay, default event 5
 0x0041c130 func enemy_UpdatePathChaseAI hand =PANDY3 0x00440670 enemy path chase AI with sound events, math_Atan2Table and anim switching
-0x0041c6b0 func tex_BlitRowsToBuffer hand provisional: =PANDY3 0x00450720 converts and copies texture rows via function pointers with palette and gradient
+0x0041c6b0 func tex_BlitRowsToBuffer hand =PANDY3 0x00450720 converts and copies texture rows via function pointers with palette and gradient
 0x0041ca70 func texmgr_Init hand validates cache sizes, zeroes tables, allocates texture cache, links slots; TexMgrInit error strings [=PANDY3 0x00450ae0]
 0x0041cce0 func texmgr_LinkSlot hand inserts slot into circular doubly-linked list headed per size class [=PANDY3 0x00450d50]
 0x0041cd60 func tex_FreeScratchBuffer hand =PANDY3 0x00450dd0 frees scratch buffer DAT_00568070 with free
-0x0041cd70 func texmgr_GetTexture hand provisional: =PANDY3 0x00450de0 hashes texture header, finds cached slot or allocates and uploads
-0x0041cfc0 func texmgr_HashInsert hand provisional: =PANDY3 0x00451030 inserts texture slot into circular hash bucket list
-0x0041d040 func texmgr_HashRemove hand provisional: =PANDY3 0x004510b0 removes texture slot from circular hash bucket list
-0x0041d0b0 func texmgr_LruRemove hand provisional: =PANDY3 0x00451120 removes texture slot from size-class LRU list
-0x0041d130 func texmgr_HashFind hand provisional: =PANDY3 0x004511a0 scans hash bucket comparing 0xC0-byte texture header
-0x0041d180 func texmgr_AllocSlot hand provisional: =PANDY3 0x004511f0 finds free slot by size class, on failure unlocks all and flips LRU
-0x0041d240 func texmgr_FlipAllLru hand provisional: =PANDY3 0x004512b0 loops 16 LRU lists calling texmgr_FlipLruList
-0x0041d260 func texmgr_FlipLruList hand provisional: =PANDY3 0x004512d0 reverses direction of one circular LRU list
-0x0041d2b0 func texmgr_ClearHash hand provisional: =PANDY3 0x00451320 zeroes 0x400-entry hash table DAT_00567058
+0x0041cd70 func texmgr_GetTexture hand =PANDY3 0x00450de0 hashes texture header, finds cached slot or allocates and uploads
+0x0041cfc0 func texmgr_HashInsert hand =PANDY3 0x00451030 inserts texture slot into circular hash bucket list
+0x0041d040 func texmgr_HashRemove hand =PANDY3 0x004510b0 removes texture slot from circular hash bucket list
+0x0041d0b0 func texmgr_LruRemove hand =PANDY3 0x00451120 removes texture slot from size-class LRU list
+0x0041d130 func texmgr_HashFind hand =PANDY3 0x004511a0 scans hash bucket comparing 0xC0-byte texture header
+0x0041d180 func texmgr_AllocSlot hand =PANDY3 0x004511f0 finds free slot by size class, on failure unlocks all and flips LRU
+0x0041d240 func texmgr_FlipAllLru hand =PANDY3 0x004512b0 loops 16 LRU lists calling texmgr_FlipLruList
+0x0041d260 func texmgr_FlipLruList hand =PANDY3 0x004512d0 reverses direction of one circular LRU list
+0x0041d2b0 func texmgr_ClearHash hand =PANDY3 0x00451320 zeroes 0x400-entry hash table DAT_00567058
 0x0041d2d0 func texmgr_UnlockAll hand warns Textures not unlocked, merges pending lists for each of 4 size classes [=PANDY3 0x00451340]
 0x0041d320 func texmgr_MergeClassList hand splices class pending list into free list for size class and resets heads [=PANDY3 0x00451390]
 0x0041d3d0 func texmgr_MergePendingAll hand splices each pending list into master list for all 4 classes [=PANDY3 0x00451440]
-0x0041d460 func obj_ApplyHitFlagged hand provisional: wraps FUN_004356f0 setting flag 0x40 for positive param, negates negative param
+0x0041d460 func obj_PushAlongPath hand wraps FUN_004356f0 setting flag 0x40 for positive param, negates negative param (was obj_ApplyHitFlagged)
 0x0041d4a0 func obj_UpdateMotion hand moves object along path using FUN_0042e910 and fn_4423b0 =PANDY3 0x00410480
 0x0041d660 func obj_UpdateAndCollide hand calls obj_UpdateMotion, collision helper FUN_00410710, FUN_0042a0a0 =PANDY3 0x00410640
 0x0041d730 func obj_CheckCollision hand tests object against surroundings using FUN_0042c7e0, FUN_00428250 =PANDY3 0x00410710
@@ -147,9 +147,9 @@
 0x0041e720 func stub_0041e720 hand function returning a constant =PANDY3 0x00411700
 0x0041e730 func settings_LoadFromBytes hand unpacks saved option bytes into globals DAT_008036b8..c0 and DAT_005717d0 honoring unlock flags [=PANDY3 0x00411710]
 0x0041e810 func settings_SaveToBytes hand packs option globals DAT_008036b8..c0 and flags into 8-byte buffer [=PANDY3 0x004117f0]
-0x0041e8b0 func save_GetSlotData hand provisional: tiny helper taking slot param_1, returns pointer or zero [=PANDY3 0x00411890]
-0x0041e8d0 func game_ResetTimers hand provisional: reset helper calling fn_41e8b0 =PANDY3 0x004118b0
-0x0041e960 func game_SetCounter hand provisional: stores clamped value into global counter =PANDY3 0x00411940
+0x0041e8b0 func obj_GetPlayer hand tiny helper taking slot param_1, returns pointer or zero [=PANDY3 0x00411890] (was save_GetSlotData)
+0x0041e8d0 func game_ResetMenuObjectState hand reset helper calling fn_41e8b0 =PANDY3 0x004118b0 (was game_ResetTimers)
+0x0041e960 func game_ResetMenuObjectByIndex hand stores clamped value into global counter =PANDY3 0x00411940 (was game_SetCounter)
 0x0041e9c0 func player_Update hand large player state machine, path, jump, collisions, FUN_00412c90, FUN_00410710 =PANDY3 0x004119a0
 0x0041f9f0 func player_ApplyDamage hand damage handling with FUN_00412ae0 and FUN_00451670/FUN_004516d0 sounds =PANDY3 0x004129d0
 0x0041fb00 func player_ResetState hand reinitializes player fields, calls FUN_00402f30 =PANDY3 0x00412ae0
@@ -163,7 +163,7 @@
 0x00420040 func math_Clamp16 hand bounded integer helper returning uint =PANDY3 0x00413020
 0x004200a0 func player_GetScoreLevel hand derives value from counter field =PANDY3 0x00413080
 0x004200f0 func game_InitPlayerTables hand initializes global tables loop =PANDY3 0x004130d0
-0x004201e0 func level_InitCallbacksAndPlayerObjects hand provisional: installs per-frame callbacks, creates objects from package entries, copies DAT_00808c40 block [=PANDY3 0x004131c0]
+0x004201e0 func level_InitCallbacksAndPlayerObjects hand installs per-frame callbacks, creates objects from package entries, copies DAT_00808c40 block [=PANDY3 0x004131c0]
 0x00420330 func enemy_SpawnFromList hand spawns objects from list using FUN_00428390, FUN_004135b0 =PANDY3 0x00413310
 0x004205d0 func obj_InitFromRecord hand fills object fields from data record =PANDY3 0x004135b0
 0x004207a0 func player_HandleInput hand big input to action mapping, FUN_00414160, FUN_00410c00 =PANDY3 0x00413780
@@ -175,9 +175,9 @@
 0x00423400 func obj_UpdateTimers hand updates timer/state fields of object =PANDY3 0x004163e0
 0x00423560 func boss_UpdateAttack hand large attack logic with FUN_00433b30, FUN_0042e910, fn_4423b0 =PANDY3 0x00416540
 0x00423d70 func boss_Update hand updates boss, sound via sound_SetEntryParams, calls boss_UpdateAttack =PANDY3 0x00416d50
-0x00424200 func math_GetRandomByte hand provisional: returns packed byte value via CONCAT31 =PANDY3 0x004171e0
+0x00424200 func timer_TickCountdownExpired hand returns packed byte value via CONCAT31 =PANDY3 0x004171e0 (was math_GetRandomByte)
 0x00424230 func obj_SetTarget hand copies target fields to object =PANDY3 0x00417210
-0x004242e0 func level_InitObjects hand provisional: OY4 string, FUN_004529f0, game_ClearStruct =PANDY3 0x004172c0
+0x004242e0 func input_PollActionMask hand OY4 string, FUN_004529f0, game_ClearStruct =PANDY3 0x004172c0 (was level_InitObjects)
 0x00426190 func enemy_UpdateSimple hand simple enemy update with FUN_00410710, FUN_00428250 =PANDY3 0x00419170
 0x00426540 func enemy_UpdateComplex hand enemy update with FUN_00402f30, FUN_0042a0a0, FUN_0042f480 =PANDY3 0x00419520
 0x00426ae0 func enemy_UpdateBossPhase hand large phase logic using FUN_00410d10, FUN_00410640, FUN_0042a260 =PANDY3 0x00419ac0
@@ -224,7 +224,7 @@
 0x0042cf10 func path_GetSegmentDirection hand normalized tangent between path points rotated by segment transform =PANDY3 0x004285b0
 0x0042d180 func path_GetPointWorld hand rail path point by index and transforms into world space with segment matrix =PANDY3 0x00428820
 0x0042d2b0 func path_FindNearestPoint hand along rail segment points for nearest point to a given position =PANDY3 0x00428950
-0x0042e070 func cam_SetupViewVolumePlanes hand provisional: builds four frustum plane normals from fov param using fixed-point sqrt, stores at camera +0x138..0x164 [=PANDY3 0x00429710]
+0x0042e070 func cam_SetupViewVolumePlanes hand builds four frustum plane normals from fov param using fixed-point sqrt, stores at camera +0x138..0x164 [=PANDY3 0x00429710]
 0x0042ea00 func cam_SetTarget hand camera target object and initial offsets =PANDY3 0x0042a0a0
 0x0042ea40 func cam_UpdateOffsetDecay hand moves camera offset toward goal with fixed-point decay each frame =PANDY3 0x0042a0e0
 0x0042ebc0 func cam_StartShakeDecay hand starts camera shake and sets decay counters =PANDY3 0x0042a260
@@ -240,9 +240,9 @@
 0x0042f3f0 func pkg_InitResourceSystem hand reads RESOURCE.CNF, parses level package table, opens JESTERS.PKG/SJESTERS.PKG/GLOBAL.PKG, creates temp TJESTERS.PKG [=PANDY3 0x00436220]
 0x0042fc40 func pkg_LoadThreadProc hand thread body: seeks and ReadFile chunk from correct package handle, sets load state 2 or -1 [=PANDY3 0x00436a70]
 0x0042fd20 func mem_FreeGlobalBuf hand global buffer DAT_00803360 =PANDY3 0x00436b50
-0x0042fd40 func win_ParseCmdLine hand provisional: command line honoring quotes and stores arguments into DAT_0059a270 =PANDY3 0x00434710
+0x0042fd40 func win_ParseCmdLine hand command line honoring quotes and stores arguments into DAT_0059a270 =PANDY3 0x00434710
 0x0042fde0 func win_InitMainWindow hand registers PandemoniumWindow, KbdSettingCtrl, JoySettingCtrl classes, creates window, inits renderer, DirectSound, joystick, message log [=PANDY3 0x004347b0]
-0x004300d0 func win_PlayLogosAvi hand provisional: LOGOS.AVI intro video then calls DestroyWindow =PANDY3 0x00434b00
+0x004300d0 func win_RunGameMainAndDestroy hand LOGOS.AVI intro video then calls DestroyWindow =PANDY3 0x00434b00 (was win_PlayLogosAvi)
 0x00430100 func game_RequestQuit hand sets quit flags DAT_007ffc8c and bits in DAT_00472694, DAT_00808774 to 0xff [=PANDY3 0x00434b30]
 0x00430120 func win_MainWndProc hand window procedure: paint, close, activate, keyboard, mouse, menu commands (quit, sound, performance, password), MCI notify [=PANDY3 0x00434b50]
 0x00430740 func menu_ClearDuplicateKeyBinding hand GWL_USERDATA of sibling control windows to clear duplicate key binding =PANDY3 0x00435170
@@ -252,7 +252,7 @@
 0x00430f10 func win_ResumeApp hand if paused and game window is foreground clears flag and resumes CD audio [=PANDY3 0x00435940]
 0x00430f40 func win_HideMenu hand clears menu style bit and removes window menu [=PANDY3 0x00435970]
 0x00430f80 func win_ShowMenu hand fills window background, loads menu resource 0x68, enables items, sets menu bar [=PANDY3 0x004359b0]
-0x00431090 func menu_StartConfigDialog hand provisional: and runs key and joystick configuration dialog with Win32 controls =PANDY3 0x00435b20
+0x00431090 func menu_StartConfigDialog hand and runs key and joystick configuration dialog with Win32 controls =PANDY3 0x00435b20
 0x004310d0 func obj_ApplyVelocityAndPending hand velocity, attached-object transforms and spawn-on-timer logic to object =PANDY3 0x00437410
 0x00431810 func gfx_SetBlitCallbacks_A hand stores two function pointers (FUN_00437e20, label 00437b70) into renderer globals [=PANDY3 0x00437b50]
 0x004319c0 func obj_CanHitTarget hand or attack predicate by object type =PANDY3 0x00437d00
@@ -261,9 +261,9 @@
 0x00431c00 func mem_CopyToTableDest hand copies param_4 bytes from source to destination pointer in table at index param_2 if set [=PANDY3 0x0043b8e0]
 0x00431c30 func pkg_ResolveSpritePtr hand sprite pointer from package bank and index =PANDY3 0x0043b910
 0x00431c90 func pkg_ResolveSpritePtr2 hand sprite pointer variant from package data =PANDY3 0x0043b970
-0x00431cf0 func game_ClearStruct hand provisional: tiny initializer of structure fields =PANDY3 0x0040fa60
-0x00431d10 func game_RunLevelSequence hand provisional: loops level load, run, unload, calls fn_42f370 =PANDY3 0x0040fa80
-0x00431e20 func level_Start hand provisional: OY4 string, init player, path, sound start =PANDY3 0x0040fb90
+0x00431cf0 func demo_ReadRecordedInput hand tiny initializer of structure fields =PANDY3 0x0040fa60 (was game_ClearStruct)
+0x00431d10 func game_RunAttractDemo hand loops level load, run, unload, calls fn_42f370 =PANDY3 0x0040fa80 (was game_RunLevelSequence)
+0x00431e20 func demo_RunPlaybackFrames hand OY4 string, init player, path, sound start =PANDY3 0x0040fb90 (was level_Start)
 0x00431ec0 func anim_UpdateAllPaletteCycles hand runs palette cycle lists for current level and global list via anim_UpdatePaletteCycleList [=PANDY3 0x0044a8d0]
 0x00431f10 func anim_UpdatePaletteCycleList hand steps per-entry timers, rotates palette colour entries in cycle table when timer expires [=PANDY3 0x0044a920]
 0x00432000 func anim_AdvanceFrameByMode hand steps animation frame at +4 per mode: loop, random frame via fn_455460, ping-pong, reverse =PANDY3 0x0044aa10
@@ -276,10 +276,10 @@
 0x00432610 func enemy_UpdatePathFollowerAttack hand path-following enemy tick: picks nearest path node, spawns projectile via DAT_007ff6a8, transforms by parent =PANDY3 0x00441630
 0x00432ab0 func gfx_SetupDisplay hand scales size param and calls fn_42c800 to set mode, sets flag 0x20 [=PANDY3 0x00441ad0]
 0x00432b10 func coll_TestMovingSphereAgainstFaces hand tests moving sphere against world faces, computing contact time and normal =PANDY3 0x0042a3d0
-0x00433580 func coll_TestSphereVsEdge hand provisional: sphere versus edge intersection helper for face collision =PANDY3 0x0042ae40
+0x00433580 func coll_SweepSphereVsObjectBounds hand sphere versus edge intersection helper for face collision =PANDY3 0x0042ae40 (was coll_TestSphereVsEdge)
 0x00433f40 func coll_UpdateObjectCollisions hand iterates object lists dispatching pair collisions via class handler table =PANDY3 0x0042b800
 0x00434100 func coll_ResolveObjectPair hand resolves collision between two objects using handler table indexed by class byte =PANDY3 0x0042b9c0
-0x00434460 func coll_SphereReachTest hand provisional: tests whether sphere can reach target without hitting faces =PANDY3 0x0042bd20
+0x00434460 func coll_SweptSphereOverlapTest hand tests whether sphere can reach target without hitting faces =PANDY3 0x0042bd20 (was coll_SphereReachTest)
 0x00434640 func coll_TestWorldFaces hand tests object bounding sphere against world faces and records hits =PANDY3 0x0042bf00
 0x00434970 func coll_TestObjectLists hand tests object against the lists hanging off the object manager =PANDY3 0x0042c230
 0x00434c10 func coll_TestEnemyHit hand tests player attack volume against enemy objects =PANDY3 0x0042c4d0
@@ -310,16 +310,16 @@
 0x004377e0 func input_SetKeyDown hand sets key state byte for key code to 1 [=PANDY3 0x004373f0]
 0x004377f0 func input_SetKeyUp hand clears key state byte for key code [=PANDY3 0x00437400]
 0x00437800 func game_MainLoopFrame hand pause/play MCI strings, UnbatchGraphics error, password, main per-frame driver =PANDY3 0x0040dcf0
-0x00437a60 func game_TestFlagBits hand provisional: small bitmask test calling fn_438980 =PANDY3 0x0040df50
+0x00437a60 func menu_StepSelectionWrap hand small bitmask test calling fn_438980 =PANDY3 0x0040df50 (was game_TestFlagBits)
 0x00437a90 func password_EntryScreen hand password entry loop: reads registry password, letter keys, backspace, enter decodes and applies, saves registry [=PANDY3 0x0040df80]
 0x00437f20 func password_DrawScreen hand draws the password screen title, prompt and error texts plus the glyph row for =PANDY3 0x0040e410
 0x00437fd0 func gfx_ClearAndDrawBackground hand fn_44abf0 then optional fn_43a920 fill, then bg_DrawScreenImage [=PANDY3 0x0040e4c0]
 0x00438000 func password_ApplyUnlocks hand decodes 8-letter password by matching table at DAT_0046a8c0, sets unlock flag bits in DAT_007ff110 [=PANDY3 0x0040e4f0]
 0x00438100 func password_MatchEntry hand compares 8 password chars times 100 xor 0xffff against table entry of 8 words [=PANDY3 0x0040e5f0]
 0x00438140 func password_DecodeEntryName hand decodes zero-terminated xor/100 encoded table entry into string buffer DAT_0056fa00 [=PANDY3 0x0040e630]
-0x00438180 func menu_DrawScreenItems hand provisional: calls several fn_437fd0 fn_4381e0 fn_438ab0 draw helpers =PANDY3 0x0040e670
-0x004381e0 func scene_SetupPasswordPreviewObject hand provisional: temp object and camera setup from param_1, runs lights, anim frame and camera setup, restores DAT_007ff114 [=PANDY3 0x0040e6d0]
-0x004384e0 func level_RunCompleteScreen hand provisional: CDPath string, level_DrawCompleteScreen, loading helpers =PANDY3 0x0040e9d0
+0x00438180 func menu_DrawCharacterSelect hand calls several fn_437fd0 fn_4381e0 fn_438ab0 draw helpers =PANDY3 0x0040e670 (was menu_DrawScreenItems)
+0x004381e0 func scene_DrawPreviewObject hand temp object and camera setup from param_1, runs lights, anim frame and camera setup, restores DAT_007ff114 [=PANDY3 0x0040e6d0] (was scene_SetupPasswordPreviewObject)
+0x004384e0 func level_RunCompleteScreen hand CDPath string, level_DrawCompleteScreen, loading helpers =PANDY3 0x0040e9d0
 0x00438750 func level_DrawCompleteScreen hand draws the level-complete or boss-cleared title, treasure count and password prompt =PANDY3 0x0040ec40
 0x00438900 func menu_PresentFrame hand fn_431ec0, UnbatchGraphics, fn_44bfd0 then updates frame timer DAT_0056f9e8 via fn_44f4a0 [=PANDY3 0x0040edf0]
 0x00438930 func pad_GetNewButtonPresses hand reads input via s_OY4 poll, stores state, returns newly pressed bits ~old and new [=PANDY3 0x0040ee20]
@@ -330,10 +330,10 @@
 0x00438b60 func password_Generate hand builds password from save data: obfuscates fields with bit rotation, checksum, writes 8 nibbles to DAT_0056f9f0 [=PANDY3 0x0040f050]
 0x00438d40 func password_RotateBitsLeft hand rotates param_2-bit field param_1 by param_3 positions modulo width [=PANDY3 0x0040f230]
 0x00438d80 func password_RotateBitsRight hand inverse rotation of param_2-bit field by param_3 positions [=PANDY3 0x0040f270]
-0x00438dd0 func game_PauseLoop hand provisional: PAUSED text, pause wait MCI string, out of memory message, restores graphics =PANDY3 0x0040f2c0
+0x00438dd0 func game_PauseLoop hand PAUSED text, pause wait MCI string, out of memory message, restores graphics =PANDY3 0x0040f2c0
 0x00438e90 func menu_DrawPauseScreen hand draws PAUSED text and CURRENT PASSWORD with letters, then menu_PresentFrame [=PANDY3 0x0040f3b0]
-0x00438f30 func enemy_UpdateChaseAI hand provisional: ; chase and attack state machine using anim sets, spawns projectile via DAT_007ff6a8 =PANDY3 0x00408290
-0x004395c0 func obj_UpdateBoundObject hand provisional: Updates object bound to another using field +0x9c, large function =PANDY3 0x0043b0d0
+0x00438f30 func enemy_UpdateChaseAI hand ; chase and attack state machine using anim sets, spawns projectile via DAT_007ff6a8 =PANDY3 0x00408290
+0x004395c0 func obj_UpdateGroundShadow hand Updates object bound to another using field +0x9c, large function =PANDY3 0x0043b0d0 (was obj_UpdateBoundObject)
 0x00439db0 func gfx_FreeSharedBuffer hand frees buffer DAT_0046a128 via fn_443c20 and clears it =PANDY3 0x00408920
 0x00439dd0 func bg_DrawScreenImage hand draws 320x240 background DIB DAT_0046a128 via FUN_0040ba90 (Glide) or FUN_0044f170 (software) [=PANDY3 0x00408940]
 0x00439df0 func pkg_LoadLightingData hand copies packages 0x58-0x5a into DAT_00803940 and loads 0x56 data =PANDY3 0x00408990
@@ -357,16 +357,16 @@
 0x0043e400 func sw_SpanTextured565 hand textured span for 0x22b format with UV stepping =PANDY3 0x00446660
 0x0043e6d0 func sw_SpanTextured555 hand textured span for 0x235 format with UV stepping =PANDY3 0x00446930
 0x0043e990 func sw_SpanTextured8 hand textured span for 8bpp =PANDY3 0x00446bf0
-0x0043ebd0 func sw_SpanTexturedTransD555 hand provisional: software textured translucent span 555 variant, no PANDY3 twin, shifts like Trans family
-0x0043ee10 func sw_SpanTexturedTrans8 hand provisional: textured transparency span 8bpp variant =PANDY3 0x00447070
-0x0043f090 func sw_SpanTexturedTrans8_2 hand provisional: textured transparency span 8bpp variant two =PANDY3 0x004472e0
+0x0043ebd0 func sw_SpanTexturedAverage555 hand software textured translucent span 555 variant, no PANDY3 twin, shifts like Trans family (was sw_SpanTexturedTransD555)
+0x0043ee10 func sw_SpanTexturedAdd555 hand textured transparency span 8bpp variant =PANDY3 0x00447070 (was sw_SpanTexturedTrans8)
+0x0043f090 func sw_SpanTexturedSub555 hand textured transparency span 8bpp variant two =PANDY3 0x004472e0 (was sw_SpanTexturedTrans8_2)
 0x0043f590 func sw_SpanTexturedTransA555 hand textured blended span 0x235 format transparency mode 1 =PANDY3 0x004477d0
-0x0043f7d0 func sw_SpanTexturedTransB555 hand provisional: textured blended span 0x235 format transparency mode 2 =PANDY3 0x00447a10
-0x0043fa40 func sw_SpanTexturedTransC555 hand provisional: textured blended span 0x235 format transparency mode 3 =PANDY3 0x00447c90
-0x0043fcb0 func sw_SpanTexturedTrans8_3 hand provisional: textured transparency span 8bpp variant three =PANDY3 0x00447550
+0x0043f7d0 func sw_SpanTexturedAdd565 hand textured blended span 0x235 format transparency mode 2 =PANDY3 0x00447a10 (was sw_SpanTexturedTransB555)
+0x0043fa40 func sw_SpanTexturedSub565 hand textured blended span 0x235 format transparency mode 3 =PANDY3 0x00447c90 (was sw_SpanTexturedTransC555)
+0x0043fcb0 func sw_SpanTexturedAddQuarter565 hand textured transparency span 8bpp variant three =PANDY3 0x00447550 (was sw_SpanTexturedTrans8_3)
 0x0043ff30 func sw_SpanTexturedTransA565 hand textured blended span 0x22b format transparency mode 1 =PANDY3 0x00448190
-0x004400c0 func sw_SpanTexturedTransC565 hand provisional: textured blended span 0x22b format transparency mode 3 =PANDY3 0x004484e0
-0x00440270 func sw_SpanTexturedTransB565 hand provisional: textured blended span 0x22b format transparency mode 2 =PANDY3 0x00448320
+0x004400c0 func sw_SpanTexturedAddPal8 hand textured blended span 0x22b format transparency mode 3 =PANDY3 0x004484e0 (was sw_SpanTexturedTransC565)
+0x00440270 func sw_SpanTexturedSubPal8 hand textured blended span 0x22b format transparency mode 2 =PANDY3 0x00448320 (was sw_SpanTexturedTransB565)
 0x00440430 func sw_SpanTexturedTransD565 hand textured blended span 0x22b format transparency mode 4 =PANDY3 0x00448690
 0x004405f0 func obj_ClearHandleTable hand frees 0x400 table entries via FUN_004488a0 when below limit and zeroes them [=PANDY3 0x00448850]
 0x00440640 func gfx_DrawPolyNode hand recursively draws polygon list, loads 4 vertex y values into DAT_007fff60.., dispatches Glide (FUN_0040be50), =PANDY3 0x004488a0
@@ -379,7 +379,7 @@
 0x004413d0 func gfx_DarkenRect hand subtracts color from every pixel of rectangle with per-channel saturation, 15/16-bit and 8-bit palette modes [=PANDY3 0x004496c0]
 0x00441740 func gfx_LightenRect hand adds color to every pixel of rectangle with per-channel saturation, 15/16-bit and 8-bit palette modes [=PANDY3 0x00449a60]
 0x00441ab0 func menu_DrawCenteredSplashImage hand clears screen, centers image DAT_00800078 via fn_4407e0 twice (double buffer), UnbatchGraphics =PANDY3 0x00449e10
-0x00441b60 func gfx_DarkenScreenAndFlip hand provisional: darkens the screen buffer then flips surfaces, no PANDY3 twin found
+0x00441b60 func gfx_DarkenScreenAndFlip hand darkens the screen buffer then flips surfaces, no PANDY3 twin found
 0x00441ba0 func cmdline_ParseAccelArg hand checks arg against ACCEL/NOACCEL, else Invalid positional parameter message [=PANDY3 0x0040f9f0]
 0x00441c10 func list_RemoveAndInsertAfter hand removes node from singly linked list head param_2 and inserts after param_3 =PANDY3 0x00449f90
 0x00441c50 func list_RemoveChild hand unlinks child node param_2 from child list at +8 of parent via sibling pointer =PANDY3 0x00449fd0
@@ -478,12 +478,12 @@
 0x004463b0 func level_LoadEnemyDefsFromMask hand =PANDY3 0x0044c6c0 iterates set bits of mask loading each enemy def
 0x004463f0 func level_LoadEnemyDef hand =PANDY3 0x0044c700 reads enemy def from package chunk and registers its sounds
 0x00446550 func level_ResetEnemyDefCount hand =PANDY3 0x0044c860 sets enemy def count to 3
-0x00446560 func obj_InstallTypeHandlers_2 hand provisional: sets handler pointer DAT_007ff6a8 and installs handler slots 0, 0xb, 0xc [=PANDY3 0x0044c870]
+0x00446560 func level_LoadCoreEnemyDefs hand sets handler pointer DAT_007ff6a8 and installs handler slots 0, 0xb, 0xc [=PANDY3 0x0044c870] (was obj_InstallTypeHandlers_2)
 0x00446e30 func obj_InitSpawnedEntity hand =PANDY3 0x0044d140 resets state fields of spawned object, clears flags
 0x00446ea0 func obj_InitProjectileFromParent hand =PANDY3 0x0044d1b0 large initializer of projectile copying parent object fields
 0x00447fb0 func level_ClearEnemyDefCount hand =PANDY3 0x0044e2c0 sets enemy def count to zero
-0x004484b0 func enemy_FindAnimKeyEntry hand provisional: scans 0x28-byte anim keyframe entries from object fields +0x84 and +0x88
-0x00448540 func obj_UpdateCollisionPose hand provisional: =PANDY3 0x00402820 wrapper calling enemy movement update then enemy anim and sound update
+0x004484b0 func enemy_FindAnimKeyEntry hand scans 0x28-byte anim keyframe entries from object fields +0x84 and +0x88
+0x00448540 func enemy_UpdateMovementAndAnim hand =PANDY3 0x00402820 wrapper calling enemy movement update then enemy anim and sound update (was obj_UpdateCollisionPose)
 0x00448590 func col_BuildSphereBounds hand =PANDY3 0x00402870 builds bounding data from sphere children of collision data
 0x00448bb0 func obj_GetPolyAndMatrix hand =PANDY3 0x00402e90 fetches collision polygon and transform matrix for object
 0x00448c50 func col_ClearPolyFlags hand =PANDY3 0x00402f30 clears per-polygon collision flags
@@ -514,10 +514,10 @@
 0x0044bea0 func ddraw_CreatePalette hand converts 256 RGB triples to RGBA entries and creates DirectDraw palette [=PANDY3 0x0044f940]
 0x0044bf50 func gfx_SetBackBufferSize hand records logical render width height and recomputes back buffer origin pointer [=PANDY3 0x0044f9f0]
 0x0044bfd0 func ddraw_FlipLoop hand calls Flip or Blt on primary until surface no longer busy [=PANDY3 0x0044fa70]
-0x0044c050 func ddraw_QueryModeSupported hand provisional: enumerates display modes with filter, tests whether 8 or 16 bpp supported [=PANDY3 0x0044faf0]
+0x0044c050 func ddraw_QueryModeSupported hand enumerates display modes with filter, tests whether 8 or 16 bpp supported [=PANDY3 0x0044faf0]
 0x0044c150 func ddraw_HandleSurfaceLost hand restores surfaces if flagged else runs fallback and refreshes display [=PANDY3 0x0044fbf0]
 0x0044c170 func ddraw_IsSurfaceLost hand true if primary or back surface IsLost reports DDERR_SURFACELOST; false in Glide mode [=PANDY3 0x0044fc10]
-0x0044c1d0 func sfx_QueueTriggerId hand provisional: appends trigger id to list at PTR_DAT_00463b90, limit 0x28
+0x0044c1d0 func sfx_QueueTriggerId hand appends trigger id to list at PTR_DAT_00463b90, limit 0x28
 0x0044c210 func password_EncodeCharPair hand =PANDY3 0x0044fcb0 maps two password chars to index 62*a+1+b
 0x0044c2a0 func sfx_ResolveTriggerIds hand =PANDY3 0x0044fd40 maps sound ids low 12 bits to entries in event list
 0x0044c360 func sfx_StartObjectSound hand =PANDY3 0x0044fe00 looks up sound id, starts object sound
@@ -550,7 +550,7 @@
 0x0044ea00 func mem_AllocBlock hand allocates size+4 via mem_allocate, stores handle in 2-byte header, returns pointer past header [=PANDY3 0x004522f0]
 0x0044ea40 func mem_FreeObjectBlock hand =PANDY3 0x00452330 frees object memory block
 0x0044ea60 func game_PresentFrame hand =PANDY3 0x00452350 per-frame fade and present, flip loop
-0x0044ec30 func game_InitLevelSystems hand provisional: sets flag, calls several init routines, computes level value from table [=PANDY3 0x00452530]
+0x0044ec30 func game_InitLevelSystems hand sets flag, calls several init routines, computes level value from table [=PANDY3 0x00452530]
 0x0044ec80 func game_ResetSystems hand =PANDY3 0x00452580 resets character state and enemy def count
 0x0044ec90 func obj_InitUpdateHandlerTables hand installs object update and draw handler function pointers in tables; returns 1 [=PANDY3 0x00452590]
 0x0044ed00 func obj_ApplySwitchDirection hand =PANDY3 0x00452600 sets +0x88 to 1 or -1 by flag bits
@@ -568,7 +568,7 @@
 0x0044f980 func game_ShutdownAll hand =PANDY3 0x004414c0 calls reset systems, clear level state, shutdown subsystems
 0x0044f9b0 func game_InitResources hand clears flags, calls gfx_InitGraphics, allocates 0x414450 memory, loads first chunks and tables [=PANDY3 0x00441500]
 0x0044fa70 func gfx_InitGraphics hand calls gfx_SetupDisplay then gfx_InitTextureManager; prints Failed InitGraphics on failure [=PANDY3 0x004415c0]
-0x0044fad0 func tex_BuildShadeTable hand provisional: =PANDY3 0x00401a40 builds clamped shade lookup table into global table
+0x0044fad0 func tex_BuildShadeTable hand =PANDY3 0x00401a40 builds clamped shade lookup table into global table
 0x00450620 func sfx_PlayEnemyEvent_0620 hand =PANDY3 0x00408ff0 plays enemy event sound via sound id and voice slot
 0x00450700 func enemy_UpdateShooterAI hand =PANDY3 0x004090d0 fires projectile, turns toward player with atan2 table
 0x00450cb0 func enemy_UpdateBossAttack hand =PANDY3 0x00409680 boss attack state with sounds, spawns projectile
@@ -579,7 +579,7 @@
 0x004521d0 func light_ApplyToModel hand =PANDY3 0x0040a940 computes vertex lighting colors from light table and ambient
 0x00452b60 func hud_ResetSpriteTable hand provisional: zeroes 10 dwords at DAT_00808c40, sets +4 to DAT_00803360+0x2ee000 table base [=PANDY3 0x00404ed0]
 0x00452b80 func stub_00452b80 hand =PANDY3 0x004522d0 tiny stub that only returns
-0x00452b90 func level_Unload hand provisional: =PANDY3 0x0040f430 loading-screen loop around level load and package selection
+0x00452b90 func level_LoadWithLoadingScreen hand =PANDY3 0x0040f430 loading-screen loop around level load and package selection (was level_Unload)
 0x00452d20 func level_Load hand =PANDY3 0x0040f5d0 loads package chunks, looks up pair tables, initializes objects
 0x00453060 func level_LoadWrapper hand =PANDY3 0x0040f910 thin call to level load function
 0x00453080 func level_Shutdown hand =PANDY3 0x0040f930 stops CD track, calls cleanup helpers for sound and objects
@@ -600,7 +600,7 @@
 0x00454230 func enemyType_LoadFromMask_4230 hand =PANDY3 0x00406370 loops bitmask calling enemyType_LoadOne
 0x00454290 func enemyType_LoadOne_4290 hand =PANDY3 0x004063d0 reads enemy type data from package, registers sound banks
 0x004543f0 func enemyType_ResetCount_43f0 hand =PANDY3 0x00406530 sets enemy type count to zero
-0x00454400 func game_InstallCallbackTable hand provisional: stores handler pointers FUN_00406af0, FUN_00406e50 and labels into callback globals, clears DAT_00531790 [=PANDY3 0x00406540]
+0x00454400 func game_InstallCallbackTable hand stores handler pointers FUN_00406af0, FUN_00406e50 and labels into callback globals, clears DAT_00531790 [=PANDY3 0x00406540]
 0x0045456a func enemy_HandleCollisionResponse hand =PANDY3 0x004066aa hit-type switch setting flags at +0x2a
 0x004549b0 func enemy_UpdateHitState hand =PANDY3 0x00406af0 updates enemy being hit state
 0x00454d10 func enemy_UpdateDying hand =PANDY3 0x00406e50 updates enemy death animation and removal
@@ -608,7 +608,7 @@
 0x00454e50 func xdmovie_Destructor hand =PANDY3 0x00441ef0 XDMOVIE destructor, destroys Xan decompressor
 0x00454eba func xdmovie_DestructorUnwind hand =PANDY3 0x00441f5a SEH unwind thunk calling XDMOVIE destructor
 0x00454ed0 func xdmovie_ScalarDeletingDestructor hand =PANDY3 0x00441f70 calls XDMOVIE destructor and operator delete
-0x00454ef0 func gfx_FlushBatchFrame hand provisional: begin batch immediately followed by end batch present
+0x00454ef0 func gfx_FlushBatchFrame hand begin batch immediately followed by end batch present
 0x00455010 func movie_PlayXanVideo hand =PANDY3 0x004420e0 creates Xan streamer and decompressor, DirectDraw DIB, plays movie
 0x0045526f func xdmovie_UnwindCleanup hand =PANDY3 0x0044233f SEH unwind thunk calling xdmovie destructor
 0x00455280 func gfx_AllocateDib hand allocates and zeroes BITMAPINFOHEADER plus pixel area, sets size, planes, bitcount, pixel pointer [=PANDY3 0x00442350]
@@ -693,7 +693,7 @@
 0x0045c480 func crt_CrtGetStringTypeA hand __crtGetStringTypeA: wraps GetStringTypeA or MultiByteToWideChar then GetStringTypeW [=PANDY3 0x00463390]
 0x0045c750 func crt_Purecall hand _purecall: calls _amsg_exit with 2 (pure virtual function call) [=PANDY3 0x004615b0]
 0x0045c7d0 func crt_Tolower hand tolower: C locale ASCII A-Z mapping else __crtLCMapStringA LCMAP_LOWERCASE [=PANDY3 0x00461630]
-0x0045cff0 func crt_UnexpectedFilter hand provisional: checks C++ exception code 0x19930520 then terminate else calls handler
+0x0045cff0 func crt_UnexpectedFilter hand checks C++ exception code 0x19930520 then terminate else calls handler
 0x0045d1c0 func wcslen hand =PANDY3 0x004636c0 counts 16-bit characters until zero
 0x0045d1e0 func crt_CrtMessageBoxA hand __crtMessageBoxA: lazily loads user32.dll MessageBoxA, GetActiveWindow, GetLastActivePopup [=PANDY3 0x004636e0]
 0x0045d9a0 func crt_Wcstombs hand wcstombs: locks index 0x13 around _wcstombs_lk [=PANDY3 0x00465030]

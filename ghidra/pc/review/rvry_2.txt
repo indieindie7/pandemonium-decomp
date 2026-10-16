@@ -1,0 +1,43 @@
+PANDY 0x0041e8d0 game_ResetTimers RENAME game_ResetMenuObjectState re-inits slot object (flags, -1 fields, anim ptr) and returns it for preview/menu display; no timers
+PANDY 0x0041e960 game_SetCounter RENAME game_ResetMenuObjectByIndex same reset as ResetTimers but object chosen by param index; result used as object pointer in menu setup
+PANDY 0x004201e0 level_InitCallbacksAndPlayerObjects CONFIRM level_InitCallbacksAndPlayerObjects installs callbacks, builds player objects from package chunks
+PANDY 0x00424200 math_GetRandomByte RENAME timer_TickCountdownExpired negative counter increments each call, returns 1 when it reaches zero; no randomness
+PANDY 0x004242e0 level_InitObjects RENAME input_PollActionMask saves prev mask, reads action mask (or zero if paused), then demo-playback override via game_ClearStruct
+PANDY 0x0042e070 cam_SetupViewVolumePlanes CONFIRM cam_SetupViewVolumePlanes four normalised frustum planes from fov value at camera +0x138..0x164
+PANDY 0x0042fd40 win_ParseCmdLine CONFIRM win_ParseCmdLine splits cmdline into arg pointers honoring quotes
+PANDY 0x004300d0 win_PlayLogosAvi RENAME win_RunGameMainAndDestroy calls game_MainLoop(argc,argv) then DestroyWindow; AVI is played inside game_MainLoop
+PANDY 0x00431090 menu_StartConfigDialog CONFIRM menu_StartConfigDialog posts msg to main window to open config/pause dialog and waits
+PANDY 0x00431cf0 game_ClearStruct RENAME demo_ReadRecordedInput pops next word from demo stream pointer into param; used by input poll
+PANDY 0x00431d10 game_RunLevelSequence RENAME game_RunAttractDemo sets demo stream, fixed seed, loads one of 3 demo levels, steps until done, restores state
+PANDY 0x00431e20 level_Start RENAME demo_RunPlaybackFrames fixed 682-frame loop pumping sfx/load/timing, aborts on any input or quit; caller is attract demo
+PANDY 0x00433580 coll_TestSphereVsEdge RENAME coll_SweepSphereVsObjectBounds slab-style swept sphere vs object volume (sphere/box types), returns hit time and face; callers are enemy/pickup/object pair tests
+PANDY 0x00434460 coll_SphereReachTest RENAME coll_SweptSphereOverlapTest quadratic point-to-motion-segment distance vs summed radii; broad-phase gate in three collision callers
+PANDY 0x00437a60 game_TestFlagBits RENAME menu_StepSelectionWrap plays click, moves index up/down with wrap given count and button bits; caller is character select loop
+PANDY 0x00438180 menu_DrawScreenItems RENAME menu_DrawCharacterSelect draws background, two preview objects and cursor pulse, presents; used by character select loop
+PANDY 0x004381e0 scene_SetupPasswordPreviewObject RENAME scene_DrawPreviewObject sets up temp scene/camera, positions and rotates one object for display; used in character select and level load screen, not password
+PANDY 0x004384e0 level_RunCompleteScreen CONFIRM level_RunCompleteScreen computes treasure percent, loads next package while drawing complete screen until Enter
+PANDY 0x00438dd0 game_PauseLoop CONFIRM game_PauseLoop pauses CD and sfx, shows pause dialog with password, resumes
+PANDY 0x00438f30 enemy_UpdateChaseAI CONFIRM enemy_UpdateChaseAI distance-banded approach/attack state machine, spawns projectile at anim frame; handler-table call
+PANDY 0x004395c0 obj_UpdateBoundObject RENAME obj_UpdateGroundShadow bound object at +0x9c: casts down against faces and path points, sets height offset and tilt angles, hides if no ground
+PANDY 0x0043a090 enemy_UpdateHopAI UNSURE enemy_UpdateHopAI anim-set state machine with 240-frame wait and turn; no clear evidence of hopping, no callers
+PANDY 0x0043ebd0 sw_SpanTexturedTransD555 RENAME sw_SpanTexturedAverage555 16bpp 5-5-5 span: dst+src halved (50 percent blend), skips zero texels
+PANDY 0x0043ee10 sw_SpanTexturedTrans8 RENAME sw_SpanTexturedAdd555 16bpp 5-5-5 span: saturating dst+src additive blend, not 8bpp
+PANDY 0x0043f090 sw_SpanTexturedTrans8_2 RENAME sw_SpanTexturedSub555 16bpp 5-5-5 span: dst-src clamped at zero subtractive blend
+PANDY 0x0043f7d0 sw_SpanTexturedTransB555 RENAME sw_SpanTexturedAdd565 16bpp 6-bit green shifts: saturating dst+src additive blend
+PANDY 0x0043fa40 sw_SpanTexturedTransC555 RENAME sw_SpanTexturedSub565 16bpp 6-bit green shifts: dst-src clamped subtractive blend
+PANDY 0x0043fcb0 sw_SpanTexturedTrans8_3 RENAME sw_SpanTexturedAddQuarter565 16bpp 6-bit green shifts: dst + src/4 saturating add (faint glow)
+PANDY 0x004400c0 sw_SpanTexturedTransC565 RENAME sw_SpanTexturedAddPal8 8bpp palette span via color expand table, saturating add then reverse lookup
+PANDY 0x00440270 sw_SpanTexturedTransB565 RENAME sw_SpanTexturedSubPal8 8bpp palette span via color expand table, clamped subtract then reverse lookup
+PANDY 0x00441b60 gfx_DarkenScreenAndFlip CONFIRM gfx_DarkenScreenAndFlip batch, darken full-width rect by fade level, present, flip; caller is the fade in game_PresentFrame
+PANDY 0x00446560 obj_InstallTypeHandlers_2 RENAME level_LoadCoreEnemyDefs sets handler pointer and loads enemy defs 0, 0xb, 0xc; no numeric suffix allowed
+PANDY 0x004484b0 enemy_FindAnimKeyEntry CONFIRM enemy_FindAnimKeyEntry scans 0x28-byte keyframe entries by current frame and returns index
+PANDY 0x00448540 obj_UpdateCollisionPose RENAME enemy_UpdateMovementAndAnim wrapper: enemy movement/dist update then anim and sound update, no collision pose
+PANDY 0x0044c050 ddraw_QueryModeSupported CONFIRM ddraw_QueryModeSupported enumerates display modes for width/height, checks 8 or 16 bpp flag; used in DirectDraw init
+PANDY 0x0044c1d0 sfx_QueueTriggerId CONFIRM sfx_QueueTriggerId appends packed id to list of max 0x28; callers are sfx and collision triggers
+PANDY 0x0044ec30 game_InitLevelSystems CONFIRM game_InitLevelSystems sets flag, loads chunk, installs blit callbacks/handlers, builds sfx bank offsets
+PANDY 0x0044fad0 tex_BuildShadeTable CONFIRM tex_BuildShadeTable builds 32x256 table of (row*col)>>7 clamped to 31, a shade lookup
+PANDY 0x00452b60 hud_ResetSpriteTable UNSURE hud_ResetSpriteTable zeroes 10 dwords and sets pool base at +0x2ee000; hud role unproven, only caller is handler-table init
+PANDY 0x00452b90 level_Unload RENAME level_LoadWithLoadingScreen selects package, loops level_Load while drawing loading sprite and flipping; no unload
+PANDY 0x00454400 game_InstallCallbackTable CONFIRM game_InstallCallbackTable stores enemy hit/dying handlers and labels into callback globals
+PANDY 0x00454ef0 gfx_FlushBatchFrame CONFIRM gfx_FlushBatchFrame begin batch then present, returns 1
+PANDY 0x0045cff0 crt_UnexpectedFilter CONFIRM crt_UnexpectedFilter checks C++ exception signature 0x19930520, terminate or chain filter
